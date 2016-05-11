@@ -1,0 +1,21 @@
+Package: smapr
+Type: Package
+Title: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) data
+Version: 0.0.0.9000
+Author: Maxwell B. Joseph
+Depends:
+    R (>= 3.2.5)
+Imports:
+    raster (>= 2.5),
+    rhdf5 (>= 2.14)
+Maintainer: Maxwell B. Joseph <maxwell.b.joseph@colorado.edu>
+Description:
+    This package facilitates programmatic access to NASA Soil Moisture Active
+    Passive (SMAP) data with R. It includes functions to search for, acquire,
+    and process SMAP data SMAP data.
+License: CCO
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
