@@ -12,6 +12,7 @@
 #' and the date.
 #' @examples
 #' find_smap(id = "SPL4SMGP", date = "2015.03.31")
+#' @importFrom utils read.delim
 #' @export
 find_smap <- function(id, date) {
     path <- make_path(id, date)
