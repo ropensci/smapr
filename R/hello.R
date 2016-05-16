@@ -10,6 +10,7 @@
 #' @return A character string that is "Hello...<your name>".
 #' @examples
 #' hello(name = 'Clarice')
+#' @export
 hello <- function(name) {
   print(paste0("Hello...", name))
 }
