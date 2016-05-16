@@ -17,15 +17,15 @@ find_smap <- function(id, date) {
     path <- make_path(id, date)
     connection <- curl::curl(path)
     on.exit(close(connection))
-    lines <- readLines(connection)
-    res <- parse(lines)
+    contents <- readLines(connection)
+    res <- parse(contents)
     res$date <- date
     res$dir <- path
     res[, order(names(res))]
 }
 
-parse <- function(lines) {
-    df <- read.delim(text = paste0(lines, '\n'), skip = 1, sep = "",
+parse <- function(contents) {
+    df <- read.delim(text = paste0(contents, '\n'), skip = 1, sep = "",
                      header = FALSE, stringsAsFactors = FALSE)
     name_column <- pmatch("SMAP", df[1, ])
     files <- df[[name_column]]
