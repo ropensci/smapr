@@ -6,8 +6,8 @@
 #' specifies data files to download.
 #' @param directory A directory path in which to save data, specified as a character
 #' string. If left as \code{NULL}, data are stored in a user's cache directory.
-#' @return Returns a character vector consisting of paths to the downloaded
-#' data on the local filesystem.
+#' @return Returns a character vector of paths to the downloaded data on the
+#' local filesystem.
 #' @examples
 #' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31")
 #' # files[1, ] refers to the first available data file
@@ -23,10 +23,11 @@ download_smap <- function(files, directory = NULL) {
         dir.create(directory, recursive = TRUE)
     }
     n_files <- nrow(files)
+    paths <- rep(NA, n_files)
     for (i in 1:n_files) {
-        download_file(files[i, ], directory)
+        paths[i] <- download_file(files[i, ], directory)
     }
-    file.path(directory, files$name)
+    paths
 }
 
 #' @importFrom httr authenticate
@@ -40,4 +41,5 @@ download_file <- function(file, directory) {
                                password = "maxwellbjoseph@gmail.com")
     write_loc <- write_disk(path_to_file, overwrite = TRUE)
     suppressWarnings(GET(ftp_location, write_loc, auth))
+    path_to_file
 }
