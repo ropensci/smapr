@@ -7,6 +7,8 @@ Depends:
     R (>= 3.2.5)
 Imports:
     curl (>= 0.9.7),
+    httr (>= 1.1.0),
+    rappdirs (>= 0.3.1),
     raster (>= 2.5),
     rhdf5 (>= 2.14),
     utils

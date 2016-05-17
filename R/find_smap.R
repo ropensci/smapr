@@ -15,27 +15,25 @@
 #' @importFrom utils read.delim
 #' @export
 find_smap <- function(id, date) {
-    path <- make_path(id, date)
-    connection <- curl::curl(path)
+    route <- make_route(id, date)
+    connection <- curl::curl(route)
     on.exit(close(connection))
     contents <- readLines(connection)
-    res <- parse(contents)
-    res$date <- date
-    res$dir <- path
-    res[, order(names(res))]
+    name <- find_h5(contents)
+    ftp_dir <- gsub(ftp_prefix(), "", route)
+    data.frame(date, ftp_dir, name, stringsAsFactors = FALSE)
 }
 
-parse <- function(contents) {
+find_h5 <- function(contents) {
     df <- read.delim(text = paste0(contents, '\n'), skip = 1, sep = "",
                      header = FALSE, stringsAsFactors = FALSE)
     name_column <- pmatch("SMAP", df[1, ])
     files <- df[[name_column]]
     extensions <- sub(".*\\.", "", files)
-    data.frame(name = files[extensions == "h5"], stringsAsFactors = FALSE)
+    files[extensions == "h5"]
 }
 
-make_path <- function(id, date) {
-    base <- "ftp://n5eil01u.ecs.nsidc.org/SAN/SMAP"
+make_route <- function(id, date) {
     long_id <- paste(id, "001", sep = ".") # check this with Brian
-    paste0(base, "/", long_id, "/", date, "/")
+    paste0(ftp_prefix(), long_id, "/", date, "/")
 }
