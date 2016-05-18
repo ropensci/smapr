@@ -11,6 +11,7 @@ Imports:
     rappdirs (>= 0.3.1),
     raster (>= 2.5),
     rhdf5 (>= 2.14),
+    sp,
     utils
 Maintainer: Maxwell B. Joseph <maxwell.b.joseph@colorado.edu>
 Description:
