@@ -14,8 +14,9 @@ specifies data files to download.}
 string. If left as \code{NULL}, data are stored in a user's cache directory.}
 }
 \value{
-Returns a character vector of paths to the downloaded data on the
-local filesystem.
+Returns a \code{data.frame} that appends a column called \code{file}
+to the input data frame, which consists of a character vector of file paths
+to the downloaded files.
 }
 \description{
 This function downloads SMAP data in hdf5 format.
