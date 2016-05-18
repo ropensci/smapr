@@ -1,7 +1,15 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: false
 cache: packages
 warnings_are_errors: true
 bioc_packages: rhdf5
+
+before_script:
+  - sudo apt-get update
+  - sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev netcdf-bin libproj-dev libgdal1h
+  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - ./travis-tool.sh bootstrap
+  - ./travis-tool.sh install_deps
+  - ./travis-tool.sh install_r rgdal
