@@ -40,6 +40,6 @@ extract_smap <- function(file, group, dataset) {
     projected_extent <- projectExtent(raster(grid_extent, crs = crs_ll), crs_in)
     ex <- raster::extent(projected_extent)
     raster::extent(r) <- ex
-    raster::projection(r) <- CRS(crs_in)
+    raster::projection(r) <- sp::CRS(crs_in)
     r
 }

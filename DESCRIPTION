@@ -10,6 +10,7 @@ Imports:
     httr (>= 1.1.0),
     rappdirs (>= 0.3.1),
     raster (>= 2.5),
+    rgdal,
     rhdf5 (>= 2.14),
     sp,
     utils
