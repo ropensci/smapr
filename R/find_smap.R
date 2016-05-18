@@ -19,18 +19,23 @@ find_smap <- function(id, date) {
     connection <- curl::curl(route)
     on.exit(close(connection))
     contents <- readLines(connection)
-    name <- find_h5(contents)
+    name <- find_names(contents)
+    time <- gsub("_.*", "", gsub(".*T", "", name))
     ftp_dir <- gsub(ftp_prefix(), "", route)
-    data.frame(date, ftp_dir, name, stringsAsFactors = FALSE)
+    data.frame(name = name,
+               date = as.Date(date, format = "%Y.%m.%d"),
+               time = as.numeric(time),
+               ftp_dir = ftp_dir,
+               stringsAsFactors = FALSE)
 }
 
-find_h5 <- function(contents) {
+find_names <- function(contents) {
     df <- read.delim(text = paste0(contents, '\n'), skip = 1, sep = "",
                      header = FALSE, stringsAsFactors = FALSE)
     name_column <- pmatch("SMAP", df[1, ])
     files <- df[[name_column]]
-    extensions <- sub(".*\\.", "", files)
-    files[extensions == "h5"]
+    filenames <- gsub("\\..*", "", files)
+    unique(filenames)
 }
 
 make_route <- function(id, date) {
