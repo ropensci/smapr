@@ -14,6 +14,9 @@
 #' # files[1, ] refers to the first available data file
 #' download_smap(files[1, ])
 #' @importFrom rappdirs user_cache_dir
+#' @importFrom httr authenticate
+#' @importFrom httr write_disk
+#' @importFrom httr GET
 #' @export
 download_smap <- function(files, directory = NULL) {
     stopifnot(class(files) == 'data.frame')
@@ -36,9 +39,6 @@ download_smap <- function(files, directory = NULL) {
     merge(files, output, by = 'name')
 }
 
-#' @importFrom httr authenticate
-#' @importFrom httr write_disk
-#' @importFrom httr GET
 download_file <- function(file, directory) {
     stopifnot(nrow(file) == 1)
     filenames <- paste0(file$name, extensions())
