@@ -25,6 +25,7 @@ before_install:
 install:
   - ./pkg-build.sh install_bioc rhdf5
   - ./pkg-build.sh install_deps
+  - ./travis-tool.sh r_install covr
 
 script:
   - ./pkg-build.sh run_tests
@@ -36,3 +37,6 @@ notifications:
   email:
     on_success: change
     on_failure: change
+
+after_success:
+  - ./travis-tool.sh run_script -e 'covr::codecov(token = "ee73c613-5fe6-4eb1-8939-dc20bdd30f2a")'
