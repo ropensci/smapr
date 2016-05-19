@@ -2,23 +2,25 @@
 % Please edit documentation in R/extract_smap.R
 \name{extract_smap}
 \alias{extract_smap}
-\title{Extracts contents of SMAP data files}
+\title{Extracts contents of SMAP data}
 \usage{
-extract_smap(file, group, dataset)
+extract_smap(data = NULL, name, in_memory = FALSE)
 }
 \arguments{
-\item{file}{A character string path to a file on the local file system, e.g.,
-produced by \code{download_smap()} that specifies input data files.}
+\item{data}{A data frame produced by \code{download_smap()} that specifies
+input files from which to extract data.}
 
-\item{group}{The group in the HDF5 file containing data to extract.}
+\item{name}{The path in the HDF5 file pointing to data to extract.}
 
-\item{dataset}{The dataset to extract.}
+\item{in_memory}{Logical. Should the result be stored in memory
+(\code{in_memory = TRUE}) or on disk (\code{in_memory = FALSE}). By default
+the result is stored on disk.}
 }
 \value{
 Returns a Raster object.
 }
 \description{
-Extracts a datasets from a SMAP data file.
+Extracts datasets from SMAP data files.
 }
 \details{
 The arguments \code{group} and \code{dataset} must refer specifically  the
@@ -29,9 +31,6 @@ returning a Raster object.
 \examples{
 files <- find_smap(id = "SPL4SMGP", date = "2015.03.31")
 downloads <- download_smap(files[1, ])
-h5_data <- subset(downloads, file_ext == '.h5')
-sm_raster <- extract_smap(h5_data$file[1],
-                             group = 'Geophysical_Data',
-                             dataset = 'leaf_area_index')
+sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 }
 
