@@ -22,17 +22,18 @@
 download_smap <- function(files_to_download, directory = NULL) {
     directory <- validate_directory(directory)
     local_files <- fetch_all(files_to_download, directory)
+    verify_download_success(files_to_download, local_files)
     bundle_to_df(files_to_download, local_files)
 }
 
 bundle_to_df <- function(desired_files, downloaded_files) {
     names_without_paths <- gsub(".*/", "", downloaded_files)
     names_without_extensions <- gsub("\\..*", "", names_without_paths)
-    download_results <- data.frame(name = names_without_extensions,
-                                   local_file = downloaded_files,
-                                   extension = extensions(),
-                                   stringsAsFactors = FALSE)
-    merge(desired_files, download_results, by = 'name')
+    downloads <- data.frame(name = names_without_extensions,
+                            local_file = downloaded_files,
+                            extension = extensions(),
+                            stringsAsFactors = FALSE)
+    merge(desired_files, downloads, by = 'name')
 }
 
 fetch_all <- function(files_to_download, directory) {
@@ -68,4 +69,10 @@ ftp_to_local <- function(local_paths, ftp_locations, i) {
     auth <- authenticate("anonymous", "maxwellbjoseph@gmail.com")
     write_loc <- write_disk(local_paths[i], overwrite = TRUE)
     suppressWarnings(GET(ftp_locations[i], write_loc, auth))
+}
+
+verify_download_success <- function(files_to_download, downloaded_files) {
+    expected_downloads <- paste0(files_to_download$name, extensions())
+    actual_downloads <- gsub(".*/", "", downloaded_files)
+    stopifnot(all(expected_downloads %in% actual_downloads))
 }
