@@ -16,8 +16,8 @@
 #' @importFrom rhdf5 h5ls
 #' @export
 list_smap <- function(files, all = FALSE) {
-    h5 <- files[files$file_ext == '.h5', ]
-    list_out <- lapply(h5$file, h5ls, all)
-    names(list_out) <- h5$name
-    return(list_out)
+    h5 <- files[files$extension == '.h5', ]
+    contents <- lapply(h5$local_file, h5ls, all)
+    names(contents) <- h5$name
+    contents
 }

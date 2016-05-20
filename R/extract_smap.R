@@ -26,7 +26,7 @@
 #' @importFrom rappdirs user_cache_dir
 #' @export
 extract_smap <- function(data = NULL, name, in_memory = FALSE) {
-    h5_files <- data[data$file_ext == ".h5", 'file']
+    h5_files <- data[data$extension == ".h5", 'local_file']
     n_files <- length(h5_files)
 
     raster_list <- vector("list", length = n_files)

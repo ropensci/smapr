@@ -4,10 +4,10 @@
 \alias{download_smap}
 \title{Download SMAP data}
 \usage{
-download_smap(files, directory = NULL)
+download_smap(files_to_download, directory = NULL)
 }
 \arguments{
-\item{files}{A \code{data.frame} produced by \code{find_smap()} that
+\item{files_to_download}{A \code{data.frame} produced by \code{find_smap()} that
 specifies data files to download.}
 
 \item{directory}{A directory path in which to save data, specified as a character
