@@ -7,11 +7,12 @@
 download_smap(files_to_download, directory = NULL)
 }
 \arguments{
-\item{files_to_download}{A \code{data.frame} produced by \code{find_smap()} that
-specifies data files to download.}
+\item{files_to_download}{A \code{data.frame} produced by \code{find_smap()}
+that specifies data files to download.}
 
-\item{directory}{A directory path in which to save data, specified as a character
-string. If left as \code{NULL}, data are stored in a user's cache directory.}
+\item{directory}{A local directory path in which to save data, specified as a
+character string. If left as \code{NULL}, data are stored in a user's cache
+directory.}
 }
 \value{
 Returns a \code{data.frame} that appends a column called \code{file}

@@ -2,10 +2,11 @@
 #'
 #' This function downloads SMAP data in hdf5 format.
 #'
-#' @param files_to_download A \code{data.frame} produced by \code{find_smap()} that
-#' specifies data files to download.
-#' @param directory A directory path in which to save data, specified as a character
-#' string. If left as \code{NULL}, data are stored in a user's cache directory.
+#' @param files_to_download A \code{data.frame} produced by \code{find_smap()}
+#' that specifies data files to download.
+#' @param directory A local directory path in which to save data, specified as a
+#' character string. If left as \code{NULL}, data are stored in a user's cache
+#' directory.
 #' @return Returns a \code{data.frame} that appends a column called \code{file}
 #' to the input data frame, which consists of a character vector of file paths
 #' to the downloaded files.
@@ -26,8 +27,8 @@ download_smap <- function(files_to_download, directory = NULL) {
 
 bundle_to_df <- function(desired_files, downloaded_files) {
     n_extensions <- length(extensions())
-    name <- rep(desired_files$name, each = n_extensions)
-    download_results <- data.frame(name = name,
+    smap_filename <- rep(desired_files$name, each = n_extensions)
+    download_results <- data.frame(name = smap_filename,
                                    local_file = downloaded_files,
                                    extension = extensions(),
                                    stringsAsFactors = FALSE)
@@ -38,7 +39,7 @@ fetch_all <- function(files_to_download, directory) {
     n_downloads <- nrow(files_to_download)
     local_files <- vector(mode = 'list', length = n_downloads)
     for (i in 1:n_downloads) {
-        local_files[[i]] <- download_file(files_to_download[i, ], directory)
+        local_files[[i]] <- download_data(files_to_download[i, ], directory)
     }
     unlist(local_files)
 }
@@ -53,15 +54,18 @@ validate_directory <- function(directory) {
     directory
 }
 
-download_file <- function(file, directory) {
-    stopifnot(nrow(file) == 1 & !is.null(directory))
-    filenames <- paste0(file$name, extensions())
-    paths <- file.path(directory, filenames)
-    ftp_locations <- paste0(ftp_prefix(), file$ftp_dir, filenames)
-    auth <- authenticate("anonymous", "maxwellbjoseph@gmail.com")
-    for (i in seq_along(paths)) {
-        write_loc <- write_disk(paths[i], overwrite = TRUE)
-        suppressWarnings(GET(ftp_locations[i], write_loc, auth))
+download_data <- function(file, local_directory) {
+    target_files <- paste0(file$name, extensions())
+    local_paths <- file.path(local_directory, target_files)
+    ftp_locations <- paste0(ftp_prefix(), file$ftp_dir, target_files)
+    for (i in seq_along(local_paths)) {
+        ftp_to_local(local_paths, ftp_locations, i)
     }
-    paths
+    local_paths
+}
+
+ftp_to_local <- function(local_paths, ftp_locations, i) {
+    auth <- authenticate("anonymous", "maxwellbjoseph@gmail.com")
+    write_loc <- write_disk(local_paths[i], overwrite = TRUE)
+    suppressWarnings(GET(ftp_locations[i], write_loc, auth))
 }
