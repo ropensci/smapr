@@ -60,8 +60,12 @@ compute_grid_extent <- function(h5_file) {
 make_stack <- function(r_list, in_memory) {
     r_stack <- stack(r_list)
     if (!in_memory) {
-        dest <- file.path(user_cache_dir("smap"), 'tmp')
-        r_stack <- writeRaster(r_stack, dest, overwrite = TRUE)
+        r_stack <- smap_to_disk(r_stack)
     }
     r_stack
+}
+
+smap_to_disk <- function(raster_stack) {
+    dest <- file.path(user_cache_dir("smap"), 'tmp')
+    writeRaster(raster_stack, dest, overwrite = TRUE)
 }
