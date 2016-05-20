@@ -15,21 +15,25 @@
 #' @importFrom utils read.delim
 #' @export
 find_smap <- function(id, date) {
-    route <- make_route(id, date)
+    route <- make_ftp_route(id, date)
     connection <- curl::curl(route)
     on.exit(close(connection))
     contents <- readLines(connection)
-    name <- find_names(contents)
-    time <- gsub("_.*", "", gsub(".*T", "", name))
-    ftp_dir <- gsub(ftp_prefix(), "", route)
-    data.frame(name = name,
+    data_filenames <- parse_directory_listing(contents)
+    bundle_search_results(data_filenames, route, date)
+}
+
+bundle_search_results <- function(filenames, ftp_route, date, time) {
+    time <- gsub("_.*", "", gsub(".*T", "", filenames))
+    ftp_dir <- gsub(ftp_prefix(), "", ftp_route)
+    data.frame(name = filenames,
                date = as.Date(date, format = "%Y.%m.%d"),
                time = as.numeric(time),
                ftp_dir = ftp_dir,
                stringsAsFactors = FALSE)
 }
 
-find_names <- function(contents) {
+parse_directory_listing <- function(contents) {
     df <- read.delim(text = paste0(contents, '\n'), skip = 1, sep = "",
                      header = FALSE, stringsAsFactors = FALSE)
     name_column <- pmatch("SMAP", df[1, ])
@@ -38,7 +42,7 @@ find_names <- function(contents) {
     unique(filenames)
 }
 
-make_route <- function(id, date) {
+make_ftp_route <- function(id, date) {
     long_id <- paste(id, "001", sep = ".") # check this with Brian
     paste0(ftp_prefix(), long_id, "/", date, "/")
 }
