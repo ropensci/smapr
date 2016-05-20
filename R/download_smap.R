@@ -26,9 +26,9 @@ download_smap <- function(files_to_download, directory = NULL) {
 }
 
 bundle_to_df <- function(desired_files, downloaded_files) {
-    n_extensions <- length(extensions())
-    smap_filename <- rep(desired_files$name, each = n_extensions)
-    download_results <- data.frame(name = smap_filename,
+    names_without_paths <- gsub(".*/", "", downloaded_files)
+    names_without_extensions <- gsub("\\..*", "", names_without_paths)
+    download_results <- data.frame(name = names_without_extensions,
                                    local_file = downloaded_files,
                                    extension = extensions(),
                                    stringsAsFactors = FALSE)
