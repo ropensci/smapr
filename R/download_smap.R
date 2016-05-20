@@ -45,14 +45,14 @@ fetch_all <- function(files_to_download, directory) {
     unlist(local_files)
 }
 
-validate_directory <- function(directory) {
-    if (is.null(directory)) {
-        directory <- user_cache_dir("smap")
+validate_directory <- function(destination_directory) {
+    if (is.null(destination_directory)) {
+        destination_directory <- user_cache_dir("smap")
     }
-    if (!dir.exists(directory)) {
-        dir.create(directory, recursive = TRUE)
+    if (!dir.exists(destination_directory)) {
+        dir.create(destination_directory, recursive = TRUE)
     }
-    directory
+    destination_directory
 }
 
 download_data <- function(file, local_directory) {
