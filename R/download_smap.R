@@ -2,7 +2,7 @@
 #'
 #' This function downloads SMAP data in hdf5 format.
 #'
-#' @param files A \code{data.frame} produced by \code{find_smap()} that
+#' @param files_to_download A \code{data.frame} produced by \code{find_smap()} that
 #' specifies data files to download.
 #' @param directory A directory path in which to save data, specified as a character
 #' string. If left as \code{NULL}, data are stored in a user's cache directory.
@@ -18,21 +18,26 @@
 #' @importFrom httr write_disk
 #' @importFrom httr GET
 #' @export
-download_smap <- function(files, directory = NULL) {
+download_smap <- function(files_to_download, directory = NULL) {
     directory <- validate_directory(directory)
-    # produce a list of downloaded files
-    n_files <- nrow(files)
-    file <- list()
-    for (i in 1:n_files) {
-        file[[i]] <- download_file(files[i, ], directory)
-    }
+    local_file <- fetch_all(files_to_download, directory)
+
     # bundle files in a data frame
-    file <- unlist(file)
-    n_extensions <- length(extensions())
-    name <- rep(files$name, each = n_extensions)
-    file_ext <- extensions()
-    output <- data.frame(name, file, file_ext, stringsAsFactors = FALSE)
-    merge(files, output, by = 'name')
+    extension <- extensions()
+    n_extensions <- length(extension)
+    name <- rep(files_to_download$name, each = n_extensions)
+    output <- data.frame(name, local_file, extension,
+                         stringsAsFactors = FALSE)
+    merge(files_to_download, output, by = 'name')
+}
+
+fetch_all <- function(files_to_download, directory) {
+    n_downloads <- nrow(files_to_download)
+    local_files <- vector(mode = 'list', length = n_downloads)
+    for (i in 1:n_downloads) {
+        local_files[[i]] <- download_file(files_to_download[i, ], directory)
+    }
+    unlist(local_files)
 }
 
 validate_directory <- function(directory) {
