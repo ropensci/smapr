@@ -20,15 +20,18 @@
 #' @export
 download_smap <- function(files_to_download, directory = NULL) {
     directory <- validate_directory(directory)
-    local_file <- fetch_all(files_to_download, directory)
+    local_files <- fetch_all(files_to_download, directory)
+    bundle_to_df(files_to_download, local_files)
+}
 
-    # bundle files in a data frame
-    extension <- extensions()
-    n_extensions <- length(extension)
-    name <- rep(files_to_download$name, each = n_extensions)
-    output <- data.frame(name, local_file, extension,
-                         stringsAsFactors = FALSE)
-    merge(files_to_download, output, by = 'name')
+bundle_to_df <- function(desired_files, downloaded_files) {
+    n_extensions <- length(extensions())
+    name <- rep(desired_files$name, each = n_extensions)
+    download_results <- data.frame(name = name,
+                                   local_file = downloaded_files,
+                                   extension = extensions(),
+                                   stringsAsFactors = FALSE)
+    merge(desired_files, download_results, by = 'name')
 }
 
 fetch_all <- function(files_to_download, directory) {
