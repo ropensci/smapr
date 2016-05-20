@@ -19,18 +19,14 @@
 #' @importFrom httr GET
 #' @export
 download_smap <- function(files, directory = NULL) {
-    stopifnot(class(files) == 'data.frame')
-    if (is.null(directory)) {
-        directory <- user_cache_dir("smap")
-    }
-    if (!dir.exists(directory)) {
-        dir.create(directory, recursive = TRUE)
-    }
+    directory <- validate_directory(directory)
+    # produce a list of downloaded files
     n_files <- nrow(files)
     file <- list()
     for (i in 1:n_files) {
         file[[i]] <- download_file(files[i, ], directory)
     }
+    # bundle files in a data frame
     file <- unlist(file)
     n_extensions <- length(extensions())
     name <- rep(files$name, each = n_extensions)
@@ -39,8 +35,18 @@ download_smap <- function(files, directory = NULL) {
     merge(files, output, by = 'name')
 }
 
+validate_directory <- function(directory) {
+    if (is.null(directory)) {
+        directory <- user_cache_dir("smap")
+    }
+    if (!dir.exists(directory)) {
+        dir.create(directory, recursive = TRUE)
+    }
+    directory
+}
+
 download_file <- function(file, directory) {
-    stopifnot(nrow(file) == 1)
+    stopifnot(nrow(file) == 1 & !is.null(directory))
     filenames <- paste0(file$name, extensions())
     paths <- file.path(directory, filenames)
     ftp_locations <- paste0(ftp_prefix(), file$ftp_dir, filenames)
