@@ -15,9 +15,9 @@ character string. If left as \code{NULL}, data are stored in a user's cache
 directory.}
 }
 \value{
-Returns a \code{data.frame} that appends a column called \code{file}
-to the input data frame, which consists of a character vector of file paths
-to the downloaded files.
+Returns a \code{data.frame} that appends a column called
+\code{local_dir} to the input data frame, which consists of a character
+vector specifying the local directory containing the downloaded files.
 }
 \description{
 This function downloads SMAP data in hdf5 format.
@@ -25,6 +25,6 @@ This function downloads SMAP data in hdf5 format.
 \examples{
 files <- find_smap(id = "SPL4SMGP", date = "2015.03.31")
 # files[1, ] refers to the first available data file
-download_smap(files[1, ])
+downloads <- download_smap(files[1, ])
 }
 

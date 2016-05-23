@@ -13,3 +13,9 @@ smap_crs <- function() {
 latlon_crs <- function() {
     "+proj=longlat +lat_ts=30 +datum=WGS84 +units=m"
 }
+
+local_h5_paths <- function(files) {
+    stopifnot(is.data.frame(files))
+    filenames <- paste0(files$name, '.h5')
+    paths_with_filenames <- file.path(files$local_dir, filenames)
+}

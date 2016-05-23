@@ -7,13 +7,13 @@
 #' @param directory A local directory path in which to save data, specified as a
 #' character string. If left as \code{NULL}, data are stored in a user's cache
 #' directory.
-#' @return Returns a \code{data.frame} that appends a column called \code{file}
-#' to the input data frame, which consists of a character vector of file paths
-#' to the downloaded files.
+#' @return Returns a \code{data.frame} that appends a column called
+#' \code{local_dir} to the input data frame, which consists of a character
+#' vector specifying the local directory containing the downloaded files.
 #' @examples
 #' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31")
 #' # files[1, ] refers to the first available data file
-#' download_smap(files[1, ])
+#' downloads <- download_smap(files[1, ])
 #' @importFrom rappdirs user_cache_dir
 #' @importFrom httr authenticate
 #' @importFrom httr write_disk
@@ -23,16 +23,14 @@ download_smap <- function(files_to_download, directory = NULL) {
     directory <- validate_directory(directory)
     local_files <- fetch_all(files_to_download, directory)
     verify_download_success(files_to_download, local_files)
-    bundle_to_df(files_to_download, local_files)
+    bundle_to_df(files_to_download, local_files, directory)
 }
 
-bundle_to_df <- function(desired_files, downloaded_files) {
+bundle_to_df <- function(desired_files, downloaded_files, local_dir) {
     names_without_paths <- gsub(".*/", "", downloaded_files)
     names_without_extensions <- gsub("\\..*", "", names_without_paths)
-    downloads <- data.frame(name = names_without_extensions,
-                            local_file = downloaded_files,
-                            extension = extensions(),
-                            stringsAsFactors = FALSE)
+    name <- unique(names_without_extensions)
+    downloads <- data.frame(name, local_dir, stringsAsFactors = FALSE)
     merge(desired_files, downloads, by = 'name')
 }
 

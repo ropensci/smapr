@@ -12,8 +12,8 @@ input files from which to extract data.}
 
 \item{name}{The path in the HDF5 file pointing to data to extract.}
 
-\item{in_memory}{Logical. Should the result be stored in memory?
-(\code{in_memory = TRUE}) or on disk (\code{in_memory = FALSE}). By default
+\item{in_memory}{Logical. Should the result be stored in memory? If not, then
+raster objects are stored on disk in the cache directory. By default
 the result is stored on disk.}
 }
 \value{

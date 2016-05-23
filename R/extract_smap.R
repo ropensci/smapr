@@ -10,8 +10,8 @@
 #' @param data A data frame produced by \code{download_smap()} that specifies
 #' input files from which to extract data.
 #' @param name The path in the HDF5 file pointing to data to extract.
-#' @param in_memory Logical. Should the result be stored in memory?
-#' (\code{in_memory = TRUE}) or on disk (\code{in_memory = FALSE}). By default
+#' @param in_memory Logical. Should the result be stored in memory? If not, then
+#' raster objects are stored on disk in the cache directory. By default
 #' the result is stored on disk.
 #' @return Returns a Raster object.
 #' @examples
@@ -26,7 +26,7 @@
 #' @importFrom rappdirs user_cache_dir
 #' @export
 extract_smap <- function(data = NULL, name, in_memory = FALSE) {
-    h5_files <- data[data$extension == ".h5", 'local_file']
+    h5_files <- local_h5_paths(data)
     n_files <- length(h5_files)
     rasters <- vector("list", length = n_files)
     for (i in 1:n_files) {
@@ -39,8 +39,8 @@ rasterize_smap <- function(file, name) {
     h5_in <- h5read(file, name)
     h5_in[h5_in == -9999] <- NA
     r <- raster(t(h5_in))
-    raster::extent(r) <- compute_extent(file)
-    raster::projection(r) <- smap_crs()
+    r <- smap_project(file, r)
+    smap_to_disk(r)
     r
 }
 
@@ -65,7 +65,19 @@ make_stack <- function(r_list, in_memory) {
     r_stack
 }
 
-smap_to_disk <- function(raster_stack) {
-    dest <- file.path(user_cache_dir("smap"), 'tmp')
-    writeRaster(raster_stack, dest, overwrite = TRUE)
+smap_to_disk <- function(rast) {
+    if (class(rast) == "RasterLayer") {
+        dest <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = "")
+    } else if (class(rast) == "RasterStack") {
+        dest <- file.path(user_cache_dir("smap"), 'tmp')
+    } else {
+        stop("Input is neither a RasterLayer nor a RasterStack")
+    }
+    writeRaster(rast, dest, overwrite = TRUE)
+}
+
+smap_project <- function(file, r) {
+    raster::extent(r) <- compute_extent(file)
+    raster::projection(r) <- smap_crs()
+    r
 }
