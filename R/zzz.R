@@ -14,6 +14,10 @@ latlon_crs <- function() {
     "+proj=longlat +lat_ts=30 +datum=WGS84 +units=m"
 }
 
+latlon <- function() {
+    c("latitude", "longitude")
+}
+
 local_h5_paths <- function(files) {
     stopifnot(is.data.frame(files))
     filenames <- paste0(files$name, '.h5')
