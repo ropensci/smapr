@@ -8,7 +8,7 @@ find_smap(id, date, version)
 }
 \arguments{
 \item{id}{A character string that refers to a specific SMAP dataset, e.g.,
-\code{SPL4SMGP} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
+\code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
 Moisture Geophysical Data.}
 
 \item{date}{A character string that indicates which date to search. This
@@ -19,12 +19,28 @@ information for each data product can be found at
 \url{https://nsidc.org/data/smap/data_versions}}
 }
 \value{
-A data.frame with the names of the data files, the FTP directory,
-and the date.
+A data.frame with the names of the data files, the FTP directory, and
+  the date.
 }
 \description{
 This function searches for SMAP data on a specific date, returning a
 \code{data.frame} describing available data.
+}
+\details{
+There are many SMAP data products that can be accessed with this function.
+Currently, smapr supports level 3 and level 4 data products, each of which
+has an associated Data Set ID which is specified by the \code{id} argument,
+described at \url{https://nsidc.org/data/smap/smap-data.html} and summarized
+below:
+
+\describe{
+\item{SPL4SMGP}{SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
+Moisture Geophysical Data}
+\item{SPL3SMAP}{SMAP L3 Radar/Radiometer Global Daily 9 km EASE-Grid Soil
+Moisture}
+\item{SPL3SMA}{SMAP L3 Radar Global Daily 3 km EASE-Grid Soil Moisture}
+\item{SPL3SMP}{SMAP L3 Radiometer Global Daily 36 km EASE-Grid Soil Moisture}
+}
 }
 \examples{
 find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
