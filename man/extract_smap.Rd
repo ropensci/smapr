@@ -4,7 +4,7 @@
 \alias{extract_smap}
 \title{Extracts contents of SMAP data}
 \usage{
-extract_smap(data = NULL, name, in_memory = FALSE)
+extract_smap(data, name, in_memory = FALSE)
 }
 \arguments{
 \item{data}{A data frame produced by \code{download_smap()} that specifies
@@ -29,7 +29,7 @@ group and name within group for the input file, such as can be obtained with
 returning a Raster object.
 }
 \examples{
-files <- find_smap(id = "SPL4SMGP", date = "2015.03.31")
+files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
 downloads <- download_smap(files[1, ])
 sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 }

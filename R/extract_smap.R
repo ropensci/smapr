@@ -15,17 +15,18 @@
 #' the result is stored on disk.
 #' @return Returns a Raster object.
 #' @examples
-#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31")
+#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
 #' downloads <- download_smap(files[1, ])
 #' sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 #' @importFrom rhdf5 h5read
+#' @importFrom rhdf5 h5readAttributes
 #' @importFrom raster raster
 #' @importFrom raster stack
 #' @importFrom raster projectExtent
 #' @importFrom raster writeRaster
 #' @importFrom rappdirs user_cache_dir
 #' @export
-extract_smap <- function(data = NULL, name, in_memory = FALSE) {
+extract_smap <- function(data, name, in_memory = FALSE) {
     h5_files <- local_h5_paths(data)
     n_files <- length(h5_files)
     rasters <- vector("list", length = n_files)
@@ -37,10 +38,27 @@ extract_smap <- function(data = NULL, name, in_memory = FALSE) {
 
 rasterize_smap <- function(file, name) {
     h5_in <- h5read(file, name)
-    h5_in[h5_in == -9999] <- NA
+    fill_value <- find_fill_value(file, name)
+    h5_in[h5_in == fill_value] <- NA
     r <- raster(t(h5_in))
     r <- smap_project(file, r)
     smap_to_disk(r)
+    r
+}
+
+find_fill_value <- function(file, name) {
+    data_attributes <- h5readAttributes(file, name)
+    if ("_FillValue" %in% names(data_attributes)) {
+        val <- data_attributes$`_FillValue`
+    } else {
+        val <- -9999
+    }
+    val
+}
+
+smap_project <- function(file, r) {
+    raster::extent(r) <- compute_extent(file)
+    raster::projection(r) <- smap_crs()
     r
 }
 
@@ -52,9 +70,12 @@ compute_extent <- function(h5_file) {
 }
 
 compute_grid_extent <- function(h5_file) {
-    lon <- h5read(h5_file, '/cell_lon')[, 1]
-    lat <- h5read(h5_file, '/cell_lat')[1, ]
-    raster::extent(range(lon), range(lat))
+    extent_list <- h5readAttributes(h5_file, "Metadata/Extent")
+    extent_vector <- with(extent_list, {
+        c(westBoundLongitude, eastBoundLongitude,
+          southBoundLatitude, northBoundLatitude)
+    })
+    raster::extent(extent_vector)
 }
 
 make_stack <- function(r_list, in_memory) {
@@ -74,10 +95,4 @@ smap_to_disk <- function(rast) {
         stop("Input is neither a RasterLayer nor a RasterStack")
     }
     writeRaster(rast, dest, overwrite = TRUE)
-}
-
-smap_project <- function(file, r) {
-    raster::extent(r) <- compute_extent(file)
-    raster::projection(r) <- smap_crs()
-    r
 }
