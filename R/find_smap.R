@@ -1,6 +1,6 @@
 #' Find SMAP data
 #'
-#' This function searches for SMAP data in a specific time period, returning a
+#' This function searches for SMAP data on a specific date, returning a
 #' \code{data.frame} describing available data.
 #'
 #' @param id A character string that refers to a specific SMAP dataset, e.g.,
@@ -8,14 +8,17 @@
 #' Moisture Geophysical Data.
 #' @param date A character string that indicates which date to search. This
 #' should be in \code{\%Y.\%m.\%d} format, e.g., \code{"2015.03.31"}.
+#' @param version Which data version would you like to search for? Version
+#' information for each data product can be found at
+#' \url{https://nsidc.org/data/smap/data_versions}
 #' @return A data.frame with the names of the data files, the FTP directory,
 #' and the date.
 #' @examples
-#' find_smap(id = "SPL4SMGP", date = "2015.03.31")
+#' find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
 #' @importFrom utils read.delim
 #' @export
-find_smap <- function(id, date) {
-    route <- make_ftp_route(id, date)
+find_smap <- function(id, date, version) {
+    route <- make_ftp_route(id, date, version)
     connection <- curl::curl(route)
     on.exit(close(connection))
     contents <- readLines(connection)
@@ -23,12 +26,10 @@ find_smap <- function(id, date) {
     bundle_search_results(data_filenames, route, date)
 }
 
-bundle_search_results <- function(filenames, ftp_route, date, time) {
-    time <- gsub("_.*", "", gsub(".*T", "", filenames))
+bundle_search_results <- function(filenames, ftp_route, date) {
     ftp_dir <- gsub(ftp_prefix(), "", ftp_route)
     data.frame(name = filenames,
                date = as.Date(date, format = "%Y.%m.%d"),
-               time = as.numeric(time),
                ftp_dir = ftp_dir,
                stringsAsFactors = FALSE)
 }
@@ -42,7 +43,8 @@ parse_directory_listing <- function(contents) {
     unique(filenames)
 }
 
-make_ftp_route <- function(id, date) {
-    long_id <- paste(id, "001", sep = ".") # check this with Brian
+make_ftp_route <- function(id, date, version) {
+    data_version <- paste0("00", version)
+    long_id <- paste(id, data_version, sep = ".")
     paste0(ftp_prefix(), long_id, "/", date, "/")
 }
