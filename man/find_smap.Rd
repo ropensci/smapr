@@ -4,7 +4,7 @@
 \alias{find_smap}
 \title{Find SMAP data}
 \usage{
-find_smap(id, date)
+find_smap(id, date, version)
 }
 \arguments{
 \item{id}{A character string that refers to a specific SMAP dataset, e.g.,
@@ -13,16 +13,20 @@ Moisture Geophysical Data.}
 
 \item{date}{A character string that indicates which date to search. This
 should be in \code{\%Y.\%m.\%d} format, e.g., \code{"2015.03.31"}.}
+
+\item{version}{Which data version would you like to search for? Version
+information for each data product can be found at
+\url{https://nsidc.org/data/smap/data_versions}}
 }
 \value{
 A data.frame with the names of the data files, the FTP directory,
 and the date.
 }
 \description{
-This function searches for SMAP data in a specific time period, returning a
+This function searches for SMAP data on a specific date, returning a
 \code{data.frame} describing available data.
 }
 \examples{
-find_smap(id = "SPL4SMGP", date = "2015.03.31")
+find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
 }
 
