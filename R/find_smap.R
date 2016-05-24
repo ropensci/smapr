@@ -21,17 +21,19 @@ find_smap <- function(id, date, version) {
     route <- make_ftp_route(id, date, version)
     connection <- curl::curl(route)
     on.exit(close(connection))
+    list_available_files(connection, route, date)
+}
+
+make_ftp_route <- function(id, date, version) {
+    data_version <- paste0("00", version)
+    long_id <- paste(id, data_version, sep = ".")
+    paste0(ftp_prefix(), long_id, "/", date, "/")
+}
+
+list_available_files <- function(connection, route, date) {
     contents <- readLines(connection)
     data_filenames <- parse_directory_listing(contents)
     bundle_search_results(data_filenames, route, date)
-}
-
-bundle_search_results <- function(filenames, ftp_route, date) {
-    ftp_dir <- gsub(ftp_prefix(), "", ftp_route)
-    data.frame(name = filenames,
-               date = as.Date(date, format = "%Y.%m.%d"),
-               ftp_dir = ftp_dir,
-               stringsAsFactors = FALSE)
 }
 
 parse_directory_listing <- function(contents) {
@@ -43,8 +45,10 @@ parse_directory_listing <- function(contents) {
     unique(filenames)
 }
 
-make_ftp_route <- function(id, date, version) {
-    data_version <- paste0("00", version)
-    long_id <- paste(id, data_version, sep = ".")
-    paste0(ftp_prefix(), long_id, "/", date, "/")
+bundle_search_results <- function(filenames, ftp_route, date) {
+    ftp_dir <- gsub(ftp_prefix(), "", ftp_route)
+    data.frame(name = filenames,
+               date = as.Date(date, format = "%Y.%m.%d"),
+               ftp_dir = ftp_dir,
+               stringsAsFactors = FALSE)
 }
