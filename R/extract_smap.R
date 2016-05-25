@@ -26,6 +26,18 @@
 #' @importFrom raster writeRaster
 #' @importFrom rappdirs user_cache_dir
 #' @export
+
+"Function: extract_smap
+------------------------
+
+    Over-arching function which extracts specified data from a .h5 file and creates a raster object out of the data
+
+    data: Name of the .h5 file
+    name: Name of the group/dataset (?) we wish to extract
+    in_memory: Boolean conveying whether or not this raster(or data?) is currently in memory
+
+    returns: void
+"
 extract_smap <- function(data, name, in_memory = FALSE) {
     h5_files <- local_h5_paths(data)
     n_files <- length(h5_files)
@@ -36,6 +48,16 @@ extract_smap <- function(data, name, in_memory = FALSE) {
     make_stack(rasters, in_memory)
 }
 
+"Function: rasterize_smap
+--------------------------
+
+    Creates a raster object from the SMAP data
+
+    file: Name of the file where data is to be pulled from
+    name: Name of the dataset where data is to be pulled from
+
+    returns: Raster layer
+"
 rasterize_smap <- function(file, name) {
     h5_in <- h5read(file, name)
     fill_value <- find_fill_value(file, name)
@@ -46,6 +68,16 @@ rasterize_smap <- function(file, name) {
     r
 }
 
+"Function: find_fill_value
+---------------------------
+
+    Fills the values from the data into the raster layer
+
+    file: Name of the file where data is to be pulled from
+    name: Name of the dataset where data is to be pulled from
+
+    returns: Individual (or list?) of values that were extracted
+"
 find_fill_value <- function(file, name) {
     data_attributes <- h5readAttributes(file, name)
     if ("_FillValue" %in% names(data_attributes)) {
@@ -56,12 +88,31 @@ find_fill_value <- function(file, name) {
     val
 }
 
+"Function: smap_prject
+-----------------------
+
+    Projects the data from the SMAP file to the raster layer
+
+    file: Name of the file that is to be projected from
+    r: Raster object that is to be projected to
+
+    returns: Projected raster object
+"
 smap_project <- function(file, r) {
     raster::extent(r) <- compute_extent(file)
     raster::projection(r) <- smap_crs()
     r
 }
 
+"Function: compute_extent
+--------------------------
+
+    Computes the extents of the raster object from its lat/lon attributes
+
+    h5_file: Name of the .h5 file we are pulling data from
+
+    returns: void
+"
 compute_extent <- function(h5_file) {
     grid_extent <- compute_grid_extent(h5_file)
     grid_raster <- raster(grid_extent, crs = latlon_crs())
@@ -69,6 +120,15 @@ compute_extent <- function(h5_file) {
     raster::extent(projected_extent)
 }
 
+"Function: compute_grid_extent
+-------------------------------
+
+    Computes the extents of the .h5 file from its metadata attributes
+
+    h5_file: Name of the .h5 file we are pulling data from
+
+    returns: void
+"
 compute_grid_extent <- function(h5_file) {
     extent_list <- h5readAttributes(h5_file, "Metadata/Extent")
     extent_vector <- with(extent_list, {
@@ -78,6 +138,16 @@ compute_grid_extent <- function(h5_file) {
     raster::extent(extent_vector)
 }
 
+"Function: make_stack
+----------------------
+
+    Makes a raster stack from multiple raster objects
+
+    r_list: List of raster layers that are to be stacked
+    in_memory: Boolean conveying whether or not this stack is already in memory
+
+    returns: Raster stack consisting of raster layers from r_list
+"
 make_stack <- function(r_list, in_memory) {
     r_stack <- stack(r_list)
     if (!in_memory) {
@@ -86,6 +156,15 @@ make_stack <- function(r_list, in_memory) {
     r_stack
 }
 
+"Function: smap_to_disk
+------------------------
+
+    Writes the raster layer/stack to disk
+
+    rast: Either a raster layer or stack
+
+    returns: void
+"
 smap_to_disk <- function(rast) {
     if (class(rast) == "RasterLayer") {
         dest <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = "")
