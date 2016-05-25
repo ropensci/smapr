@@ -15,6 +15,17 @@
 #' list_smap(files, all = TRUE)
 #' @importFrom rhdf5 h5ls
 #' @export
+
+"Function: list_smap
+---------------------
+
+    Lists the files within a directory
+
+    files: List of the files
+    all: Boolean (?)
+
+    returns: List of the files within a directory
+"
 list_smap <- function(files, all = FALSE) {
     paths_with_filenames <- local_h5_paths(files)
     contents <- lapply(paths_with_filenames, h5ls, all)
