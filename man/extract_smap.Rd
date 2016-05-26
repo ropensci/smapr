@@ -17,7 +17,7 @@ raster objects are stored on disk in the cache directory. By default
 the result is stored on disk.}
 }
 \value{
-Returns a Raster object.
+Returns a RasterStack object.
 }
 \description{
 Extracts datasets from SMAP data files.
