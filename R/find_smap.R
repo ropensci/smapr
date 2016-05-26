@@ -35,57 +35,26 @@
 #' @importFrom curl curl
 #' @export
 
-#"Function: find_smap
-#---------------------
-#
-#    Finds specified SMAP data from an FTP server
-#
-#    id: Identification string specifying which directory we want to get data from on the FTP server
-#    date: String identifying which date we want the data to be from
-#    version: Which version of the data we want
-#
-#    returns: void
-#"
 find_smap <- function(id, date, version) {
-    validate_request(id, date, version)
-    route <- make_ftp_route(id, date, version)
+    validate_ftp_request(id, date, version)
+    route <- route_to_data(id, date, version)
     connection <- curl(route)
     on.exit(close(connection))
-    list_available_files(connection, route, date)
+    available_files <- find_available_files(connection, route, date)
+    available_files
 }
 
-# "Function: validate_request
-# ----------------------------
-#
-#     Validates that the requested id, date, and version exist on the FTP server
-#
-#     id: Identification string specifying which directory we want to get data from on the FTP server
-#     date: String identifying which date we want the data to be from
-#     version: Which version of the data we want
-#
-#     returns: void
-# "
-validate_request <- function(id, date, version) {
+validate_ftp_request <- function(id, date, version) {
     connection <- curl(ftp_prefix())
     on.exit(close(connection))
 
     folder_names <- get_folder_names(connection)
-    validate_id(folder_names, id)
+    validate_dataset_id(folder_names, id)
     validate_version(folder_names, id, version)
     validate_date(id, version, date)
 }
 
-# "Function: validate_id
-# -----------------------
-#
-#     Validates that the specified id exists on the FTP server
-#
-#     folder_names: List of the directory names on the FTP server
-#     id: Name of the id that we expect to be on the FTP server
-#
-#     returns: Error if the id does not exist, void otherwise
-# "
-validate_id <- function(folder_names, id) {
+validate_dataset_id <- function(folder_names, id) {
     names_no_versions <- gsub("\\..*", "", folder_names)
     if (!(id %in% names_no_versions)) {
         prefix <- "Invalid data id."
@@ -94,17 +63,6 @@ validate_id <- function(folder_names, id) {
     }
 }
 
-# "Function: validate_version
-# ----------------------------
-#
-#     Validates that the specified version exists on the FTP server
-#
-#     folder_names: List of the directory names on the FTP server
-#     id: Name of the id we wish to use on the FTP server
-#     version: Name of the version we expect to be on the FTP server
-#
-#     returns: Error if the version does not exist, void otherwise
-# "
 validate_version <- function(folder_names, id, version) {
     expected_folder <- paste0(id, ".", "00", version)
     if (!expected_folder %in% folder_names) {
@@ -114,19 +72,8 @@ validate_version <- function(folder_names, id, version) {
     }
 }
 
-# "Function: validate_date
-# -------------------------
-#
-#     Validates that the specified date exists on the FTP server
-#
-#     id: Name of the id we wish to use on the FTP server
-#     version: Name of the version we wish to use on the FTP server
-#     date: Name of the date we expect to be on the FTP server
-#
-#     returns: Error if the date does not exist, void otherwise
-# "
 validate_date <- function(id, version, date) {
-    date_checking_route <- route_date_check(id, version)
+    date_checking_route <- route_to_dates(id, version)
     connection <- curl(date_checking_route)
     on.exit(close(connection))
     folder_names <- get_folder_names(connection)
@@ -137,101 +84,46 @@ validate_date <- function(id, version, date) {
     }
 }
 
-# "Function: get_folder_names
-# ----------------------------
-#
-#     Gets the names of all of the folders on the FTP server at a specified URL
-#
-#     connection: URL link to specific directory on the FTP server
-#
-#     returns: void
-# "
 get_folder_names <- function(connection) {
     contents <- readLines(connection)
     df <- read.delim(text = paste0(contents, '\n'), skip = 1, sep = "",
                      header = FALSE, stringsAsFactors = FALSE)
     folder_names <- df[, 9]
+    folder_names
 }
 
-# "Function: make_ftp_route
-# --------------------------
-#
-#     Creates the proper URL to the data we wish to use
-#
-#     id: Identification string specifying which directory we want to get data from on the FTP server
-#     date: String identifying which date we want the data to be from
-#     version: Which version of the data we want
-#
-#     returns: void
-# "
-make_ftp_route <- function(id, date, version) {
+route_to_data <- function(id, date, version) {
     data_version <- paste0("00", version)
     long_id <- paste(id, data_version, sep = ".")
-    paste0(ftp_prefix(), long_id, "/", date, "/")
+    ftp_route <- paste0(ftp_prefix(), long_id, "/", date, "/")
+    ftp_route
 }
 
-# "Function: route_date_check
-# ----------------------------
-#
-#     Same as make_ftp_route but only utilizing directories one level up in the tree
-#
-#     id: Identification string specifying which directory we want to get data from on the FTP server
-#     version: Which version of the data we want
-#
-#     returns: void
-# "
-route_date_check <- function(id, version) {
+route_to_dates <- function(id, version) {
     data_version <- paste0("00", version)
     long_id <- paste(id, data_version, sep = ".")
-    paste0(ftp_prefix(), long_id, "/")
+    ftp_route <- paste0(ftp_prefix(), long_id, "/")
+    ftp_route
 }
 
-# "Function: list_available_files
-# --------------------------------
-#
-#     Lists the available files from a specified directory on the FTP server
-#
-#     connection: URL specifying a specific directory on the FTP server
-#     route: ?
-#     date: Name of the date we wish to pull data from
-#
-#     returns: void
-# "
-list_available_files <- function(connection, route, date) {
+find_available_files <- function(connection, route, date) {
     contents <- readLines(connection)
-    data_filenames <- parse_directory_listing(contents)
-    bundle_search_results(data_filenames, route, date)
+    data_filenames <- extract_filenames(contents)
+    available_files <- bundle_search_results(data_filenames, route, date)
+    available_files
 }
 
-# "Function: parse_directory_listing
-# -----------------------------------
-#
-#     Differentiates between the different directories on the FTP server
-#
-#     contents: List of files/directories on the FTP server
-#
-#     returns: void
-# "
-parse_directory_listing <- function(contents) {
-    df <- read.delim(text = paste0(contents, '\n'), skip = 1, sep = "",
-                     header = FALSE, stringsAsFactors = FALSE)
-    name_column <- pmatch("SMAP", df[1, ])
-    files <- df[[name_column]]
-    filenames <- gsub("\\..*", "", files)
-    unique(filenames)
+extract_filenames <- function(contents) {
+    directory_contents <- read.delim(text = paste0(contents, '\n'),
+                                     skip = 1, sep = "", header = FALSE,
+                                     stringsAsFactors = FALSE)
+    name_column <- pmatch("SMAP", directory_contents[1, ])
+    files <- directory_contents[[name_column]]
+    all_filenames <- gsub("\\..*", "", files)
+    unique_files <- unique(all_filenames)
+    unique_files
 }
 
-# "Function: bundle_search_results
-# ---------------------------------
-#
-#     Conglomerates and puts into a data-framt the files/directories on the FTP server
-#
-#     filenames: List of files in a specified directory on the FTP server
-#     ftp_route: URL pointing to a directory on the FTP server
-#     date: Name of the date we wish to get the data/files from
-#
-#     returns: Data frame
-# "
 bundle_search_results <- function(filenames, ftp_route, date) {
     ftp_dir <- gsub(ftp_prefix(), "", ftp_route)
     data.frame(name = filenames,
