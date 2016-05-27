@@ -1,58 +1,86 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "An introduction to smapr"
+author: "Maxwell B. Joseph"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+In 2015 NASA launched the Soil Moisture Active Passive (SMAP) instrument, which measures global surface soil moisture and soil freeze-thaw conditions from space. 
+The data are publicly available in HDF5 format via an FTP server hosted by the National Snow and Ice Data Center Distributed Active Archive Center (NSIDC DAAC). 
+The smapr package provides a suite of functions for programmatic discovery, download, exploration, and extraction of SMAP data. 
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+Multiple SMAP data products are provided by the NSIDC DAAC, and these products vary in the amount of processing. 
+Currently, smapr supports the more processed level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. 
+NSIDC provides documentation for all SMAP data products on their [website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary of level 3 and level 4 products below. 
 
-## Vignette Info
+### Supported SMAP data products
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+| Dataset id | Description                                         | Resolution |
+|------------|-----------------------------------------------------|------------|
+| SPL3SMA    | Radar Global Daily Soil Moisture                    | 3 km       |
+| SPL3SMP    | Radiometer Global Soil Moisture                     | 36 km      |
+| SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
+| SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       | 
+| SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
+| SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
+| SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
 
-## Styles
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r}
+library(smapr)
+library(rasterVis)
+available_data <- find_smap(id = "SPL3SMAP", date = "2015.05.25", version = 3)
+available_data
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+```{r}
+downloads <- download_smap(available_data)
+downloads
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+list_smap(downloads, all = TRUE)
 ```
 
-Also a quote using `>`:
+```{r, fig.align='center', fig.width=8, fig.height=7}
+sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
+plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
+```
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+The level 4 products provide global coverage based on model output. 
+
+
+```{r}
+available_data <- find_smap(id = "SPL4SMGP", date = "2015.05.25", version = 2)
+available_data
+```
+
+```{r}
+downloads <- download_smap(available_data[1, ])
+downloads
+
+list_smap(downloads, all = TRUE)
+```
+
+```{r, fig.align='center', fig.width=8, fig.height=7}
+sm_raster <- extract_smap(downloads, "Geophysical_Data/sm_surface")
+plot(sm_raster, main = "Level 4 soil moisture: May 25, 2015")
+```
+
+
+```{r}
+available_data <- find_smap(id = "SPL4CMDL", date = "2015.05.25", version = 2)
+available_data
+```
+
+```{r}
+downloads <- download_smap(available_data)
+downloads
+
+list_smap(downloads, all = TRUE)
+```
+
