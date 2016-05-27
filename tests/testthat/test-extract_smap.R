@@ -26,3 +26,10 @@ test_that("-9999 is used fill value when a _FillValue doesn't exist", {
     # (the latitude at the south pole)
     expect_gte(raster::minValue(r), -90)
 })
+
+test_that("raster stacks are composed of raster layers", {
+    files <- find_smap(id = "SPL3SMP", date = "2015.05.01", version = 2)
+    downloads <- download_smap(files)
+    r <- extract_smap(downloads, name = "Soil_Moisture_Retrieval_Data/latitude")
+    expect_that(r[[1]], is_a("RasterLayer"))
+})
