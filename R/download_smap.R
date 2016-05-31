@@ -55,7 +55,13 @@ validate_directory <- function(destination_directory) {
 }
 
 download_data <- function(file, local_directory) {
-    target_files <- paste0(file$name, extensions())
+    id <- toString(file[3])
+    if (grepl("SPL4CMDL", id) == TRUE){
+        target_files <- paste0(file$name, min_extensions())
+    }
+    else {
+        target_files <- paste0(file$name, extensions())
+    }
     local_paths <- file.path(local_directory, target_files)
     ftp_locations <- paste0(ftp_prefix(), file$ftp_dir, target_files)
     for (i in seq_along(local_paths)) {
@@ -74,7 +80,14 @@ ftp_to_local <- function(local_paths, ftp_locations, i) {
 }
 
 verify_download_success <- function(files_to_download, downloaded_files) {
-    expected_downloads <- paste0(files_to_download$name, extensions())
-    actual_downloads <- gsub(".*/", "", downloaded_files)
-    stopifnot(all(expected_downloads %in% actual_downloads))
+    id <- toString(files_to_download[3])
+    if (grepl("SPL4CMDL", id) == TRUE){
+        expected_downloads <- paste0(files_to_download$name, min_extensions())
+        print("asdf")
+    }
+    else{
+        expected_downloads <- paste0(files_to_download$name, extensions())
+        actual_downloads <- gsub(".*/", "", downloaded_files)
+        stopifnot(all(expected_downloads %in% actual_downloads))
+    }
 }
