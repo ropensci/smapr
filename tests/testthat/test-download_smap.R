@@ -13,3 +13,9 @@ test_that("non-existent directories are created", {
     # cleanup by removing directory
     unlink(dir_name, recursive = TRUE)
 })
+
+test_that("the downloaded data is of the data frame class", {
+    files <- find_smap(id = "SPL3SMP", date = "2015.05.01", version = 2)
+    downloads <- download_smap(files[1, ])
+    expect_that(downloads, is_a("data.frame"))
+})
