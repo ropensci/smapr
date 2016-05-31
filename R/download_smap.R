@@ -83,11 +83,10 @@ verify_download_success <- function(files_to_download, downloaded_files) {
     id <- toString(files_to_download[3])
     if (grepl("SPL4CMDL", id) == TRUE){
         expected_downloads <- paste0(files_to_download$name, min_extensions())
-        print("asdf")
     }
     else{
         expected_downloads <- paste0(files_to_download$name, extensions())
-        actual_downloads <- gsub(".*/", "", downloaded_files)
-        stopifnot(all(expected_downloads %in% actual_downloads))
     }
+    actual_downloads <- gsub(".*/", "", downloaded_files)
+    stopifnot(all(expected_downloads %in% actual_downloads))
 }
