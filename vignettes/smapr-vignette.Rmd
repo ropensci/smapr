@@ -23,6 +23,7 @@ NSIDC provides documentation for all SMAP data products on their [website](https
 
 | Dataset id | Description                                         | Resolution |
 |------------|-----------------------------------------------------|------------|
+| SPL3FTA    | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
 | SPL3SMA    | Radar Global Daily Soil Moisture                    | 3 km       |
 | SPL3SMP    | Radiometer Global Soil Moisture                     | 36 km      |
 | SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
@@ -30,6 +31,8 @@ NSIDC provides documentation for all SMAP data products on their [website](https
 | SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
 | SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
 | SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
+
+Finding SMAP data
 
 
 ```{r}
@@ -39,6 +42,9 @@ available_data <- find_smap(id = "SPL3SMAP", date = "2015.05.25", version = 3)
 available_data
 ```
 
+Downloading and listing SMAP data
+
+
 ```{r}
 downloads <- download_smap(available_data)
 downloads
@@ -46,12 +52,15 @@ downloads
 list_smap(downloads, all = TRUE)
 ```
 
+Rasterizing SMAP data
+
+
 ```{r, fig.align='center', fig.width=8, fig.height=7}
 sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
 plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
 ```
 
-The level 4 products provide global coverage based on model output. 
+Example usage utilizing level 4 products
 
 
 ```{r}
@@ -71,9 +80,11 @@ sm_raster <- extract_smap(downloads, "Geophysical_Data/sm_surface")
 plot(sm_raster, main = "Level 4 soil moisture: May 25, 2015")
 ```
 
+Example usage utilizing level 3 products
+
 
 ```{r}
-available_data <- find_smap(id = "SPL4CMDL", date = "2015.05.25", version = 2)
+available_data <- find_smap(id = "SPL3FTA", date = "2015.04.13", version = 2)
 available_data
 ```
 
@@ -84,3 +95,7 @@ downloads
 list_smap(downloads, all = TRUE)
 ```
 
+```{r}
+sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_data/freeze_thaw")
+plot(sm_raster, main = "Level 3 freeze thaw: April 13, 2015")
+```
