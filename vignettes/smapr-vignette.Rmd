@@ -96,6 +96,6 @@ list_smap(downloads, all = TRUE)
 
 ```{r, fig.align='center', fig.width=8, fig.height=7}
 sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_Data/freeze_thaw")
-levelplot(sm_raster, main = "Level 3 freeze thaw: April 13, 2015", 
+levelplot(sm_raster, main = "Level 3 freeze thaw: April 14, 2015", 
           names.attr = c("AM", "PM"))
 ```
