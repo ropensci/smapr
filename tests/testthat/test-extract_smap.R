@@ -39,6 +39,6 @@ test_that("extract_smap produces a RasterStack with level 3 freeze/thaw data", {
     downloads <- download_smap(files)
     r <- extract_smap(downloads,
                       name = "Freeze_Thaw_Retrieval_Data/freeze_thaw",
-                      in_memory = FALSE)
+                      in_memory = TRUE)
     expect_that(r, is_a("RasterStack"))
 })
