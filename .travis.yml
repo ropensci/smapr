@@ -23,12 +23,15 @@ before_install:
   - cd /home/travis/build/mbjoseph/smapr
 
 install:
-  - ./pkg-build.sh r_install covr
+  - ./pkg-build.sh install_github jimhester/covr
   - ./pkg-build.sh install_bioc rhdf5
   - ./pkg-build.sh install_deps
 
 script:
   - ./pkg-build.sh run_tests
+
+after_success:
+  - ./pkg-build.sh run_script -e 'covr::codecov(token = "ee73c613-5fe6-4eb1-8939-dc20bdd30f2a")'
 
 after_failure:
   - ./pkg-build.sh dump_logs
@@ -37,6 +40,3 @@ notifications:
   email:
     on_success: change
     on_failure: change
-
-after_success:
-  - Rscript -e 'covr::codecov(token = "ee73c613-5fe6-4eb1-8939-dc20bdd30f2a")'
