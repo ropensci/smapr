@@ -33,3 +33,12 @@ test_that("raster stacks are composed of raster layers", {
     r <- extract_smap(downloads, name = "Soil_Moisture_Retrieval_Data/latitude")
     expect_that(r[[1]], is_a("RasterLayer"))
 })
+
+test_that("extract_smap produces a RasterStack with level 3 freeze/thaw data", {
+    files <- find_smap(id = "SPL3FTA", date = "2015.04.14", version = 3)
+    downloads <- download_smap(files)
+    r <- extract_smap(downloads,
+                      name = "Freeze_Thaw_Retrieval_Data/freeze_thaw",
+                      in_memory = FALSE)
+    expect_that(r, is_a("RasterStack"))
+})
