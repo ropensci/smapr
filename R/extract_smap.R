@@ -40,7 +40,8 @@ extract_smap <- function(data, name, in_memory = FALSE) {
 
 rasterize_smap <- function(file, name) {
     h5_in <- h5read(file, name)
-    if (length(dim(h5_in)) > 2) {
+    if (is_cube(h5_in)) {
+        # slice out one half of cube
         h5_in <- h5_in[, , 1]
     }
     fill_value <- find_fill_value(file, name)
@@ -49,6 +50,13 @@ rasterize_smap <- function(file, name) {
     raster_layer <- project_smap(file, raster_layer)
     smap_to_disk(raster_layer)
     raster_layer
+}
+
+is_cube <- function(array) {
+    d <- length(dim(array))
+    stopifnot(d < 4)
+    is_3d <- d == 3
+    is_3d
 }
 
 find_fill_value <- function(file, name) {
@@ -72,11 +80,10 @@ compute_extent <- function(h5_file) {
     latlon_raster <- raster(latlon_extent, crs = latlon_crs())
     pr_extent <- projectExtent(latlon_raster, smap_crs(h5_file))
     if (is_L3FT(h5_file)) {
+        # extent must be corrected for EASE-grid 2.0 North
         raster::extent(pr_extent)[3] <- -raster::extent(pr_extent)[4]
-        smap_extent <- raster::extent(pr_extent)
-    } else {
-        smap_extent <- raster::extent(pr_extent)
     }
+    smap_extent <- raster::extent(pr_extent)
     smap_extent
 }
 
