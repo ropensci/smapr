@@ -41,14 +41,28 @@ extract_smap <- function(data, name, in_memory = FALSE) {
 rasterize_smap <- function(file, name) {
     h5_in <- h5read(file, name)
     if (is_cube(h5_in)) {
-        # slice out one half of cube
-        h5_in <- h5_in[, , 1]
+        r <- rasterize_cube(h5_in, file, name)
+    } else {
+        r <- rasterize_matrix(h5_in, file, name)
     }
+    r
+}
+
+rasterize_cube <- function(cube, file, name) {
+    layers <- vector("list", length = dim(cube)[3])
+    for (i in seq_along(layers)) {
+        slice <- cube[, , i]
+        layers[[i]] <- rasterize_matrix(slice, file, name)
+    }
+    stack <- make_stack(layers, in_memory = FALSE)
+    stack
+}
+
+rasterize_matrix <- function(matrix, file, name) {
     fill_value <- find_fill_value(file, name)
-    h5_in[h5_in == fill_value] <- NA
-    raster_layer <- raster(t(h5_in))
+    matrix[matrix == fill_value] <- NA
+    raster_layer <- raster(t(matrix))
     raster_layer <- project_smap(file, raster_layer)
-    smap_to_disk(raster_layer)
     raster_layer
 }
 
@@ -116,9 +130,9 @@ make_stack <- function(r_list, in_memory) {
 
 smap_to_disk <- function(rast) {
     if (class(rast) == "RasterLayer") {
-        dest <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = "")
+        dest <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".tif")
     } else if (class(rast) == "RasterStack") {
-        dest <- file.path(user_cache_dir("smap"), 'tmp')
+        dest <- file.path(user_cache_dir("smap"), 'tmp.tif')
     } else {
         stop("Input is neither a RasterLayer nor a RasterStack")
     }
