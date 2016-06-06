@@ -21,7 +21,9 @@ Description:
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 5.0.1
-Suggests: knitr,
+Suggests:
+    knitr,
+    rasterVis,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
