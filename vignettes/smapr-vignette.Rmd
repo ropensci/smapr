@@ -82,9 +82,8 @@ plot(sm_raster, main = "Level 4 soil moisture: May 25, 2015")
 
 Example usage utilizing level 3 products
 
-
 ```{r}
-available_data <- find_smap(id = "SPL3FTA", date = "2015.04.13", version = 2)
+available_data <- find_smap(id = "SPL3FTA", date = "2015.04.14", version = 3)
 available_data
 ```
 
@@ -95,7 +94,8 @@ downloads
 list_smap(downloads, all = TRUE)
 ```
 
-```{r}
-sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_data/freeze_thaw")
-plot(sm_raster, main = "Level 3 freeze thaw: April 13, 2015")
+```{r, fig.align='center', fig.width=8, fig.height=7}
+sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_Data/freeze_thaw")
+levelplot(sm_raster, main = "Level 3 freeze thaw: April 13, 2015", 
+          names.attr = c("AM", "PM"))
 ```
