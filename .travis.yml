@@ -23,7 +23,7 @@ before_install:
   - cd /home/travis/build/mbjoseph/smapr
 
 install:
-  - ./pkg-build.sh install_github jimhester/covr
+  - ./pkg-build.sh install_r covr
   - ./pkg-build.sh install_bioc rhdf5
   - ./pkg-build.sh install_deps
 
