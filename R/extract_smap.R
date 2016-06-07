@@ -34,7 +34,12 @@ extract_smap <- function(data, name, in_memory = FALSE) {
     for (i in 1:n_files) {
         rasters[[i]] <- rasterize_smap(h5_files[i], name)
     }
-    raster_stack <- make_stack(rasters, in_memory)
+    if(is_L3FT(data[[1]][1])) {
+        raster_stack <- rasters[[1]]
+    } else {
+        file_names <- data[[1]]
+        raster_stack <- make_stack(rasters, in_memory, file_names)
+    }
     raster_stack
 }
 
@@ -50,11 +55,19 @@ rasterize_smap <- function(file, name) {
 
 rasterize_cube <- function(cube, file, name) {
     layers <- vector("list", length = dim(cube)[3])
+    layer_names <- vector("list", length = dim(cube)[3])
+    file_name <- substr(file, nchar(file)-34, nchar(file))
+    time_day <- c("am", "pm")
     for (i in seq_along(layers)) {
         slice <- cube[, , i]
         layers[[i]] <- rasterize_matrix(slice, file, name)
+        if(is_L3FT(file)) {
+            layer_names[[i]] <- paste0(file_name, '_', time_day[i])
+        } else {
+            layer_names[[i]] <- paste0(file_name, '_', i)
+        }
     }
-    stack <- make_stack(layers, in_memory = FALSE)
+    stack <- make_stack(layers, in_memory = FALSE, layer_names)
     stack
 }
 
@@ -120,11 +133,12 @@ is_L3FT <- function(filename) {
     grepl("L3_FT", filename)
 }
 
-make_stack <- function(r_list, in_memory) {
+make_stack <- function(r_list, in_memory, layer_names) {
     r_stack <- stack(r_list)
     if (!in_memory) {
         r_stack <- smap_to_disk(r_stack)
     }
+    names(r_stack) <- layer_names
     r_stack
 }
 
