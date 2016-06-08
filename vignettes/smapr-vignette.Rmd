@@ -1,6 +1,6 @@
 ---
 title: "An introduction to smapr"
-author: "Maxwell B. Joseph"
+author: "Maxwell B. Joseph & Matthew Oakley"
 date: "`r Sys.Date()`"
 output:
       rmarkdown::html_vignette:
@@ -12,10 +12,10 @@ vignette: >
 ---
 
 In 2015 NASA launched the Soil Moisture Active Passive (SMAP) instrument, which measures global surface soil moisture and soil freeze-thaw conditions from space. 
-The data are publicly available in HDF5 format via an FTP server hosted by the National Snow and Ice Data Center Distributed Active Archive Center (NSIDC DAAC). 
+The data are publicly available in HDF5 format via an FTP server hosted by the National Snow and Ice Data Center (NSIDC). 
 The smapr package provides a suite of functions for programmatic discovery, download, exploration, and extraction of SMAP data. 
 
-Multiple SMAP data products are provided by the NSIDC DAAC, and these products vary in the amount of processing. 
+Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. 
 Currently, smapr supports the more processed level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. 
 NSIDC provides documentation for all SMAP data products on their [website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary of level 3 and level 4 products below. 
 
@@ -32,70 +32,105 @@ NSIDC provides documentation for all SMAP data products on their [website](https
 | SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
 | SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
 
-Finding SMAP data
+### Finding SMAP data
 
+Data are hosted on an FTP server by the National Snow and Ice Data Center. 
+The find_smap function searches for specific data products and returns a data frame of available data.
+As data mature and pass checks, versions advance. 
+At any specific time, not all versions of all datasets for all dates may exist. 
+For the most up to date overview of dataset versions, see the NSIDC SMAP data version [webpage](https://nsidc.org/data/smap/smap-data.html).
 
 ```{r}
 library(smapr)
-library(rasterVis)
 available_data <- find_smap(id = "SPL3SMAP", date = "2015.05.25", version = 3)
-available_data
+str(available_data)
 ```
 
-Downloading and listing SMAP data
+### Downloading and inspecting SMAP data
 
+Given a data frame produced by `find_smap`, `download_smap` downloads the data onto the local file system. 
+Unless a directory is specified as an argument, the data are stored in the user's cache. 
 
 ```{r}
 downloads <- download_smap(available_data)
-downloads
+str(downloads)
+```
 
+The SMAP data are provided in HDF5 format, and in any one file there are actually multiple data sets, including metadata. 
+The `list_smap` function allows users to inspect the contents of downloaded data at a high level (`all = FALSE`) or in depth (`all = TRUE`). 
+
+```{r}
+list_smap(downloads, all = FALSE)
 list_smap(downloads, all = TRUE)
 ```
 
-Rasterizing SMAP data
+### Extracting gridded data products
 
+The `extract_smap` function extracts gridded data products (e.g., global soil moisture) and returns Raster* objects with the proper spatial projections etc. 
+If more than one file has been downloaded and passed into the first argument, `extract_smap` extracts all of the rasters and returns a RasterStack.
 
 ```{r, fig.align='center', fig.width=8, fig.height=7}
 sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
-plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
+raster::plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
 ```
 
-Example usage utilizing level 4 products
+### Example: Level 4 global surface soil moisture data
 
-
-```{r}
-available_data <- find_smap(id = "SPL4SMGP", date = "2015.05.25", version = 2)
-available_data
-```
-
-```{r}
-downloads <- download_smap(available_data[1, ])
-downloads
-
-list_smap(downloads, all = TRUE)
-```
+The SPL4SMGP data product provides global three hourly soil moisture data. 
+The workflow for finding, downloaded, inspecting, and extracting these data does not diverge from the approach used above with level three data. 
 
 ```{r, fig.align='center', fig.width=8, fig.height=7}
+available_data <- find_smap(id = "SPL4SMGP", date = "2015.05.25", version = 2)
+str(available_data)
+downloads <- download_smap(available_data[1, ])
+str(downloads)
 sm_raster <- extract_smap(downloads, "Geophysical_Data/sm_surface")
-plot(sm_raster, main = "Level 4 soil moisture: May 25, 2015")
+raster::plot(sm_raster, main = "Level 4 soil moisture: May 25, 2015")
 ```
 
-Example usage utilizing level 3 products
+### Extended example: Level 3 Northern hemisphere freeze/thaw state
+
+Most of the SMAP data are delivered on a global grid, but the SPL3FTA data are provided for the northern hemisphere only. 
+In this extended example, we will acquire some of the SPL3FTA data, reproject it, and save a GeoTIFF. 
+
+First, we can find, download, and extract the data as before. 
 
 ```{r}
 available_data <- find_smap(id = "SPL3FTA", date = "2015.04.14", version = 3)
-available_data
-```
-
-```{r}
 downloads <- download_smap(available_data)
-downloads
-
-list_smap(downloads, all = TRUE)
+sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_Data/freeze_thaw")
 ```
+
+The SPL3FTA data include data for the AM and PM of each included date. 
+As ususal, when provided with multiple datasets, `extract_smap` will return a RasterStack. 
+To see what this looks like, we will make use of the rasterVis package. 
 
 ```{r, fig.align='center', fig.width=8, fig.height=7}
-sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_Data/freeze_thaw")
+library(rasterVis)
 levelplot(sm_raster, main = "Level 3 freeze thaw: April 14, 2015", 
           names.attr = c("AM", "PM"))
 ```
+
+The north pole is at the center of these rasters, because the grid is based off of a northern hemisphere Lambert Azimuthal Equal Area projection (see `crs(sm_raster)`). 
+To reproject, we can use the `projectRaster` function from the raster package, specifying a coordinate refrence system (WGS 84) via an EPSG code, and also providing a destination resolution. 
+
+```{r, fig.align='center', fig.width=8, fig.height=7}
+wgs84_raster <- projectRaster(sm_raster, crs = "+init=epsg:4326", res = .1)
+levelplot(wgs84_raster, main = "Level 3 freeze thaw: April 14, 2015", 
+          names.attr = c("AM", "PM"))
+```
+
+Finally, this reprojected raster stack can be saved as a GeoTIFF using the `writeRaster` function from the raster pacakge. 
+
+```{r}
+writeRaster(wgs84_raster, "wgs84_ft.tif")
+```
+
+```{r, echo = FALSE, results='hide'}
+# cleanup
+file.remove("wgs84_ft.tif")
+```
+
+Bug reports, issues, and feature requests can be submitted via GitHub: https://github.com/mbjoseph/smapr
+
+
