@@ -10,14 +10,15 @@
 #' below:
 #'
 #' \describe{
-#' \item{SPL4SMGP}{SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
-#' Moisture Geophysical Data}
-#' \item{SPL3SMAP}{SMAP L3 Radar/Radiometer Global Daily 9 km EASE-Grid Soil
-#' Moisture}
-#' \item{SPL3SMA}{SMAP L3 Radar Global Daily 3 km EASE-Grid Soil Moisture}
-#' \item{SPL3SMP}{SMAP L3 Radiometer Global Daily 36 km EASE-Grid Soil Moisture}
+#' \item{SPL3FTA}{Radar Northern Hemisphere Daily Freeze/Thaw State}
+#' \item{SPL3SMA}{Radar Global Daily Soil Moisture}
+#' \item{SPL3SMP}{Radiometer Global Soil Moisture}
+#' \item{SPL3SMAP}{Radar/Radiometer Global Soil Moisture}
+#' \item{SPL4SMAU}{Surface/Rootzone Soil Moisture Analysis Update}
+#' \item{SPL4SMGP}{Surface/Rootzone Soil Moisture Geophysical Data}
+#' \item{SPL4SMLM}{Surface/Rootzone Soil Moisture Land Model Constants}
+#' \item{SPL4CMDL}{Carbon Net Ecosystem Exchange}
 #' }
-#'
 #'
 #' @param id A character string that refers to a specific SMAP dataset, e.g.,
 #'   \code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
