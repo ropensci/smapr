@@ -11,7 +11,7 @@ Installation
 Development version:
 
 ``` r
-devtools::install_github("mbjoseph/smapr")
+devtools::install_github("earthlab/smapr")
 ```
 
 ### Finding data

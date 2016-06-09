@@ -20,7 +20,7 @@ An R package for acquisition and processing of NASA (Soil Moisture Active-Passiv
 Development version:
 
 ```{r, eval = FALSE}
-devtools::install_github("mbjoseph/smapr")
+devtools::install_github("earthlab/smapr")
 ```
 
 ### Finding data
