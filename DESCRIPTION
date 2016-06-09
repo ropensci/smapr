@@ -2,7 +2,7 @@ Package: smapr
 Type: Package
 Title: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) data
 Version: 0.0.0.9000
-Author: Maxwell B. Joseph
+Author: Maxwell B. Joseph, Matthew Oakley, Zachary Schira
 Depends:
     R (>= 3.2.5)
 Imports:
