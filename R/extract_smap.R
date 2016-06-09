@@ -34,7 +34,7 @@ extract_smap <- function(data, name, in_memory = FALSE) {
     for (i in 1:n_files) {
         rasters[[i]] <- rasterize_smap(h5_files[i], name)
     }
-    file_names <- data[[1]]
+    file_names <- data$name
     raster_stack <- make_stack(rasters, in_memory)
     names(raster_stack) <- write_layer_names(file_names)
     raster_stack
