@@ -31,7 +31,7 @@ script:
   - ./pkg-build.sh run_tests
 
 after_success:
-  - ./pkg-build.sh run_script -e 'covr::codecov(token = "ee73c613-5fe6-4eb1-8939-dc20bdd30f2a")'
+  - ./pkg-build.sh run_script -e 'covr::codecov()'
 
 after_failure:
   - ./pkg-build.sh dump_logs
