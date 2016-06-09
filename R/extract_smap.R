@@ -34,7 +34,9 @@ extract_smap <- function(data, name, in_memory = FALSE) {
     for (i in 1:n_files) {
         rasters[[i]] <- rasterize_smap(h5_files[i], name)
     }
+    file_names <- data$name
     raster_stack <- make_stack(rasters, in_memory)
+    names(raster_stack) <- write_layer_names(file_names)
     raster_stack
 }
 
@@ -126,6 +128,18 @@ make_stack <- function(r_list, in_memory) {
         r_stack <- smap_to_disk(r_stack)
     }
     r_stack
+}
+
+write_layer_names <- function(file_names) {
+    if (is_L3FT(file_names)) {
+        time_day <- c("AM", "PM")
+        times_vector <- rep(time_day, length(file_names))
+        filename_vector <- rep(file_names, each = 2)
+        layer_names <- paste(filename_vector, times_vector, sep = "_")
+    } else {
+        layer_names <- file_names
+    }
+    layer_names
 }
 
 smap_to_disk <- function(rast) {

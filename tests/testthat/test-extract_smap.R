@@ -42,3 +42,21 @@ test_that("extract_smap produces a RasterStack with level 3 freeze/thaw data", {
                       in_memory = TRUE)
     expect_that(r, is_a("RasterStack"))
 })
+
+test_that("layer names for SPL3FT include file name + am/pm suffix", {
+    files <- find_smap(id = "SPL3FTA", date = "2015.04.14", version = 3)
+    downloads <- download_smap(files)
+    r <- extract_smap(downloads,
+                      name = "Freeze_Thaw_Retrieval_Data/freeze_thaw",
+                      in_memory = TRUE)
+    expected_names <- paste(downloads$name, c("AM", "PM"), sep = "_")
+    expect_equal(names(r), expected_names)
+})
+
+test_that("layer names for SPL3SMP include file name", {
+    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    downloads <- download_smap(files)
+    r <- extract_smap(downloads, name = "Soil_Moisture_Retrieval_Data/latitude")
+    expected_names <- paste(downloads$name)
+    expect_equal(names(r), expected_names)
+})
