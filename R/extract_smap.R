@@ -132,7 +132,7 @@ make_stack <- function(r_list, in_memory) {
 
 write_layer_names <- function(file_names) {
     if (is_L3FT(file_names)) {
-        time_day <- c("am", "pm")
+        time_day <- c("AM", "PM")
         times_vector <- rep(time_day, length(file_names))
         filename_vector <- rep(file_names, each = 2)
         layer_names <- paste(filename_vector, times_vector, sep = "_")
