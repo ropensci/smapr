@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr)
+[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) 
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
@@ -78,4 +78,12 @@ Users can save the rasters as GeoTIFFs with the `raster` package.
 
 ```{r, eval = FALSE}
 raster::writeRaster(r, filename = "smap.tif")
+```
+
+### Running in Docker
+
+To avoid dependency heck, we have made a Docker image available with smapr and all dependencies.
+
+```{r, eval = FALSE, engine='bash'}
+docker run -it mbjoseph/smapr bash
 ```

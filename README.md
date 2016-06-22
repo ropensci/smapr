@@ -1,7 +1,7 @@
 smapr
 ================
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr)
+[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr)
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
@@ -36,8 +36,8 @@ downloads <- download_smap(files)
 downloads
 #>                               name       date                 ftp_dir
 #> 1 SMAP_L3_SM_P_20150501_R13080_001 2015-05-01 SPL3SMP.003/2015.05.01/
-#>                             local_dir
-#> 1 /Users/majo3748/Library/Caches/smap
+#>               local_dir
+#> 1 /home/max/.cache/smap
 ```
 
 ### Extracting data
@@ -47,14 +47,15 @@ The `extract_smap` function extracts gridded data products (e.g., global soil mo
 ``` r
 r <- extract_smap(downloads, name = 'Soil_Moisture_Retrieval_Data/soil_moisture')
 r
-#> class       : RasterLayer 
-#> dimensions  : 406, 964, 391384  (nrow, ncol, ncell)
+#> class       : RasterBrick 
+#> dimensions  : 406, 964, 391384, 1  (nrow, ncol, ncell, nlayers)
 #> resolution  : 36032.22, 36032.22  (x, y)
 #> extent      : -17367530, 17367530, -7314540, 7314540  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
-#> data source : /Users/majo3748/Library/Caches/smap/tmp.tif 
-#> names       : SMAP_L3_SM_P_20150501_R13080_001 
-#> values      : 0.02, 0.9390723  (min, max)
+#> coord. ref. : +proj=cea +lat_ts=30 +datum=WGS84 +units=m +ellps=WGS84 +towgs84=0,0,0 
+#> data source : /home/max/.cache/smap/tmp.grd 
+#> names       :     layer 
+#> min values  :      0.02 
+#> max values  : 0.9390723
 ```
 
 ### Plotting the data
@@ -208,4 +209,12 @@ Users can save the rasters as GeoTIFFs with the `raster` package.
 
 ``` r
 raster::writeRaster(r, filename = "smap.tif")
+```
+
+### Running in Docker
+
+To avoid dependency heck, we have made a Docker image available with smapr and all dependencies.
+
+``` bash
+docker run -it mbjoseph/smapr bash
 ```
