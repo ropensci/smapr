@@ -11,7 +11,7 @@
 #' \code{local_dir} to the input data frame, which consists of a character
 #' vector specifying the local directory containing the downloaded files.
 #' @examples
-#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
+#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
 #' # files[1, ] refers to the first available data file
 #' downloads <- download_smap(files[1, ])
 #' @export

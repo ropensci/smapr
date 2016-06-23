@@ -31,7 +31,7 @@
 #' @return A data.frame with the names of the data files, the FTP directory, and
 #'   the date.
 #' @examples
-#' find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
+#' find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
 #' @importFrom utils read.delim
 #' @importFrom curl curl
 #' @export
@@ -109,9 +109,19 @@ route_to_dates <- function(id, version) {
 
 find_available_files <- function(connection, route, date) {
     contents <- readLines(connection)
+    validate_contents(contents, route)
     data_filenames <- extract_filenames(contents)
     available_files <- bundle_search_results(data_filenames, route, date)
     available_files
+}
+
+validate_contents <- function(contents, route) {
+    # deal with error case where ftp directory exists, but is empy
+    is_ftp_dir_empty <- contents == 'total 0'
+    if (any(is_ftp_dir_empty)) {
+        error_message <- paste('FTP directory', route, 'exists, but is empty')
+        stop(error_message)
+    }
 }
 
 extract_filenames <- function(contents) {

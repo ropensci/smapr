@@ -15,7 +15,7 @@
 #' the result is stored on disk.
 #' @return Returns a RasterStack object.
 #' @examples
-#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
+#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
 #' downloads <- download_smap(files[1, ])
 #' sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 #' @importFrom rhdf5 h5read

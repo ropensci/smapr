@@ -9,7 +9,7 @@
 #' @return Returns a list of \code{data.frame} objects that list the contents
 #' of each data file in \code{files}.
 #' @examples
-#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
+#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
 #' files <- download_smap(files[1, ])
 #' list_smap(files)
 #' list_smap(files, all = TRUE)
