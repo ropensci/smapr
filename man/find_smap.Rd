@@ -45,6 +45,6 @@ below:
 }
 }
 \examples{
-find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 1)
+find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
 }
 
