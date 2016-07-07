@@ -42,7 +42,7 @@ test_that("setting overwrite = FALSE prevents data from being overwritten", {
         as.numeric(time)
     }
 
-    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    files <- find_smap(id = "SPL3SMP", date = "2015-03-31", version = 3)
 
     downloads <- download_smap(files)
     modified1 <- get_last_modified(downloads)
@@ -63,7 +63,7 @@ test_that("setting overwrite = TRUE ensures data overwrite", {
         as.numeric(time)
     }
 
-    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    files <- find_smap(id = "SPL3SMP", date = "2015-03-31", version = 3)
 
     downloads <- download_smap(files, overwrite = TRUE)
     modified1 <- get_last_modified(downloads)
