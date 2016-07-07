@@ -34,3 +34,44 @@ test_that("Two SPL4CMDL data files are downloaded (h5 and xml)", {
     extensions <- gsub(".*\\.", "", relevant_filenames)
     expect_equal(extensions, c('h5', 'xml'))
 })
+
+test_that("setting overwrite = FALSE prevents data from being overwritten", {
+    get_last_modified <- function(downloads) {
+        path <- file.path(downloads$local_dir, paste0(downloads$name, '.h5'))
+        time <- file.info(path)$mtime
+        as.numeric(time)
+    }
+
+    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+
+    downloads <- download_smap(files)
+    modified1 <- get_last_modified(downloads)
+
+    # wait one second then download again
+    Sys.sleep(1)
+    downloads <- download_smap(files, overwrite = FALSE)
+    modified2 <- get_last_modified(downloads)
+
+    expect_equal(modified1, modified2)
+})
+
+
+test_that("setting overwrite = TRUE ensures data overwrite", {
+    get_last_modified <- function(downloads) {
+        path <- file.path(downloads$local_dir, paste0(downloads$name, '.h5'))
+        time <- file.info(path)$mtime
+        as.numeric(time)
+    }
+
+    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+
+    downloads <- download_smap(files, overwrite = TRUE)
+    modified1 <- get_last_modified(downloads)
+
+    # wait one second then download again
+    Sys.sleep(1)
+    downloads <- download_smap(files, overwrite = TRUE)
+    modified2 <- get_last_modified(downloads)
+
+    expect_gt(modified2, modified1)
+})
