@@ -4,15 +4,17 @@
 \alias{download_smap}
 \title{Download SMAP data}
 \usage{
-download_smap(files_to_download, directory = NULL)
+download_smap(files, directory = NULL, overwrite = TRUE)
 }
 \arguments{
-\item{files_to_download}{A \code{data.frame} produced by \code{find_smap()}
+\item{files}{A \code{data.frame} produced by \code{find_smap()}
 that specifies data files to download.}
 
 \item{directory}{A local directory path in which to save data, specified as a
 character string. If left as \code{NULL}, data are stored in a user's cache
 directory.}
+
+\item{overwrite}{TRUE or FALSE: should existing data files be overwritten?}
 }
 \value{
 Returns a \code{data.frame} that appends a column called

@@ -2,11 +2,12 @@
 #'
 #' This function downloads SMAP data in hdf5 format.
 #'
-#' @param files_to_download A \code{data.frame} produced by \code{find_smap()}
+#' @param files A \code{data.frame} produced by \code{find_smap()}
 #' that specifies data files to download.
 #' @param directory A local directory path in which to save data, specified as a
 #' character string. If left as \code{NULL}, data are stored in a user's cache
 #' directory.
+#' @param overwrite TRUE or FALSE: should existing data files be overwritten?
 #' @return Returns a \code{data.frame} that appends a column called
 #' \code{local_dir} to the input data frame, which consists of a character
 #' vector specifying the local directory containing the downloaded files.
@@ -16,11 +17,11 @@
 #' downloads <- download_smap(files[1, ])
 #' @export
 
-download_smap <- function(files_to_download, directory = NULL) {
+download_smap <- function(files, directory = NULL, overwrite = TRUE) {
     directory <- validate_directory(directory)
-    local_files <- fetch_all(files_to_download, directory)
-    verify_download_success(files_to_download, local_files)
-    downloads_df <- bundle_to_df(files_to_download, local_files, directory)
+    local_files <- fetch_all(files, directory, overwrite)
+    verify_download_success(files, local_files)
+    downloads_df <- bundle_to_df(files, local_files, directory)
     downloads_df
 }
 
@@ -33,11 +34,11 @@ bundle_to_df <- function(desired_files, downloaded_files, local_dir) {
     merged_df
 }
 
-fetch_all <- function(files_to_download, directory) {
-    n_downloads <- nrow(files_to_download)
+fetch_all <- function(files, directory, overwrite) {
+    n_downloads <- nrow(files)
     local_files <- vector(mode = 'list', length = n_downloads)
     for (i in 1:n_downloads) {
-        local_files[[i]] <- download_data(files_to_download[i, ], directory)
+        local_files[[i]] <- maybe_download(files[i, ], directory, overwrite)
     }
     downloaded_files <- unlist(local_files)
     downloaded_files
@@ -54,20 +55,28 @@ validate_directory <- function(destination_directory) {
     destination_directory
 }
 
-download_data <- function(file, local_directory) {
+maybe_download <- function(file, local_directory, overwrite) {
+    target_files <- get_rel_paths(file)
+    full_target_paths <- file.path(local_directory, target_files)
+    all_files_exist <- all(file.exists(full_target_paths))
+    if (!all_files_exist | overwrite) {
+        ftp_locations <- paste0(ftp_prefix(), file$ftp_dir, target_files)
+        for (i in seq_along(full_target_paths)) {
+            ftp_to_local(full_target_paths, ftp_locations, i)
+        }
+    }
+    full_target_paths
+}
+
+get_rel_paths <- function(file) {
     id <- toString(file[3])
-    if (grepl("SPL4CMDL", id) == TRUE){
+    if (grepl("SPL4CMDL", id) == TRUE) {
         target_files <- paste0(file$name, min_extensions())
     }
     else {
         target_files <- paste0(file$name, extensions())
     }
-    local_paths <- file.path(local_directory, target_files)
-    ftp_locations <- paste0(ftp_prefix(), file$ftp_dir, target_files)
-    for (i in seq_along(local_paths)) {
-        ftp_to_local(local_paths, ftp_locations, i)
-    }
-    local_paths
+    target_files
 }
 
 #' @importFrom httr authenticate
@@ -79,14 +88,8 @@ ftp_to_local <- function(local_paths, ftp_locations, i) {
     suppressWarnings(GET(ftp_locations[i], write_loc, auth))
 }
 
-verify_download_success <- function(files_to_download, downloaded_files) {
-    id <- toString(files_to_download[3])
-    if (grepl("SPL4CMDL", id) == TRUE){
-        expected_downloads <- paste0(files_to_download$name, min_extensions())
-    }
-    else{
-        expected_downloads <- paste0(files_to_download$name, extensions())
-    }
+verify_download_success <- function(files, downloaded_files) {
+    expected_downloads <- get_rel_paths(files)
     actual_downloads <- gsub(".*/", "", downloaded_files)
     stopifnot(all(expected_downloads %in% actual_downloads))
 }
