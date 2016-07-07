@@ -25,7 +25,7 @@ vector specifying the local directory containing the downloaded files.
 This function downloads SMAP data in hdf5 format.
 }
 \examples{
-files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
+files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
 # files[1, ] refers to the first available data file
 downloads <- download_smap(files[1, ])
 }

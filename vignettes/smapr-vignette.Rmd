@@ -42,7 +42,7 @@ For the most up to date overview of dataset versions, see the NSIDC SMAP data ve
 
 ```{r}
 library(smapr)
-available_data <- find_smap(id = "SPL3SMAP", date = "2015.05.25", version = 3)
+available_data <- find_smap(id = "SPL3SMAP", date = "2015-05-25", version = 3)
 str(available_data)
 ```
 
@@ -80,7 +80,7 @@ The SPL4SMGP data product provides global three hourly soil moisture data.
 The workflow for finding, downloaded, inspecting, and extracting these data does not diverge from the approach used above with level three data. 
 
 ```{r, fig.align='center', fig.width=8, fig.height=7}
-available_data <- find_smap(id = "SPL4SMGP", date = "2015.05.25", version = 2)
+available_data <- find_smap(id = "SPL4SMGP", date = "2015-05-25", version = 2)
 str(available_data)
 downloads <- download_smap(available_data[1, ])
 str(downloads)
@@ -96,7 +96,7 @@ In this extended example, we will acquire some of the SPL3FTA data, reproject it
 First, we can find, download, and extract the data as before. 
 
 ```{r}
-available_data <- find_smap(id = "SPL3FTA", date = "2015.04.14", version = 3)
+available_data <- find_smap(id = "SPL3FTA", date = "2015-04-14", version = 3)
 downloads <- download_smap(available_data)
 sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_Data/freeze_thaw")
 ```
