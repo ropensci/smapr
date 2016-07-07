@@ -15,7 +15,7 @@
 #' the result is stored on disk.
 #' @return Returns a RasterStack object.
 #' @examples
-#' files <- find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
+#' files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
 #' downloads <- download_smap(files[1, ])
 #' sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 #' @importFrom rhdf5 h5read
@@ -131,13 +131,16 @@ make_stack <- function(r_list, in_memory) {
 }
 
 write_layer_names <- function(file_names) {
-    if (is_L3FT(file_names)) {
+    proportion_L3FT <- mean(is_L3FT(file_names))
+    if (proportion_L3FT == 1) {
         time_day <- c("AM", "PM")
         times_vector <- rep(time_day, length(file_names))
         filename_vector <- rep(file_names, each = 2)
         layer_names <- paste(filename_vector, times_vector, sep = "_")
-    } else {
+    } else if (proportion_L3FT == 0) {
         layer_names <- file_names
+    } else {
+        stop("Joint extraction from L3FT and other products is not supported.")
     }
     layer_names
 }

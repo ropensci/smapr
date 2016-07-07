@@ -1,7 +1,7 @@
 context("extract_smap")
 
 test_that("invalid datasets cause errors", {
-    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 3)
     downloads <- download_smap(files[1, ])
     expect_error(extract_smap(downloads,
                               name = 'Soil_Moisture_Retrieval_Data/soil_flavor',
@@ -9,7 +9,7 @@ test_that("invalid datasets cause errors", {
 })
 
 test_that("extract_smap produces a RasterStack", {
-    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 3)
     downloads <- download_smap(files[1, ])
     r <- extract_smap(downloads,
                       name = 'Soil_Moisture_Retrieval_Data/soil_moisture',
@@ -18,7 +18,7 @@ test_that("extract_smap produces a RasterStack", {
 })
 
 test_that("-9999 is used fill value when a _FillValue doesn't exist", {
-    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 3)
     downloads <- download_smap(files)
     r <- extract_smap(downloads, name = "Soil_Moisture_Retrieval_Data/latitude")
     # the fill value in the file is -9999, but there is no fill value attribute
@@ -28,14 +28,14 @@ test_that("-9999 is used fill value when a _FillValue doesn't exist", {
 })
 
 test_that("raster stacks are composed of raster layers", {
-    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 3)
     downloads <- download_smap(files)
     r <- extract_smap(downloads, name = "Soil_Moisture_Retrieval_Data/latitude")
     expect_that(r[[1]], is_a("RasterLayer"))
 })
 
 test_that("extract_smap produces a RasterStack with level 3 freeze/thaw data", {
-    files <- find_smap(id = "SPL3FTA", date = "2015.04.14", version = 3)
+    files <- find_smap(id = "SPL3FTA", dates = "2015-04-14", version = 3)
     downloads <- download_smap(files)
     r <- extract_smap(downloads,
                       name = "Freeze_Thaw_Retrieval_Data/freeze_thaw",
@@ -44,7 +44,7 @@ test_that("extract_smap produces a RasterStack with level 3 freeze/thaw data", {
 })
 
 test_that("layer names for SPL3FT include file name + am/pm suffix", {
-    files <- find_smap(id = "SPL3FTA", date = "2015.04.14", version = 3)
+    files <- find_smap(id = "SPL3FTA", dates = "2015-04-14", version = 3)
     downloads <- download_smap(files)
     r <- extract_smap(downloads,
                       name = "Freeze_Thaw_Retrieval_Data/freeze_thaw",
@@ -54,7 +54,7 @@ test_that("layer names for SPL3FT include file name + am/pm suffix", {
 })
 
 test_that("layer names for SPL3SMP include file name", {
-    files <- find_smap(id = "SPL3SMP", date = "2015.03.31", version = 3)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 3)
     downloads <- download_smap(files)
     r <- extract_smap(downloads, name = "Soil_Moisture_Retrieval_Data/latitude")
     expected_names <- paste(downloads$name)

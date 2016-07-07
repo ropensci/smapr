@@ -4,15 +4,18 @@
 \alias{find_smap}
 \title{Find SMAP data}
 \usage{
-find_smap(id, date, version)
+find_smap(id, dates, version)
 }
 \arguments{
 \item{id}{A character string that refers to a specific SMAP dataset, e.g.,
 \code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
 Moisture Geophysical Data.}
 
-\item{date}{A character string that indicates which date to search. This
-should be in \code{\%Y.\%m.\%d} format, e.g., \code{"2015.03.31"}.}
+\item{dates}{An object of class Date or a character string formatted as
+%Y-%m-%d (e.g., "2016-04-01") which specifies the date(s) to search.
+To search for one specific date, this can be a Date object of length one. To
+search over a time interval, it can be a multi-element object of class Date
+such as produced by \code{seq.Date}.}
 
 \item{version}{Which data version would you like to search for? Version
 information for each data product can be found at
@@ -45,6 +48,14 @@ below:
 }
 }
 \examples{
-find_smap(id = "SPL4SMGP", date = "2015.03.31", version = 2)
+# looking for data on one day:
+find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
+
+# searching across a date range
+start_date <- as.Date("2015-03-31")
+end_date <- as.Date("2015-04-02")
+date_sequence <- seq(start_date, end_date, by = 1)
+find_smap(id = "SPL4SMGP", dates = date_sequence, version = 2)
+
 }
 

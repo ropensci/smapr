@@ -31,7 +31,7 @@ The `find_smap` function searches for specific data products and returns a data 
 ```{r}
 library("smapr")
 
-files <- find_smap(id = "SPL3SMP", date = "2015.05.01", version = 3)
+files <- find_smap(id = "SPL3SMP", date = "2015-05-01", version = 3)
 files
 ```
 
