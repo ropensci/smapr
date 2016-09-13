@@ -42,6 +42,7 @@ For the most up to date overview of dataset versions, see the NSIDC SMAP data ve
 
 ```{r}
 library(smapr)
+library(raster)
 available_data <- find_smap(id = "SPL3SMAP", date = "2015-05-25", version = 3)
 str(available_data)
 ```
@@ -71,59 +72,15 @@ If more than one file has been downloaded and passed into the first argument, `e
 
 ```{r, fig.align='center', fig.width=8, fig.height=7}
 sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
-raster::plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
+plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
 ```
 
-### Example: Level 4 global surface soil moisture data
+## Saving GeoTIFF output
 
-The SPL4SMGP data product provides global three hourly soil moisture data. 
-The workflow for finding, downloaded, inspecting, and extracting these data does not diverge from the approach used above with level three data. 
-
-```{r, fig.align='center', fig.width=8, fig.height=7}
-available_data <- find_smap(id = "SPL4SMGP", date = "2015-05-25", version = 2)
-str(available_data)
-downloads <- download_smap(available_data[1, ])
-str(downloads)
-sm_raster <- extract_smap(downloads, "Geophysical_Data/sm_surface")
-raster::plot(sm_raster, main = "Level 4 soil moisture: May 25, 2015")
-```
-
-### Extended example: Level 3 Northern hemisphere freeze/thaw state
-
-Most of the SMAP data are delivered on a global grid, but the SPL3FTA data are provided for the northern hemisphere only. 
-In this extended example, we will acquire some of the SPL3FTA data, reproject it, and save a GeoTIFF. 
-
-First, we can find, download, and extract the data as before. 
+The raster stack can be saved as a GeoTIFF using the `writeRaster` function from the raster pacakge. 
 
 ```{r}
-available_data <- find_smap(id = "SPL3FTA", date = "2015-04-14", version = 3)
-downloads <- download_smap(available_data)
-sm_raster <- extract_smap(downloads, "Freeze_Thaw_Retrieval_Data/freeze_thaw")
-```
-
-The SPL3FTA data include data for the AM and PM of each included date. 
-As ususal, when provided with multiple datasets, `extract_smap` will return a RasterStack. 
-To see what this looks like, we will make use of the rasterVis package. 
-
-```{r, fig.align='center', fig.width=8, fig.height=7}
-library(rasterVis)
-levelplot(sm_raster, main = "Level 3 freeze thaw: April 14, 2015", 
-          names.attr = c("AM", "PM"))
-```
-
-The north pole is at the center of these rasters, because the grid is based off of a northern hemisphere Lambert Azimuthal Equal Area projection (see `crs(sm_raster)`). 
-To reproject, we can use the `projectRaster` function from the raster package, specifying a coordinate refrence system (WGS 84) via an EPSG code, and also providing a destination resolution. 
-
-```{r, fig.align='center', fig.width=8, fig.height=7}
-wgs84_raster <- projectRaster(sm_raster, crs = "+init=epsg:4326", res = .1)
-levelplot(wgs84_raster, main = "Level 3 freeze thaw: April 14, 2015", 
-          names.attr = c("AM", "PM"))
-```
-
-Finally, this reprojected raster stack can be saved as a GeoTIFF using the `writeRaster` function from the raster pacakge. 
-
-```{r}
-writeRaster(wgs84_raster, "wgs84_ft.tif")
+writeRaster(sm_raster, "wgs84_ft.tif")
 ```
 
 ```{r, echo = FALSE, results='hide'}
@@ -132,5 +89,3 @@ file.remove("wgs84_ft.tif")
 ```
 
 Bug reports, issues, and feature requests can be submitted via GitHub: https://github.com/mbjoseph/smapr
-
-
