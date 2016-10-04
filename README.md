@@ -1,7 +1,7 @@
 smapr
 ================
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr)
+[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
@@ -36,8 +36,8 @@ downloads <- download_smap(files)
 downloads
 #>                               name       date                 ftp_dir
 #> 1 SMAP_L3_SM_P_20150501_R13080_001 2015-05-01 SPL3SMP.003/2015.05.01/
-#>               local_dir
-#> 1 /home/max/.cache/smap
+#>                             local_dir
+#> 1 /Users/majo3748/Library/Caches/smap
 ```
 
 ### Extracting data
@@ -52,7 +52,7 @@ r
 #> resolution  : 36032.22, 36032.22  (x, y)
 #> extent      : -17367530, 17367530, -7314540, 7314540  (xmin, xmax, ymin, ymax)
 #> coord. ref. : +proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
-#> data source : /home/max/.cache/smap/tmp.tif 
+#> data source : /Users/majo3748/Library/Caches/smap/tmp.tif 
 #> names       : SMAP_L3_SM_P_20150501_R13080_001 
 #> values      : 0.02, 0.9390723  (min, max)
 ```
