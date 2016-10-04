@@ -1,8 +1,15 @@
 Package: smapr
 Type: Package
-Title: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) data
+Title: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) Data
 Version: 0.0.0.9000
-Author: Maxwell B. Joseph, Matthew Oakley, Zachary Schira
+Authors@R: c(
+    person("Maxwell", "Joseph", email = "maxwell.b.joseph@colorado.edu",
+            role = c("aut", "cre")),
+    person("Matthew", "Oakley", email = "matthew.oakley@colorado.edu",
+            role = "aut"),
+    person("Zachary", "Schira", email = "zasc3143@colorado.edu",
+            role = "aut")
+    )
 Depends:
     R (>= 3.2.5)
 Imports:
