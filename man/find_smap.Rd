@@ -48,6 +48,7 @@ below:
 }
 }
 \examples{
+\dontrun{
 # looking for data on one day:
 find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
 
@@ -56,6 +57,7 @@ start_date <- as.Date("2015-03-31")
 end_date <- as.Date("2015-04-02")
 date_sequence <- seq(start_date, end_date, by = 1)
 find_smap(id = "SPL4SMGP", dates = date_sequence, version = 2)
+}
 
 }
 
