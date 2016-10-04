@@ -61,10 +61,10 @@ find_smap <- function(id, dates, version) {
 try_make_date <- function(date) {
     tryCatch(as.Date(date),
              error = function(c) {
-                 err <- paste("Couldn't coerce date(s) to a Date object.",
-                              "Try formatting date(s) as: %Y-%m-%d,",
-                              "or use Date objects for the date argument",
-                              "(see ?Date).")
+                 stop(paste("Couldn't coerce date(s) to a Date object.",
+                          "Try formatting date(s) as: %Y-%m-%d,",
+                          "or use Date objects for the date argument",
+                          "(see ?Date)."))
              }
     )
 }

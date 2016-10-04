@@ -21,7 +21,7 @@ Data are hosted on an FTP server by the National Snow and Ice Data Center. The `
 ``` r
 library("smapr")
 
-files <- find_smap(id = "SPL3SMP", date = "2015.05.01", version = 3)
+files <- find_smap(id = "SPL3SMP", date = "2015-05-01", version = 3)
 files
 #>                               name       date                 ftp_dir
 #> 1 SMAP_L3_SM_P_20150501_R13080_001 2015-05-01 SPL3SMP.003/2015.05.01/
@@ -47,15 +47,14 @@ The `extract_smap` function extracts gridded data products (e.g., global soil mo
 ``` r
 r <- extract_smap(downloads, name = 'Soil_Moisture_Retrieval_Data/soil_moisture')
 r
-#> class       : RasterBrick 
-#> dimensions  : 406, 964, 391384, 1  (nrow, ncol, ncell, nlayers)
+#> class       : RasterLayer 
+#> dimensions  : 406, 964, 391384  (nrow, ncol, ncell)
 #> resolution  : 36032.22, 36032.22  (x, y)
 #> extent      : -17367530, 17367530, -7314540, 7314540  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=cea +lat_ts=30 +datum=WGS84 +units=m +ellps=WGS84 +towgs84=0,0,0 
-#> data source : /home/max/.cache/smap/tmp.grd 
-#> names       :     layer 
-#> min values  :      0.02 
-#> max values  : 0.9390723
+#> coord. ref. : +proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#> data source : /home/max/.cache/smap/tmp.tif 
+#> names       : SMAP_L3_SM_P_20150501_R13080_001 
+#> values      : 0.02, 0.9390723  (min, max)
 ```
 
 ### Plotting the data
