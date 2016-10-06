@@ -2,6 +2,10 @@
 title: "smapr"
 output: github_document
 ---
+[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![Licence](https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.0.1-orange.svg?style=flat-square)](commits/master)
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -11,11 +15,34 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
+
+
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
 ## Installation
+
+### Dependencies
+
+To install smapr, you'll need the following R packages: 
+
+- curl
+- httr
+- rappdirs
+- raster
+- rgdal
+- rhdf5
+- utils
+
+Note that rhdf5 is a [Bioconductor](http://bioconductor.org/) package, and will not be installed by default when trying to install smapr via `install.packages`. 
+For rhdf5 installation instructions see http://bioconductor.org/packages/release/bioc/html/rhdf5.html
+
+To install from CRAN: 
+
+```{r, eval = FALSE}
+install.packages("smapr")
+```
+
 
 Development version:
 
