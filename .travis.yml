@@ -4,23 +4,12 @@ cache: packages
 matrix:
   include:
     - os: linux
-      dist: precise
-      sudo: required
-    - os: linux
       dist: trusty
       sudo: required
       env: R_CODECOV=true
     - os: osx
       latex: false
       osx_image: xcode8.1
-    - os: osx
-      latex: false
-      osx_image: xcode8.1
-      disable_homebrew: true
-    - os: osx
-      latex: false
-      osx_image: beta-xcode6.1
-      disable_homebrew: true
 
 addons:
   apt:
@@ -37,7 +26,7 @@ r_github_packages:
   - jimhester/covr
 
 after_success:
-  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
+  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov(quiet = FALSE)'; fi
 
 notifications:
   email:
