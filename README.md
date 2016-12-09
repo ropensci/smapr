@@ -1,7 +1,7 @@
 smapr
 ================
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![Licence](https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) [![Last-changedate](https://img.shields.io/badge/last%20change-2016--10--07-brightgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![Licence](https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) [![Last-changedate](https://img.shields.io/badge/last%20change-2016--12--09-brightgreen.svg)](/commits/master)
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
@@ -56,8 +56,8 @@ downloads <- download_smap(files)
 downloads
 #>                               name       date                 ftp_dir
 #> 1 SMAP_L3_SM_P_20150501_R13080_001 2015-05-01 SPL3SMP.003/2015.05.01/
-#>                             local_dir
-#> 1 /Users/majo3748/Library/Caches/smap
+#>               local_dir
+#> 1 /home/max/.cache/smap
 ```
 
 ### Extracting data
@@ -72,7 +72,7 @@ r
 #> resolution  : 36032.22, 36032.22  (x, y)
 #> extent      : -17367530, 17367530, -7314540, 7314540  (xmin, xmax, ymin, ymax)
 #> coord. ref. : +proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
-#> data source : /Users/majo3748/Library/Caches/smap/tmp.tif 
+#> data source : /home/max/.cache/smap/tmp.tif 
 #> names       : SMAP_L3_SM_P_20150501_R13080_001 
 #> values      : 0.02, 0.9390723  (min, max)
 ```
