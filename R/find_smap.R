@@ -50,6 +50,7 @@
 #' @export
 
 find_smap <- function(id, dates, version) {
+    check_creds()
     if (class(dates) != "Date") {
         dates <- try_make_date(dates)
     }

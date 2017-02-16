@@ -29,9 +29,23 @@ local_h5_paths <- function(files) {
     paths_with_filenames <- file.path(files$local_dir, filenames)
 }
 
-#' @importFrom httr authenticate
+check_creds <- function() {
+    username_missing <- "" == Sys.getenv("ed_un")
+    password_missing <- "" == Sys.getenv("ed_pw")
+    if (username_missing | password_missing) {
+        stop("smapr expected to find ed_un and ed_pw as environment variables!
+smapr requires a username and password from NASA's Earthdata portal.
+If you have a username and password, pass them in as environment vars using:
+
+Sys.setenv(ed_un = '<your username>', ed_pw = '<your password>')
+
+If you do not yet have a username and password, register for one here:
+             https://urs.earthdata.nasa.gov/")
+    }
+}
+
 auth <- function() {
     # authentication function for any GET requests
-    authenticate(user = Sys.getenv("ed_un"),
+    httr::authenticate(user = Sys.getenv("ed_un"),
                  password = Sys.getenv("ed_pw"))
 }

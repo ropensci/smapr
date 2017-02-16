@@ -20,6 +20,7 @@
 #' @export
 
 download_smap <- function(files, directory = NULL, overwrite = TRUE) {
+    check_creds()
     directory <- validate_directory(directory)
     local_files <- fetch_all(files, directory, overwrite)
     verify_download_success(files, local_files)
