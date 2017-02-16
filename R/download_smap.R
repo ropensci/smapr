@@ -2,6 +2,15 @@
 #'
 #' This function downloads SMAP data in hdf5 format.
 #'
+#' This function requires a username and password from NASA's Earthdata portal.
+#' If you have a username and password, pass them in as environment vars using:
+#'
+#' \code{Sys.setenv(ed_un = '<your username>', ed_pw = '<your password>')}
+#'
+#' If you do not yet have a username and password, register for one here:
+#' \url{https://urs.earthdata.nasa.gov/}
+#'
+#'
 #' @param files A \code{data.frame} produced by \code{find_smap()}
 #' that specifies data files to download.
 #' @param directory A local directory path in which to save data, specified as a

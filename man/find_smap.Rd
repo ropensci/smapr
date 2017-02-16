@@ -46,6 +46,14 @@ below:
 \item{SPL4SMLM}{Surface/Rootzone Soil Moisture Land Model Constants}
 \item{SPL4CMDL}{Carbon Net Ecosystem Exchange}
 }
+
+This function requires a username and password from NASA's Earthdata portal.
+If you have a username and password, pass them in as environment vars using:
+
+\code{Sys.setenv(ed_un = '<your username>', ed_pw = '<your password>')}
+
+If you do not yet have a username and password, register for one here:
+\url{https://urs.earthdata.nasa.gov/}
 }
 \examples{
 \dontrun{
