@@ -1,6 +1,7 @@
 context("extract_smap")
 
 test_that("invalid datasets cause errors", {
+    skip_on_cran()
     files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 4)
     downloads <- download_smap(files[1, ])
     expect_error(extract_smap(downloads,

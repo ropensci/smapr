@@ -1,6 +1,7 @@
 context("download_smap")
 
 test_that("invalid output directories cause errors", {
+    skip_on_cran()
     files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 4)
     expect_error(download_smap(files[1, ], dir = 1234))
 })
