@@ -1,5 +1,5 @@
-ftp_prefix <- function() {
-    "ftp://n5eil01u.ecs.nsidc.org/SAN/SMAP/"
+https_prefix <- function() {
+    "https://n5eil01u.ecs.nsidc.org/SMAP/"
 }
 
 extensions <- function() {
@@ -27,4 +27,11 @@ local_h5_paths <- function(files) {
     stopifnot(is.data.frame(files))
     filenames <- paste0(files$name, '.h5')
     paths_with_filenames <- file.path(files$local_dir, filenames)
+}
+
+#' @importFrom httr authenticate
+auth <- function() {
+    # authentication function for any GET requests
+    authenticate(user = Sys.getenv("ed_un"),
+                 password = Sys.getenv("ed_pw"))
 }

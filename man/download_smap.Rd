@@ -31,4 +31,3 @@ files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
 downloads <- download_smap(files[1, ])
 }
 }
-

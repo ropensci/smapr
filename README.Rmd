@@ -56,6 +56,24 @@ Development version:
 devtools::install_github("earthlab/smapr")
 ```
 
+
+## Authentication
+
+Access to the NASA SMAP data requires authentication through NASA's Earthdata portal. 
+If you do not already have a username and password through Earthdata, you can register for an account here: https://urs.earthdata.nasa.gov/
+You cannot use this package without an Earthdata account. 
+
+Once you have an account, you need to pass your Earthdata username (`ed_un`) and password (`ed_pw`) as environmental variables that can be read from within your R session. 
+There are a couple of ways to do this: 
+
+A) Use `Sys.setenv()` interactively in your R session to set your username and password (not including the `<` and `>`):
+
+```{r, eval = FALSE}
+Sys.setenv(ed_un = "<your username>", ed_pw = "<your password>")
+```
+
+B) Use `Sys.setenv()` in your `.Rprofile` to set those environmental variables every time you load R. 
+
 ### Finding data
 
 Data are hosted on an FTP server by the National Snow and Ice Data Center.
@@ -64,7 +82,7 @@ The `find_smap` function searches for specific data products and returns a data 
 ```{r}
 library("smapr")
 
-files <- find_smap(id = "SPL3SMP", date = "2015-05-01", version = 3)
+files <- find_smap(id = "SPL3SMP", date = "2015-05-01", version = 4)
 files
 ```
 
@@ -83,7 +101,7 @@ downloads
 The `extract_smap` function extracts gridded data products (e.g., global soil moisture) and returns Raster* objects with the proper spatial projections etc.
 
 ```{r}
-r <- extract_smap(downloads, name = 'Soil_Moisture_Retrieval_Data/soil_moisture')
+r <- extract_smap(downloads, name = 'Soil_Moisture_Retrieval_Data_AM/soil_moisture')
 r
 ```
 
@@ -92,7 +110,7 @@ r
 Plotting is best done with the `raster` or `rasterVis` packages.
 
 ```{r}
-raster::plot(r, main = "Soil Moisture: May 01, 2015")
+raster::plot(r, main = "AM Soil Moisture: May 01, 2015")
 ```
 
 
@@ -118,5 +136,5 @@ raster::writeRaster(r, filename = "smap.tif")
 To avoid dependency heck, we have made a Docker image available with smapr and all dependencies.
 
 ```{r, eval = FALSE, engine='bash'}
-docker run -it mbjoseph/smapr bash
+docker run -it earthlab/smapr bash
 ```

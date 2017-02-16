@@ -22,7 +22,7 @@ information for each data product can be found at
 \url{https://nsidc.org/data/smap/data_versions}}
 }
 \value{
-A data.frame with the names of the data files, the FTP directory, and
+A data.frame with the names of the data files, the remote directory, and
   the date.
 }
 \description{
@@ -60,4 +60,3 @@ find_smap(id = "SPL4SMGP", dates = date_sequence, version = 2)
 }
 
 }
-

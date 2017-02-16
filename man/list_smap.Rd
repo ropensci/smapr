@@ -28,4 +28,3 @@ list_smap(files)
 list_smap(files, all = TRUE)
 }
 }
-

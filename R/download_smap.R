@@ -62,9 +62,9 @@ maybe_download <- function(file, local_directory, overwrite) {
     full_target_paths <- file.path(local_directory, target_files)
     all_files_exist <- all(file.exists(full_target_paths))
     if (!all_files_exist | overwrite) {
-        ftp_locations <- paste0(ftp_prefix(), file$ftp_dir, target_files)
+        https_locations <- paste0(https_prefix(), file$dir, target_files)
         for (i in seq_along(full_target_paths)) {
-            ftp_to_local(full_target_paths, ftp_locations, i)
+            remote_to_local(full_target_paths, https_locations, i)
         }
     }
     full_target_paths
@@ -84,10 +84,9 @@ get_rel_paths <- function(file) {
 #' @importFrom httr authenticate
 #' @importFrom httr write_disk
 #' @importFrom httr GET
-ftp_to_local <- function(local_paths, ftp_locations, i) {
-    auth <- authenticate("anonymous", "maxwellbjoseph@gmail.com")
+remote_to_local <- function(local_paths, https_locations, i) {
     write_loc <- write_disk(local_paths[i], overwrite = TRUE)
-    suppressWarnings(GET(ftp_locations[i], write_loc, auth))
+    GET(https_locations[i], write_loc, auth())
 }
 
 verify_download_success <- function(files, downloaded_files) {
