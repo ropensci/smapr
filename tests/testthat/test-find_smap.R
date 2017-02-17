@@ -38,3 +38,12 @@ test_that("date sequences retrieve data for each day", {
     dates_in_data <- unique(data$date)
     expect_equal(date_sequence, dates_in_data)
 })
+
+test_that("invalid date formats raise errors", {
+    expect_error(try_make_date("2016-3.04"))
+})
+
+test_that("valid date formats do not raise errors", {
+    expect_is(try_make_date("2016-3-4"), 'Date')
+    expect_is(try_make_date(ISOdate(2010, 04, 13, 12)), 'Date')
+})
