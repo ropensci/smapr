@@ -12,4 +12,3 @@ NASA Soil Moisture Active Passive (SMAP) data.
 Max Joseph \email{maxwell.b.joseph@colorado.edu}
 }
 \keyword{package}
-

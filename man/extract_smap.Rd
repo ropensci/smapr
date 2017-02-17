@@ -35,4 +35,3 @@ downloads <- download_smap(files[1, ])
 sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 }
 }
-

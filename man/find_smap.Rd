@@ -22,7 +22,7 @@ information for each data product can be found at
 \url{https://nsidc.org/data/smap/data_versions}}
 }
 \value{
-A data.frame with the names of the data files, the FTP directory, and
+A data.frame with the names of the data files, the remote directory, and
   the date.
 }
 \description{
@@ -46,6 +46,14 @@ below:
 \item{SPL4SMLM}{Surface/Rootzone Soil Moisture Land Model Constants}
 \item{SPL4CMDL}{Carbon Net Ecosystem Exchange}
 }
+
+This function requires a username and password from NASA's Earthdata portal.
+If you have a username and password, pass them in as environment vars using:
+
+\code{Sys.setenv(ed_un = '<your username>', ed_pw = '<your password>')}
+
+If you do not yet have a username and password, register for one here:
+\url{https://urs.earthdata.nasa.gov/}
 }
 \examples{
 \dontrun{
@@ -60,4 +68,3 @@ find_smap(id = "SPL4SMGP", dates = date_sequence, version = 2)
 }
 
 }
-

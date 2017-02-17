@@ -20,6 +20,15 @@
 #' \item{SPL4CMDL}{Carbon Net Ecosystem Exchange}
 #' }
 #'
+#' This function requires a username and password from NASA's Earthdata portal.
+#' If you have a username and password, pass them in as environment vars using:
+#'
+#' \code{Sys.setenv(ed_un = '<your username>', ed_pw = '<your password>')}
+#'
+#' If you do not yet have a username and password, register for one here:
+#' \url{https://urs.earthdata.nasa.gov/}
+#'
+#'
 #' @param id A character string that refers to a specific SMAP dataset, e.g.,
 #'   \code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
 #'   Moisture Geophysical Data.
@@ -31,7 +40,7 @@
 #' @param version Which data version would you like to search for? Version
 #'   information for each data product can be found at
 #'   \url{https://nsidc.org/data/smap/data_versions}
-#' @return A data.frame with the names of the data files, the FTP directory, and
+#' @return A data.frame with the names of the data files, the remote directory, and
 #'   the date.
 #'
 #' @examples
@@ -46,11 +55,11 @@
 #' find_smap(id = "SPL4SMGP", dates = date_sequence, version = 2)
 #' }
 #'
-#' @importFrom utils read.delim
-#' @importFrom curl curl
+#' @importFrom httr GET
 #' @export
 
 find_smap <- function(id, dates, version) {
+    check_creds()
     if (class(dates) != "Date") {
         dates <- try_make_date(dates)
     }
@@ -71,19 +80,15 @@ try_make_date <- function(date) {
 
 find_for_date <- function(date, id, version) {
     date <- format(date, "%Y.%m.%d")
-    validate_ftp_request(id, date, version)
+    validate_request(id, date, version)
     route <- route_to_data(id, date, version)
-    connection <- curl(route)
-    on.exit(close(connection))
-    available_files <- find_available_files(connection, route, date)
+
+    available_files <- find_available_files(route, date)
     available_files
 }
 
-validate_ftp_request <- function(id, date, version) {
-    connection <- curl(ftp_prefix())
-    on.exit(close(connection))
-
-    folder_names <- get_folder_names(connection)
+validate_request <- function(id, date, version) {
+    folder_names <- get_dir_contents(path = https_prefix())
     validate_dataset_id(folder_names, id)
     validate_version(folder_names, id, version)
     validate_date(id, version, date)
@@ -93,7 +98,7 @@ validate_dataset_id <- function(folder_names, id) {
     names_no_versions <- gsub("\\..*", "", folder_names)
     if (!(id %in% names_no_versions)) {
         prefix <- "Invalid data id."
-        suffix <- paste(id, "does not exist at", ftp_prefix())
+        suffix <- paste(id, "does not exist at", https_prefix())
         stop(paste(prefix, suffix))
     }
 }
@@ -102,16 +107,14 @@ validate_version <- function(folder_names, id, version) {
     expected_folder <- paste0(id, ".", "00", version)
     if (!expected_folder %in% folder_names) {
         prefix <- "Invalid data version."
-        suffix <- paste(expected_folder, "does not exist at", ftp_prefix())
+        suffix <- paste(expected_folder, "does not exist at", https_prefix())
         stop(paste(prefix, suffix))
     }
 }
 
 validate_date <- function(id, version, date) {
     date_checking_route <- route_to_dates(id, version)
-    connection <- curl(date_checking_route)
-    on.exit(close(connection))
-    folder_names <- get_folder_names(connection)
+    folder_names <- get_dir_contents(path = date_checking_route)
     if (!date %in% folder_names) {
         prefix <- "Data are not available for this date."
         suffix <- paste(date, "does not exist at", date_checking_route)
@@ -119,60 +122,56 @@ validate_date <- function(id, version, date) {
     }
 }
 
-get_folder_names <- function(connection) {
-    contents <- readLines(connection)
-    df <- read.delim(text = paste0(contents, '\n'), skip = 1, sep = "",
-                     header = FALSE, stringsAsFactors = FALSE)
-    folder_names <- df[, 9]
-    folder_names
+get_dir_contents <- function(path) {
+    top_level_response <- GET(path, auth())
+    nodes <- rvest::html_nodes(xml2::read_html(top_level_response), "table")
+    df <- rvest::html_table(nodes)[[1]]
+    filenames <- df$Name
+    filenames <- filenames[filenames != "Parent Directory"]
+    gsub("/+$", "", filenames) # removes trailing slashes
 }
 
 route_to_data <- function(id, date, version) {
     data_version <- paste0("00", version)
     long_id <- paste(id, data_version, sep = ".")
-    ftp_route <- paste0(ftp_prefix(), long_id, "/", date, "/")
-    ftp_route
+    route <- paste0(https_prefix(), long_id, "/", date, "/")
+    route
 }
 
 route_to_dates <- function(id, version) {
     data_version <- paste0("00", version)
     long_id <- paste(id, data_version, sep = ".")
-    ftp_route <- paste0(ftp_prefix(), long_id, "/")
-    ftp_route
+    route <- paste0(https_prefix(), long_id, "/")
+    route
 }
 
-find_available_files <- function(connection, route, date) {
-    contents <- readLines(connection)
-    validate_contents(contents, route)
+find_available_files <- function(route, date) {
+    contents <- get_dir_contents(route)
+    validate_contents(route)
     data_filenames <- extract_filenames(contents)
     available_files <- bundle_search_results(data_filenames, route, date)
     available_files
 }
 
 validate_contents <- function(contents, route) {
-    # deal with error case where ftp directory exists, but is empy
-    is_ftp_dir_empty <- contents == 'total 0'
-    if (any(is_ftp_dir_empty)) {
-        error_message <- paste('FTP directory', route, 'exists, but is empty')
+    # deal with error case where https directory exists, but is empty
+    is_dir_empty <- length(contents) == 0
+    if (any(is_dir_empty)) {
+        error_message <- paste('https directory', route, 'exists, but is empty')
         stop(error_message)
     }
 }
 
 extract_filenames <- function(contents) {
-    directory_contents <- read.delim(text = paste0(contents, '\n'),
-                                     skip = 1, sep = "", header = FALSE,
-                                     stringsAsFactors = FALSE)
-    name_column <- pmatch("SMAP", directory_contents[1, ])
-    files <- directory_contents[[name_column]]
-    all_filenames <- gsub("\\..*", "", files)
-    unique_files <- unique(all_filenames)
+    no_extensions <- gsub("\\..*", "", contents)
+    unique_files <- unique(no_extensions)
     unique_files
 }
 
-bundle_search_results <- function(filenames, ftp_route, date) {
-    ftp_dir <- gsub(ftp_prefix(), "", ftp_route)
+bundle_search_results <- function(filenames, route, date) {
+    dir <- gsub(https_prefix(), "", route)
     data.frame(name = filenames,
                date = as.Date(date, format = "%Y.%m.%d"),
-               ftp_dir = ftp_dir,
+               dir = dir,
                stringsAsFactors = FALSE)
 }
