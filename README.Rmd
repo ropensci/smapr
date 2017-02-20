@@ -5,13 +5,8 @@ output: github_document
 [![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) 
 [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr)
-[![Licence](https://img.shields.io/badge/licence-GPL--2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+[![Licence](https://img.shields.io/badge/licence-GPL--2-green.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-brightgreen.svg)](/commits/master)
-
-
- 
-
- 
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -22,8 +17,6 @@ knitr::opts_chunk$set(
 ```
 
 
-
-
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
 ## Installation
@@ -32,13 +25,14 @@ An R package for acquisition and processing of [NASA (Soil Moisture Active-Passi
 
 To install smapr, you'll need the following R packages: 
 
-- curl
 - httr
 - rappdirs
 - raster
 - rgdal
 - rhdf5
+- rvest
 - utils
+- xml2
 
 Note that rhdf5 is a [Bioconductor](http://bioconductor.org/) package, and will not be installed by default when trying to install smapr via `install.packages`. 
 For rhdf5 installation instructions see http://bioconductor.org/packages/release/bioc/html/rhdf5.html
@@ -74,61 +68,93 @@ Sys.setenv(ed_un = "<your username>", ed_pw = "<your password>")
 
 B) Use `Sys.setenv()` in your `.Rprofile` to set those environmental variables every time you load R. 
 
-### Finding data
+C) Create a text file `.Renviron` in your home directory, which contains your username and password. 
+If you don't know what your home directory is, execute `normalizePath("~/")` in the R console and it will be printed.
+Be sure to include a new line at the end of the file or R will fail silently when loading it.
 
-Data are hosted on an FTP server by the National Snow and Ice Data Center.
-The `find_smap` function searches for specific data products and returns a data frame of available data.
+Example `.Renviron file` (note the new line at the end!):
 
-```{r}
-library("smapr")
+```
+ed_un=slkdjfsldkjfs
+ed_pw=dlfkjDD124^
 
-files <- find_smap(id = "SPL3SMP", date = "2015-05-01", version = 4)
-files
 ```
 
-### Downloading data
+Once this file is created, restart your R session and you should now be able to access these environment variables (e.g., via `Sys.getenv(ed_un)`).
 
-Once found, data can be downloaded with `download_smap`.
+
+
+# SMAP data products
+
+Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. 
+Currently, smapr supports the more processed level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. 
+NSIDC provides documentation for all SMAP data products on their [website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary of level 3 and level 4 products below. 
+
+| Dataset id | Description                                         | Resolution |
+|------------|-----------------------------------------------------|------------|
+| SPL3FTA    | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
+| SPL3SMA    | Radar Global Daily Soil Moisture                    | 3 km       |
+| SPL3SMP    | Radiometer Global Soil Moisture                     | 36 km      |
+| SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
+| SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       | 
+| SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
+| SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
+| SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
+
+### Finding SMAP data
+
+Data are hosted on a server by the National Snow and Ice Data Center. 
+The find_smap function searches for specific data products and returns a data frame of available data.
+As data mature and pass checks, versions advance. 
+At any specific time, not all versions of all datasets for all dates may exist. 
+For the most up to date overview of dataset versions, see the NSIDC SMAP data version [webpage](https://nsidc.org/data/smap/smap-data.html).
 
 ```{r}
-downloads <- download_smap(files)
-downloads
+library(smapr)
+library(raster)
+available_data <- find_smap(id = "SPL3SMAP", date = "2015-05-25", version = 3)
+str(available_data)
 ```
 
+### Downloading and inspecting SMAP data
 
-### Extracting data
-
-The `extract_smap` function extracts gridded data products (e.g., global soil moisture) and returns Raster* objects with the proper spatial projections etc.
+Given a data frame produced by `find_smap`, `download_smap` downloads the data onto the local file system. 
+Unless a directory is specified as an argument, the data are stored in the user's cache. 
 
 ```{r}
-r <- extract_smap(downloads, name = 'Soil_Moisture_Retrieval_Data_AM/soil_moisture')
-r
+downloads <- download_smap(available_data)
+str(downloads)
 ```
 
-### Plotting the data
-
-Plotting is best done with the `raster` or `rasterVis` packages.
-
-```{r}
-raster::plot(r, main = "AM Soil Moisture: May 01, 2015")
-```
-
-
-### Inspecting data
-
-The SMAP data are provided in HDF5 format, and in any one file there are actually multiple data sets, including metadata.
-The `list_smap` function allows users to inspect the contents of downloaded data.
+The SMAP data are provided in HDF5 format, and in any one file there are actually multiple data sets, including metadata. 
+The `list_smap` function allows users to inspect the contents of downloaded data at a high level (`all = FALSE`) or in depth (`all = TRUE`). 
 
 ```{r}
+list_smap(downloads, all = FALSE)
 list_smap(downloads, all = TRUE)
 ```
 
-### Saving as a GeoTIFF
+### Extracting gridded data products
 
-Users can save the rasters as GeoTIFFs with the `raster` package.
+The `extract_smap` function extracts gridded data products (e.g., global soil moisture) and returns Raster* objects with the proper spatial projections etc. 
+If more than one file has been downloaded and passed into the first argument, `extract_smap` extracts all of the rasters and returns a RasterStack.
 
-```{r, eval = FALSE}
-raster::writeRaster(r, filename = "smap.tif")
+```{r, fig.align='center', fig.width=8, fig.height=7}
+sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
+plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
+```
+
+## Saving GeoTIFF output
+
+The raster stack can be saved as a GeoTIFF using the `writeRaster` function from the raster pacakge. 
+
+```{r}
+writeRaster(sm_raster, "wgs84_ft.tif")
+```
+
+```{r, echo = FALSE, results='hide'}
+# cleanup
+file.remove("wgs84_ft.tif")
 ```
 
 ### Running in Docker
@@ -138,3 +164,5 @@ To avoid dependency heck, we have made a Docker image available with smapr and a
 ```{r, eval = FALSE, engine='bash'}
 docker run -it earthlab/smapr bash
 ```
+
+Bug reports, issues, and feature requests can be submitted via GitHub: https://github.com/earthlab/smapr

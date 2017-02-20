@@ -34,4 +34,3 @@ Suggests:
     rasterVis,
     rmarkdown,
     testthat
-VignetteBuilder: knitr
