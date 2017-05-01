@@ -7,7 +7,9 @@ sudo: required
 addons:
   apt:
     packages:
-     - r-cran-rgdal
+      - libgdal-dev
+      - libproj-dev
+      - r-cran-rgdal
 
 r_packages:
   - rgdal
