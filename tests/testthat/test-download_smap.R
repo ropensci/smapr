@@ -25,9 +25,9 @@ test_that("the downloaded data is of the data frame class", {
 
 test_that("Two SPL4CMDL data files are downloaded (h5 and xml)", {
     skip_on_cran()
-    files <- find_smap(id = "SPL4CMDL", dates = "2015-05-01", version = 2)
+    files <- find_smap(id = "SPL4CMDL", dates = "2015-05-01", version = 3)
     downloads <- download_smap(files[1, ])
-    file_prefix <- "SMAP_L4_C_mdl_20150501T000000_Vv2040_001"
+    file_prefix <- downloads$name
     downloaded_files <- list.files(downloads$local_dir)
     relevant_files <- grepl(file_prefix, downloaded_files)
 
