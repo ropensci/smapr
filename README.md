@@ -1,7 +1,7 @@
 smapr
 ================
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![Licence](https://img.shields.io/badge/licence-GPL--2-green.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--02--20-brightgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![Licence](https://img.shields.io/badge/licence-GPL--2-green.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--08-brightgreen.svg)](/commits/master)
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
@@ -42,15 +42,15 @@ Access to the NASA SMAP data requires authentication through NASA's Earthdata po
 
 Once you have an account, you need to pass your Earthdata username (`ed_un`) and password (`ed_pw`) as environmental variables that can be read from within your R session. There are a couple of ways to do this:
 
-1.  Use `Sys.setenv()` interactively in your R session to set your username and password (not including the `<` and `>`):
+-   Use `Sys.setenv()` interactively in your R session to set your username and password (not including the `<` and `>`):
 
 ``` r
 Sys.setenv(ed_un = "<your username>", ed_pw = "<your password>")
 ```
 
-1.  Use `Sys.setenv()` in your `.Rprofile` to set those environmental variables every time you load R.
+-   Use `Sys.setenv()` in your `.Rprofile` to set those environmental variables every time you load R.
 
-2.  Create a text file `.Renviron` in your home directory, which contains your username and password. If you don't know what your home directory is, execute `normalizePath("~/")` in the R console and it will be printed. Be sure to include a new line at the end of the file or R will fail silently when loading it.
+-   Create a text file `.Renviron` in your home directory, which contains your username and password. If you don't know what your home directory is, execute `normalizePath("~/")` in the R console and it will be printed. Be sure to include a new line at the end of the file or R will fail silently when loading it.
 
 Example `.Renviron file` (note the new line at the end!):
 
@@ -102,7 +102,7 @@ str(downloads)
 #>  $ name     : chr "SMAP_L3_SM_AP_20150525_R13080_001"
 #>  $ date     : Date, format: "2015-05-25"
 #>  $ dir      : chr "SPL3SMAP.003/2015.05.25/"
-#>  $ local_dir: chr "/Users/majo3748/Library/Caches/smap"
+#>  $ local_dir: chr "/home/mbjoseph/.cache/smap"
 ```
 
 The SMAP data are provided in HDF5 format, and in any one file there are actually multiple data sets, including metadata. The `list_smap` function allows users to inspect the contents of downloaded data at a high level (`all = FALSE`) or in depth (`all = TRUE`).

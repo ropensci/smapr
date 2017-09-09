@@ -46,13 +46,13 @@
 #' @examples
 #' \dontrun{
 #' # looking for data on one day:
-#' find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
+#' find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 3)
 #'
 #' # searching across a date range
 #' start_date <- as.Date("2015-03-31")
 #' end_date <- as.Date("2015-04-02")
 #' date_sequence <- seq(start_date, end_date, by = 1)
-#' find_smap(id = "SPL4SMGP", dates = date_sequence, version = 2)
+#' find_smap(id = "SPL4SMGP", dates = date_sequence, version = 3)
 #' }
 #'
 #' @importFrom httr GET
@@ -63,6 +63,7 @@ find_smap <- function(id, dates, version) {
     if (class(dates) != "Date") {
         dates <- try_make_date(dates)
     }
+    ensure_dates_in_past(dates)
     res <- lapply(dates, find_for_date, id = id, version = version)
     do.call(rbind, res)
 }
@@ -78,12 +79,31 @@ try_make_date <- function(date) {
     )
 }
 
+ensure_dates_in_past <- function(dates) {
+    todays_date <- format(Sys.time(), "%Y-%m-%d")
+    if (any(dates > todays_date)) {
+        stop("All search dates must be <= the current date")
+    }
+}
+
 find_for_date <- function(date, id, version) {
     date <- format(date, "%Y.%m.%d")
     validate_request(id, date, version)
-    route <- route_to_data(id, date, version)
+    is_date_valid <- validate_date(id, version, date)
 
-    available_files <- find_available_files(route, date)
+    if (is_date_valid) {
+        route <- route_to_data(id, date, version)
+        available_files <- find_available_files(route, date)
+    } else {
+        # return a row in output with
+        # NA for 'name' and 'dir' so that users can track which
+        # data are missing
+        available_files <- data.frame(name = NA,
+                               date = as.Date(date,
+                                              format = "%Y.%m.%d"),
+                               dir = NA,
+                               stringsAsFactors = FALSE)
+    }
     available_files
 }
 
@@ -91,7 +111,6 @@ validate_request <- function(id, date, version) {
     folder_names <- get_dir_contents(path = https_prefix())
     validate_dataset_id(folder_names, id)
     validate_version(folder_names, id, version)
-    validate_date(id, version, date)
 }
 
 validate_dataset_id <- function(folder_names, id) {
@@ -118,8 +137,12 @@ validate_date <- function(id, version, date) {
     if (!date %in% folder_names) {
         prefix <- "Data are not available for this date."
         suffix <- paste(date, "does not exist at", date_checking_route)
-        stop(paste(prefix, suffix))
+        does_date_exist <- FALSE
+        warning(paste(prefix, suffix))
+    } else {
+        does_date_exist <- TRUE
     }
+    does_date_exist
 }
 
 get_dir_contents <- function(path) {

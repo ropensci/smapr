@@ -81,3 +81,12 @@ test_that("setting overwrite = TRUE ensures data overwrite", {
 
     expect_gt(modified2, modified1)
 })
+
+
+test_that('input data.frames with NA values raise errors', {
+    skip_on_cran()
+    expect_warning(df_w_na <- find_smap(id = "SPL2SMP_E",
+                                        dates = '2015-05-13',
+                                        version = 1))
+    expect_error(download_smap(df_w_na))
+})
