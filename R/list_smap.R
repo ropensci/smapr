@@ -10,7 +10,7 @@
 #' of each data file in \code{files}.
 #' @examples
 #' \dontrun{
-#' files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
+#' files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 3)
 #' files <- download_smap(files[1, ])
 #' list_smap(files)
 #' list_smap(files, all = TRUE)

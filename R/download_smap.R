@@ -22,7 +22,7 @@
 #' vector specifying the local directory containing the downloaded files.
 #' @examples
 #' \dontrun{
-#' files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
+#' files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 3)
 #' # files[1, ] refers to the first available data file
 #' downloads <- download_smap(files[1, ])
 #' }
@@ -31,10 +31,27 @@
 download_smap <- function(files, directory = NULL, overwrite = TRUE) {
     check_creds()
     directory <- validate_directory(directory)
+    validate_input_df(files)
     local_files <- fetch_all(files, directory, overwrite)
     verify_download_success(files, local_files)
     downloads_df <- bundle_to_df(files, local_files, directory)
     downloads_df
+}
+
+validate_input_df <- function(df) {
+    if (any(is.na(df))) {
+        stop(
+            paste(
+               "Argument 'files' must be a data frame with no NA values.",
+               "First, be sure that the input data frame was produced by",
+               "the find_smap() function. NA values will result when data",
+               "are missing (e.g., if there was no data collection",
+               "on a particular day. You must omit all NA values from the",
+               "input data.frame 'files' to use download_smap(), e.g.,",
+               "with the na.omit() function."
+               )
+             )
+    }
 }
 
 bundle_to_df <- function(desired_files, downloaded_files, local_dir) {

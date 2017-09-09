@@ -58,7 +58,7 @@ If you do not yet have a username and password, register for one here:
 \examples{
 \dontrun{
 # looking for data on one day:
-find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
+find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 3)
 
 # searching across a date range
 start_date <- as.Date("2015-03-31")
