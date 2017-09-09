@@ -31,6 +31,7 @@ test_that("searching for missing dates with extant dates returns both", {
     })
     expect_identical(num_na_vals_by_column,
                      c(name = 1L, date = 0L, dir = 1L))
+    expect_identical(dim(available_data), c(12L, 3L))
 })
 
 test_that("find_smap produces a data frame with the proper dimensions", {
