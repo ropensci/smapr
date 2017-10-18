@@ -16,6 +16,37 @@ test_that("non-existent directories are created", {
     unlink(dir_name, recursive = TRUE)
 })
 
+test_that("valid user-specified directories contain downloads", {
+    skip_on_cran()
+    available_data <- find_smap(id = "SPL3SMP",
+                                date = "2015-10-01",
+                                version = 4)
+    user_specified_path <- file.path('data', 'SMAP')
+    downloads <- download_smap(available_data,
+                               directory = user_specified_path)
+    expect_true(
+        file.exists(
+            file.path(user_specified_path,
+                      "SMAP_L3_SM_P_20151001_R14010_001.h5")
+            )
+        )
+    expect_true(
+        file.exists(
+            file.path(user_specified_path,
+                      "SMAP_L3_SM_P_20151001_R14010_001.h5.iso.xml")
+        )
+    )
+    expect_true(
+        file.exists(
+            file.path(user_specified_path,
+                      "SMAP_L3_SM_P_20151001_R14010_001.qa")
+        )
+    )
+
+    # clean up
+    unlink('data', recursive = TRUE, force = TRUE)
+})
+
 test_that("the downloaded data is of the data frame class", {
     skip_on_cran()
     files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 4)
