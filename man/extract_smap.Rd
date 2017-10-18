@@ -30,7 +30,7 @@ returning a Raster object.
 }
 \examples{
 \dontrun{
-files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 2)
+files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 3)
 downloads <- download_smap(files[1, ])
 sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 }
