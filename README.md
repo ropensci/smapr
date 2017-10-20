@@ -1,7 +1,7 @@
 smapr
 ================
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![Licence](https://img.shields.io/badge/licence-GPL--2-green.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--08-brightgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--10--20-brightgreen.svg)](/commits/master)
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
@@ -102,7 +102,7 @@ str(downloads)
 #>  $ name     : chr "SMAP_L3_SM_AP_20150525_R13080_001"
 #>  $ date     : Date, format: "2015-05-25"
 #>  $ dir      : chr "SPL3SMAP.003/2015.05.25/"
-#>  $ local_dir: chr "/home/mbjoseph/.cache/smap"
+#>  $ local_dir: chr "/home/max/.cache/smap"
 ```
 
 The SMAP data are provided in HDF5 format, and in any one file there are actually multiple data sets, including metadata. The `list_smap` function allows users to inspect the contents of downloaded data at a high level (`all = FALSE`) or in depth (`all = TRUE`).
