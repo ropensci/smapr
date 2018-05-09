@@ -1,23 +1,24 @@
 language: r
-cache: packages
 
-dist: trusty
+r:
+  - release
+  - oldrel
+  - devel
+
 sudo: required
-
-before_install:
-  - sudo add-apt-repository ppa:ubuntugis/ppa -y
-  - sudo apt-get update -q
-
-apt_packages:
-  - libssl-dev
-  - libcurl4-openssl-dev
-  - netcdf-bin
-  - libnetcdf-dev
-  - gdal-bin
-  - libgdal-dev
-  - libudunits2-dev
-  - libproj-dev
-  - libgeos-dev
+dist: trusty
+cache:
+  - packages
+  - ccache
+  
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+    packages:
+      - libproj-dev
+      - libgeos-dev
+      - libgdal-dev
 
 r_packages:
   - rgdal
