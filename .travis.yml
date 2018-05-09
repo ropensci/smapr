@@ -4,12 +4,25 @@ cache: packages
 dist: trusty
 sudo: required
 
-addons:
-  apt:
-    packages:
-      - libgdal-dev
-      - libproj-dev
-      - r-cran-rgdal
+before_install:
+  - sudo add-apt-repository ppa:ubuntugis/ppa -y
+  - sudo apt-get update -q
+
+r:
+  - release
+  - devel
+
+
+apt_packages:
+  - libssl-dev
+  - libcurl4-openssl-dev
+  - netcdf-bin
+  - libnetcdf-dev
+  - gdal-bin
+  - libgdal-dev
+  - libudunits2-dev
+  - libproj-dev
+  - libgeos-dev
 
 r_packages:
   - rgdal
