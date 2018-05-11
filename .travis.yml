@@ -1,15 +1,24 @@
 language: r
-cache: packages
 
-dist: trusty
+r:
+  - release
+  - oldrel
+  - devel
+
 sudo: required
-
+dist: trusty
+cache:
+  - packages
+  - ccache
+  
 addons:
   apt:
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
     packages:
-      - libgdal-dev
       - libproj-dev
-      - r-cran-rgdal
+      - libgeos-dev
+      - libgdal-dev
 
 r_packages:
   - rgdal
@@ -27,3 +36,8 @@ notifications:
   email:
     on_success: change
     on_failure: change
+
+script:
+  - |
+    R CMD build .
+    travis_wait 20 R CMD check packageName*tar.gz
