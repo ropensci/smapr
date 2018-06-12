@@ -24,22 +24,61 @@
 #' @importFrom rhdf5 h5readAttributes
 #' @importFrom raster raster
 #' @importFrom raster stack
+#' @importFrom raster merge
+#' @importFrom raster projectRaster
+#' @importFrom raster extent
+#' @importFrom raster crs
+#' @importFrom raster projection
 #' @importFrom raster projectExtent
 #' @importFrom raster writeRaster
 #' @importFrom rappdirs user_cache_dir
 #' @export
 
 extract_smap <- function(data, name, in_memory = FALSE) {
+    validate_data(data)
     h5_files <- local_h5_paths(data)
     n_files <- length(h5_files)
     rasters <- vector("list", length = n_files)
     for (i in 1:n_files) {
         rasters[[i]] <- rasterize_smap(h5_files[i], name)
     }
-    file_names <- data$name
-    raster_stack <- make_stack(rasters, in_memory)
-    names(raster_stack) <- write_layer_names(file_names)
-    raster_stack
+    output <- bundle_rasters(rasters, data, in_memory)
+    output
+}
+
+validate_data <- function(data) {
+    # ensure that all data are of equal data product ID
+    dir_name_splits <- strsplit(data$dir, split = "\\.")
+    data_product_ids <- unlist(lapply(dir_name_splits, `[`, 1))
+    if (length(unique(data_product_ids)) > 1) {
+        stop('extract_smap() requires all data IDs to be the same! \n
+              Only one data product type can be extracted at once, \n
+              e.g., SPL3SMP data cannot be extracted with SPL2SMAP_S data.')
+    }
+}
+
+bundle_rasters <- function(rasters, data, in_memory) {
+    filenames <- data$name
+    all_L2SMSP <- mean(is_L2SMSP(filenames))
+    if (all_L2SMSP == 1) {
+        if (length(rasters) > 1) {
+            # place data on common grid to enable stacking
+            extents <- lapply(rasters, raster::extent)
+            total_extent <- do.call(raster::merge, extents)
+            reference_grid <- raster::raster(ext = total_extent,
+                                             crs = raster::crs(
+                                                raster::projection(
+                                                    rasters[[1]])),
+                                             resolution = 3000)
+            to_grid <- function(r, grid) {
+                raster::projectRaster(r, grid)
+            }
+            rasters <- lapply(rasters, to_grid, grid = reference_grid)
+        }
+    }
+    output <- make_stack(rasters, in_memory)
+    names(output) <- write_layer_names(filenames)
+    output
 }
 
 rasterize_smap <- function(file, name) {
@@ -110,22 +149,43 @@ compute_latlon_extent <- function(h5_file) {
         # b/c metadata are incorrect in L3_FT data files
         extent_vector <- c(-180, 180, 0, 90)
     } else {
-        extent_list <- h5readAttributes(h5_file, "Metadata/Extent")
-        extent_vector <- with(extent_list, {
-            c(westBoundLongitude, eastBoundLongitude,
-              southBoundLatitude, northBoundLatitude)
-        })
+        extent_vector <- extent_vector_from_metadata(h5_file)
     }
     latlon_extent <- raster::extent(extent_vector)
     latlon_extent
+}
+
+extent_vector_from_metadata <- function(h5_file) {
+    extent_metadata <- h5readAttributes(h5_file, "Metadata/Extent")
+    if (is_L2SMSP(h5_file)) {
+        # extent specification is explained here:
+        # https://nsidc.org/data/smap/spl1btb/md-fields
+        vertices <- extent_metadata$polygonPosList
+        vertex_coords <- matrix(vertices, nrow = 2,
+                                dimnames = list(c('lat', 'lon')))
+        extent_metadata$westBoundLongitude <- min(vertex_coords['lon', ])
+        extent_metadata$eastBoundLongitude <- max(vertex_coords['lon', ])
+        extent_metadata$southBoundLatitude <- min(vertex_coords['lat', ])
+        extent_metadata$northBoundLatitude <- max(vertex_coords['lat', ])
+    }
+    # if not L2 data, metadata already contains values we need
+    extent_vector <- with(extent_metadata, {
+        c(westBoundLongitude, eastBoundLongitude,
+          southBoundLatitude, northBoundLatitude)
+    })
+    extent_vector
 }
 
 is_L3FT <- function(filename) {
     grepl("L3_FT", filename)
 }
 
+is_L2SMSP <- function(filename) {
+    grepl('L2_SM_SP', filename)
+}
+
 make_stack <- function(r_list, in_memory) {
-    r_stack <- stack(r_list)
+    r_stack <- raster::stack(r_list)
     if (!in_memory) {
         r_stack <- smap_to_disk(r_stack)
     }

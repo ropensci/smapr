@@ -64,16 +64,17 @@ SMAP data products
 
 Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. Currently, smapr supports the more processed level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. NSIDC provides documentation for all SMAP data products on their [website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary of level 3 and level 4 products below.
 
-| Dataset id | Description                                         | Resolution |
-|------------|-----------------------------------------------------|------------|
-| SPL3FTA    | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
-| SPL3SMA    | Radar Global Daily Soil Moisture                    | 3 km       |
-| SPL3SMP    | Radiometer Global Soil Moisture                     | 36 km      |
-| SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
-| SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       |
-| SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
-| SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
-| SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
+| Dataset id  | Description                                         | Resolution |
+|-------------|-----------------------------------------------------|------------|
+| SPL2SMAP\_S | SMAP/Sentinel-1 Radiometer/Radar Soil Moisture      | 3 km       |
+| SPL3FTA     | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
+| SPL3SMA     | Radar Global Daily Soil Moisture                    | 3 km       |
+| SPL3SMP     | Radiometer Global Soil Moisture                     | 36 km      |
+| SPL3SMAP    | Radar/Radiometer Global Soil Moisture               | 9 km       |
+| SPL4SMAU    | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       |
+| SPL4SMGP    | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
+| SPL4SMLM    | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
+| SPL4CMDL    | Carbon Net Ecosystem Exchange                       | 9 km       |
 
 ### Finding SMAP data
 

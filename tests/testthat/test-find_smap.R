@@ -37,12 +37,12 @@ test_that("searching for missing dates with extant dates returns both", {
 test_that("find_smap produces a data frame with the proper dimensions", {
     skip_on_cran()
     data <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 3)
-    expect_that(colnames(data[1]), matches("name"))
-    expect_that(colnames(data[2]), matches("date"))
-    expect_that(colnames(data[3]), matches("dir"))
+    expect_match(colnames(data[1]), "name")
+    expect_match(colnames(data[2]), "date")
+    expect_match(colnames(data[3]), "dir")
     num_rows <- nrow(data)
     row_vector <- row.names(data)
-    expect_that(row_vector[num_rows], matches(toString(num_rows)))
+    expect_match(row_vector[num_rows], toString(num_rows))
 })
 
 
