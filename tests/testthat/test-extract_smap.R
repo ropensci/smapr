@@ -88,3 +88,31 @@ test_that("extraction still works with user specified directories", {
     # clean up
     unlink('data', recursive = TRUE, force = TRUE)
 })
+
+test_that("Sentinel/SMAP integrated products can read properly", {
+    skip_on_cran()
+
+    files <- find_smap('SPL2SMAP_S', '2016-06-08', 1)
+    downloads <- download_smap(files)
+    r <- extract_smap(downloads,
+                       '/Soil_Moisture_Retrieval_Data_3km/soil_moisture_3km')
+
+    expect_that(r, is_a('RasterBrick'))
+    expect_identical(raster::nlayers(r), 3L)
+})
+
+
+test_that("Sentinel/SMAP cannot be extracted with other data types", {
+    skip_on_cran()
+
+    files <- find_smap('SPL2SMAP_S', '2016-06-08', 1)
+    other_files <- find_smap(id = "SPL3SMP",
+                             date = "2015-10-01",
+                             version = 4)
+    mixed_files <- rbind(files, other_files)
+    downloads <- download_smap(mixed_files)
+
+    # extracting two files should give a raster stack with two layers
+    expect_error(extract_smap(downloads,
+                              '/Soil_Moisture_Retrieval_Data_3km/soil_moisture_3km'))
+})

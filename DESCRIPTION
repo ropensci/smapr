@@ -1,7 +1,7 @@
 Package: smapr
 Type: Package
 Title: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) Data
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person("Maxwell", "Joseph", email = "maxwell.b.joseph@colorado.edu",
             role = c("aut", "cre")),
@@ -29,7 +29,6 @@ LazyData: TRUE
 RoxygenNote: 6.0.1
 Suggests:
     knitr,
-    rasterVis,
     rgdal,
     rmarkdown,
     testthat,
