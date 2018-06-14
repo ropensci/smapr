@@ -1,0 +1,119 @@
+---
+title: "Introduction to the smapr package"
+author: "Maxwell B. Joseph"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(purl = NOT_CRAN)
+```
+
+```{r load-smapr}
+library(smapr)
+library(raster)
+```
+
+
+This vignette outlines a basic use scenario for smapr.
+We will acquire and process 
+[NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/), 
+and generate some simple visualizations. 
+We'll use the global level 4 [SPL4SMAU](https://nsidc.org/data/SPL4SMAU) 
+(Surface/Rootzone Soil Moisture Analysis Update) data product. 
+
+## Finding data
+
+To find out which SMAP data are availble, we'll use the `find_smap` function, 
+which takes a data set ID, date(s) to search, and a dataset version. 
+The SPL4SMAU data product is on version 3 (see https://nsidc.org/data/SPL4SMAU), 
+and we'll search for data from June 01, 2018.
+
+```{r find-data}
+available_data <- find_smap(id = 'SPL4SMAU', dates = '2018-06-01', version = 3)
+```
+
+This returns a data frame, where every row is one data file that is available 
+on NASA's servers. 
+
+## Downloading data
+
+To download the data, we can use `download_smap`:
+
+```{r download-data}
+local_files <- download_smap(available_data)
+```
+
+Now we have 8 data files, which correspond to different times of day on our 
+search date, as indicated by the file names: 
+
+```{r print-filenames}
+local_files$name[1:2]
+```
+
+## Exploring data
+
+Each file that we downloaded is an HDF5 file with multiple datasets bundled 
+together. 
+To list all of the data in a file we can use `list_smap`. 
+By default, if we give `list_smap` a data frame of local files, it will 
+return a list of data frames. 
+Because all of these data files are of the same data product, using `list_smap`
+on one file (e.g., the first) will tell us what's available in all of the files: 
+
+```{r list-smap}
+list_smap(local_files[1, ])
+```
+
+To dig deeper, we can use the `all` argument to `list_smap`:
+
+```{r list-more-smap}
+list_smap(local_files[1, ], all = TRUE)
+```
+
+Looking at this output, we can conclude that the file contains multiple arrays 
+(notice the `dim` column). 
+These arrays correspond to things like estimated root zone soil moisture 
+(`/Analysis_Data/sm_rootzone_analysis`), estimated surface soil moisture
+(`/Analysis_Data/sm_surface_analysis`), and estimated surface temperature 
+(`/Analysis_Data/surface_temp_analysis`). 
+See https://nsidc.org/data/smap/spl4sm/data-fields#sm_surface_analysis for more 
+detailed information on what these datasets represent and how they were 
+generated.
+
+## Extracting data
+
+The datasets that we are interested in are spatial grids. 
+The `smapr` package can extract these data into `raster` objects with the 
+`extract_smap` function, which takes a dataset name as an argument.
+These names are paths that can be generated from the output of `list_smap`. 
+For example, if we want to get rootzone soil moisture, we can see a dataset 
+with name `sm_rootzone_analysis` in group `/Analysis_Data`, so that the path 
+to the dataset is `/Analysis_Data/sm_rootzone_analysis`: 
+
+```{r extract-data}
+sm_raster <- extract_smap(local_files, '/Analysis_Data/sm_rootzone_analysis')
+```
+
+This will extract all of the data in the data frame `local_files`, generating 
+a RasterBrick with one layer per file:
+
+```{r print-raster}
+sm_raster
+```
+
+We can visualize root zone soil moisture at different times using the raster 
+package:
+
+```{r plot-raster, fig.width=12, fig.height=8}
+plot(sm_raster)
+```

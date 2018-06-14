@@ -24,7 +24,7 @@ Description:
     Facilitates programmatic access to NASA Soil Moisture Active
     Passive (SMAP) data with R. It includes functions to search for, acquire,
     and extract SMAP data.
-License: GPL-2
+License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.1
 Suggests:
@@ -33,3 +33,4 @@ Suggests:
     rmarkdown,
     testthat,
     utils
+VignetteBuilder: knitr
