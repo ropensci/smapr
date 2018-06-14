@@ -1,6 +1,6 @@
 #' smapr: A package for acquisition and processing of NASA SMAP data.
 #'
-#' The smapr package provides a means to programatically search for and acquire
+#' The smapr package provides a means to discover, acquire, and process
 #' NASA Soil Moisture Active Passive (SMAP) data.
 #'
 #' @docType package
