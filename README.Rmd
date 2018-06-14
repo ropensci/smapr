@@ -24,54 +24,55 @@ An R package for acquisition and processing of [NASA (Soil Moisture Active-Passi
 
 ### Dependencies
 
-To install smapr, you'll need the following R packages: 
-
-- httr
-- rappdirs
-- raster
-- rgdal
-- rhdf5
-- rvest
-- utils
-- xml2
-
-Note that rhdf5 is a [Bioconductor](http://bioconductor.org/) package, and will not be installed by default when trying to install smapr via `install.packages`. 
+To install smapr, you'll need to install the R package
+[rhdf5](https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html), 
+a Bioconductor package that will not be installed automatically when installing 
+smapr. 
 For rhdf5 installation instructions see http://bioconductor.org/packages/release/bioc/html/rhdf5.html
 
-To install from CRAN: 
+To install smapr from CRAN: 
 
-```{r, eval = FALSE}
+```{r cran-installation, eval = FALSE}
 install.packages("smapr")
 ```
 
+To install the development version from GitHub:
 
-Development version:
-
-```{r, eval = FALSE}
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
 devtools::install_github("earthlab/smapr")
 ```
 
 
 ## Authentication
 
-Access to the NASA SMAP data requires authentication through NASA's Earthdata portal. 
-If you do not already have a username and password through Earthdata, you can register for an account here: https://urs.earthdata.nasa.gov/
+Access to the NASA SMAP data requires authentication through NASA's Earthdata 
+portal. 
+If you do not already have a username and password through Earthdata, you can 
+register for an account here: https://urs.earthdata.nasa.gov/
 You cannot use this package without an Earthdata account. 
 
-Once you have an account, you need to pass your Earthdata username (`ed_un`) and password (`ed_pw`) as environmental variables that can be read from within your R session. 
+Once you have an account, you need to pass your Earthdata username (`ed_un`) 
+and password (`ed_pw`) as environmental variables that can be read from within 
+your R session. 
 There are a couple of ways to do this: 
 
-- Use `Sys.setenv()` interactively in your R session to set your username and password (not including the `<` and `>`):
+- Use `Sys.setenv()` interactively in your R session to set your username and 
+password (not including the `<` and `>`):
 
 ```{r, eval = FALSE}
 Sys.setenv(ed_un = "<your username>", ed_pw = "<your password>")
 ```
 
-- Use `Sys.setenv()` in your `.Rprofile` to set those environmental variables every time you load R. 
+- Use `Sys.setenv()` in your `.Rprofile` to set those environmental variables 
+every time you load R. 
 
-- Create a text file `.Renviron` in your home directory, which contains your username and password. 
-If you don't know what your home directory is, execute `normalizePath("~/")` in the R console and it will be printed.
-Be sure to include a new line at the end of the file or R will fail silently when loading it.
+- Create a text file `.Renviron` in your home directory, which contains your 
+username and password. 
+If you don't know what your home directory is, execute `normalizePath("~/")` in 
+the R console and it will be printed.
+Be sure to include a new line at the end of the file or R will fail silently 
+when loading it.
 
 Example `.Renviron file` (note the new line at the end!):
 
@@ -81,15 +82,21 @@ ed_pw=dlfkjDD124^
 
 ```
 
-Once this file is created, restart your R session and you should now be able to access these environment variables (e.g., via `Sys.getenv(ed_un)`).
+Once this file is created, restart your R session and you should now be able to 
+access these environment variables (e.g., via `Sys.getenv(ed_un)`).
 
 
 
 # SMAP data products
 
-Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. 
-Currently, smapr supports the more processed level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. 
-NSIDC provides documentation for all SMAP data products on their [website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary of level 3 and level 4 products below. 
+Multiple SMAP data products are provided by the NSIDC, and these products vary 
+in the amount of processing. 
+Currently, smapr primarily supports level 3 and level 4 data products, 
+which represent global daily composite and global three hourly modeled data 
+products, respectively. 
+NSIDC provides documentation for all SMAP data products on their 
+[website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary 
+of data products supported by smapr below. 
 
 | Dataset id | Description                                         | Resolution |
 |------------|-----------------------------------------------------|------------|
@@ -106,12 +113,14 @@ NSIDC provides documentation for all SMAP data products on their [website](https
 ### Finding SMAP data
 
 Data are hosted on a server by the National Snow and Ice Data Center. 
-The find_smap function searches for specific data products and returns a data frame of available data.
+The find_smap function searches for specific data products and returns a 
+data frame of available data.
 As data mature and pass checks, versions advance. 
 At any specific time, not all versions of all datasets for all dates may exist. 
-For the most up to date overview of dataset versions, see the NSIDC SMAP data version [webpage](https://nsidc.org/data/smap/smap-data.html).
+For the most up to date overview of dataset versions, see the NSIDC SMAP data 
+version [webpage](https://nsidc.org/data/smap/smap-data.html).
 
-```{r}
+```{r find-data}
 library(smapr)
 library(raster)
 available_data <- find_smap(id = "SPL3SMAP", date = "2015-05-25", version = 3)
@@ -120,35 +129,46 @@ str(available_data)
 
 ### Downloading and inspecting SMAP data
 
-Given a data frame produced by `find_smap`, `download_smap` downloads the data onto the local file system. 
-Unless a directory is specified as an argument, the data are stored in the user's cache. 
+Given a data frame produced by `find_smap`, `download_smap` downloads the data 
+onto the local file system. 
+Unless a directory is specified as an argument, the data are stored in the 
+user's cache. 
 
-```{r}
+```{r download-data}
 downloads <- download_smap(available_data)
 str(downloads)
 ```
 
-The SMAP data are provided in HDF5 format, and in any one file there are actually multiple data sets, including metadata. 
-The `list_smap` function allows users to inspect the contents of downloaded data at a high level (`all = FALSE`) or in depth (`all = TRUE`). 
+The SMAP data are provided in HDF5 format, and in any one file there are 
+actually multiple data sets, including metadata. 
+The `list_smap` function allows users to inspect the contents of downloaded 
+data at a high level (`all = FALSE`) or in depth (`all = TRUE`). 
 
-```{r}
+```{r list-data}
 list_smap(downloads, all = FALSE)
-list_smap(downloads, all = TRUE)
 ```
+
+To see all of the data fields, set `all = TRUE`. 
 
 ### Extracting gridded data products
 
-The `extract_smap` function extracts gridded data products (e.g., global soil moisture) and returns Raster* objects with the proper spatial projections etc. 
+The `extract_smap` function extracts gridded data products 
+(e.g., global soil moisture) and returns Raster* objects. 
 If more than one file has been downloaded and passed into the first argument, `extract_smap` extracts all of the rasters and returns a RasterStack.
 
-```{r, fig.align='center', fig.width=8, fig.height=7}
+```{r extract-data, fig.align='center', fig.width=8, fig.height=7}
 sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
 plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
 ```
 
-## Saving GeoTIFF output
+The path "Soil_Moisture_Retrieval_Data/soil_moisture" was determined from the 
+output of `list_smap(downloads, all = TRUE)`, which lists all of the data 
+contained in SMAP data files. 
 
-The raster stack can be saved as a GeoTIFF using the `writeRaster` function from the raster pacakge. 
+### Saving GeoTIFF output
+
+The raster stack can be saved as a GeoTIFF using the `writeRaster` function 
+from the raster pacakge. 
 
 ```{r}
 writeRaster(sm_raster, "wgs84_ft.tif")
@@ -159,15 +179,17 @@ writeRaster(sm_raster, "wgs84_ft.tif")
 file.remove("wgs84_ft.tif")
 ```
 
-### Running in Docker
+### Running smapr in Docker
 
-To avoid dependency heck, we have made a Docker image available with smapr and all dependencies.
+To avoid dependency heck, we have made a Docker image available with smapr 
+and all its dependencies.
 
 ```
 docker run -d -p 8787:8787 earthlab/smapr
 ```
 
-In a web browser, navigate to localhost:8787 and log in with username: rstudio, password: rstudio.
+In a web browser, navigate to localhost:8787 and log in with 
+username: rstudio, password: rstudio.
 
 ### Citing smapr
 
