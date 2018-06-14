@@ -6,6 +6,8 @@ output: github_document
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/earthlab/smapr?branch=master&svg=true)](https://ci.appveyor.com/project/earthlab/smapr)
 [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/smapr)](http://cran.rstudio.com/web/packages/smapr/index.html) 
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
