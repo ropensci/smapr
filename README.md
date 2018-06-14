@@ -137,6 +137,9 @@ To avoid dependency heck, we have made a Docker image available with smapr and a
 
 In a web browser, navigate to localhost:8787 and log in with username: rstudio, password: rstudio.
 
-### Citing smapr
+Meta
+----
 
-See `citation("smapr")` in R to cite this package in publications.
+-   Please [report any issues or bugs](https://github.com/earthlab/smapr/issues), after reading our contribution [guidelines](CONTRIBUTING.md), and the [Contributor Code of Conduct](CONDUCT.md).
+-   License: GPL-3
+-   See `citation("smapr")` in R to cite this package in publications.
