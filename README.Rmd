@@ -160,8 +160,12 @@ file.remove("wgs84_ft.tif")
 
 To avoid dependency heck, we have made a Docker image available with smapr and all dependencies.
 
-```{r, eval = FALSE, engine='bash'}
-docker run -it earthlab/smapr bash
+```
+docker run -d -p 8787:8787 earthlab/smapr
 ```
 
-Bug reports, issues, and feature requests can be submitted via GitHub: https://github.com/earthlab/smapr
+In a web browser, navigate to localhost:8787 and log in with username: rstudio, password: rstudio.
+
+### Citing smapr
+
+See `citation("smapr")` in R to cite this package in publications. 
