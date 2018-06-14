@@ -1,3 +1,9 @@
+# smapr 0.1.2
+
+* added support for SMAP/sentinel hybrid soil moisture product
+* added a code of conduct
+* added a vignette to show a complete workflow
+
 # smapr 0.1.1
 
 * added patch for searching date ranges containing missing collections
