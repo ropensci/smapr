@@ -10,6 +10,7 @@
 #' below:
 #'
 #' \describe{
+#' \item{SPL2SMAP_S}{SMAP/Sentinel-1 Radiometer/Radar Soil Moisture}
 #' \item{SPL3FTA}{Radar Northern Hemisphere Daily Freeze/Thaw State}
 #' \item{SPL3SMA}{Radar Global Daily Soil Moisture}
 #' \item{SPL3SMP}{Radiometer Global Soil Moisture}
