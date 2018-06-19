@@ -6,12 +6,7 @@
 * Ubuntu Linux 16.04 LTS, R-release, GCC (on r-hub)
 
 ## R CMD check results
-There were no ERRORs or WARNINGs. 
-
-Possibly mis-spelled words in DESCRIPTION:
-  SMAP (4:10, 20:14, 21:17)
-
-SMAP is not a misspelling, it's an acronym for soil moisture active passive. 
+There were no ERRORs, WARNINGs, or NOTEs. 
 
 ## Downstream dependencies
 
