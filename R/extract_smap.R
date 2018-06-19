@@ -22,14 +22,14 @@
 #' }
 #' @importFrom rhdf5 h5read
 #' @importFrom rhdf5 h5readAttributes
-#' @importFrom raster raster
-#' @importFrom raster stack
-#' @importFrom raster merge
-#' @importFrom raster projectRaster
-#' @importFrom raster extent
 #' @importFrom raster crs
+#' @importFrom raster extent
+#' @importFrom raster merge
 #' @importFrom raster projection
 #' @importFrom raster projectExtent
+#' @importFrom raster projectRaster
+#' @importFrom raster raster
+#' @importFrom raster stack
 #' @importFrom raster writeRaster
 #' @importFrom rappdirs user_cache_dir
 #' @export

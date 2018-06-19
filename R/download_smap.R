@@ -1,6 +1,6 @@
 #' Download SMAP data
 #'
-#' This function downloads SMAP data in hdf5 format.
+#' This function downloads SMAP data in HDF5 format.
 #'
 #' This function requires a username and password from NASA's Earthdata portal.
 #' If you have a username and password, pass them in as environment vars using:

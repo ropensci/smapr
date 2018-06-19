@@ -22,7 +22,7 @@ Returns a \code{data.frame} that appends a column called
 vector specifying the local directory containing the downloaded files.
 }
 \description{
-This function downloads SMAP data in hdf5 format.
+This function downloads SMAP data in HDF5 format.
 }
 \details{
 This function requires a username and password from NASA's Earthdata portal.
