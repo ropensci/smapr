@@ -38,7 +38,7 @@ which takes a data set ID, date(s) to search, and a dataset version.
 The SPL4SMAU data product is on version 3 (see https://nsidc.org/data/SPL4SMAU), 
 and we'll search for data from June 01, 2018.
 
-```{r find-data}
+```{r find-data, eval = NOT_CRAN}
 available_data <- find_smap(id = 'SPL4SMAU', dates = '2018-06-01', version = 3)
 ```
 
@@ -49,14 +49,14 @@ on NASA's servers.
 
 To download the data, we can use `download_smap`:
 
-```{r download-data}
+```{r download-data, eval = NOT_CRAN}
 local_files <- download_smap(available_data)
 ```
 
 Now we have 8 data files, which correspond to different times of day on our 
 search date, as indicated by the file names: 
 
-```{r print-filenames}
+```{r print-filenames, eval = NOT_CRAN}
 local_files$name[1:2]
 ```
 
@@ -70,13 +70,13 @@ return a list of data frames.
 Because all of these data files are of the same data product, using `list_smap`
 on one file (e.g., the first) will tell us what's available in all of the files: 
 
-```{r list-smap}
+```{r list-smap, eval = NOT_CRAN}
 list_smap(local_files[1, ])
 ```
 
 To dig deeper, we can use the `all` argument to `list_smap`:
 
-```{r list-more-smap}
+```{r list-more-smap, eval = NOT_CRAN}
 list_smap(local_files[1, ], all = TRUE)
 ```
 
@@ -100,20 +100,20 @@ For example, if we want to get rootzone soil moisture, we can see a dataset
 with name `sm_rootzone_analysis` in group `/Analysis_Data`, so that the path 
 to the dataset is `/Analysis_Data/sm_rootzone_analysis`: 
 
-```{r extract-data}
+```{r extract-data, eval = NOT_CRAN}
 sm_raster <- extract_smap(local_files, '/Analysis_Data/sm_rootzone_analysis')
 ```
 
 This will extract all of the data in the data frame `local_files`, generating 
 a RasterBrick with one layer per file:
 
-```{r print-raster}
+```{r print-raster, eval = NOT_CRAN}
 sm_raster
 ```
 
 We can visualize root zone soil moisture at different times using the raster 
 package:
 
-```{r plot-raster, fig.width=12, fig.height=8}
+```{r plot-raster, fig.width=12, fig.height=8, eval = NOT_CRAN}
 plot(sm_raster)
 ```
