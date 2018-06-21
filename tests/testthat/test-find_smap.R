@@ -7,7 +7,8 @@ test_that("searching for invalid ids causes an error", {
 
 test_that("searching for invalid versions causes an error", {
     skip_on_cran()
-    expect_error(find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 999))
+    expect_error(find_smap(id = "SPL4SMGP", dates = "2015-03-31", 
+                           version = 999))
 })
 
 test_that("searching for future dates causes an error", {
@@ -17,7 +18,8 @@ test_that("searching for future dates causes an error", {
 
 test_that("searching for missing dates raises a warning", {
     skip_on_cran()
-    expect_warning(find_smap(id = "SPL2SMP_E", dates = '2015-05-13', version = 1))
+    expect_warning(find_smap(id = "SPL2SMP_E", dates = '2015-05-13', 
+                             version = 1))
 })
 
 test_that("searching for missing dates with extant dates returns both", {

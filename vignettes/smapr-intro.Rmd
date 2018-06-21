@@ -33,7 +33,7 @@ We'll use the global level 4 [SPL4SMAU](https://nsidc.org/data/SPL4SMAU)
 
 ## Finding data
 
-To find out which SMAP data are availble, we'll use the `find_smap` function, 
+To find out which SMAP data are available, we'll use the `find_smap` function, 
 which takes a data set ID, date(s) to search, and a dataset version. 
 The SPL4SMAU data product is on version 3 (see https://nsidc.org/data/SPL4SMAU), 
 and we'll search for data from June 01, 2018.
