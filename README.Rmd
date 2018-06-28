@@ -8,6 +8,7 @@ output: github_document
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/smapr)](http://cran.rstudio.com/web/packages/smapr/index.html) 
+[![](https://badges.ropensci.org/231_status.svg)](https://github.com/ropensci/onboarding/issues/231)
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
