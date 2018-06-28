@@ -12,6 +12,7 @@ Authors@R: c(
     )
 Depends:
     R (>= 3.2.5)
+biocViews: 
 Imports:
     httr (>= 1.1.0),
     rappdirs (>= 0.3.1),
@@ -31,6 +32,9 @@ Suggests:
     knitr,
     rgdal,
     rmarkdown,
+    roxygen2,
     testthat,
     utils
 VignetteBuilder: knitr
+URL: https://github.com/earthlab/smapr
+BugReports: https://github.com/earthlab/smapr/issues

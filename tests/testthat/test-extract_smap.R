@@ -113,6 +113,6 @@ test_that("Sentinel/SMAP cannot be extracted with other data types", {
     downloads <- download_smap(mixed_files)
 
     # extracting two files should give a raster stack with two layers
-    expect_error(extract_smap(downloads,
-                              '/Soil_Moisture_Retrieval_Data_3km/soil_moisture_3km'))
+    to_extract <- '/Soil_Moisture_Retrieval_Data_3km/soil_moisture_3km'
+    expect_error(extract_smap(downloads, to_extract))
 })
