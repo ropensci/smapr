@@ -7,3 +7,4 @@ cran-comments.md
 CONTRIBUTING.md
 ^appveyor\.yml$
 ^CONDUCT\.md$
+^codemeta\.json$
