@@ -4,7 +4,7 @@
 \alias{download_smap}
 \title{Download SMAP data}
 \usage{
-download_smap(files, directory = NULL, overwrite = TRUE)
+download_smap(files, directory = NULL, overwrite = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{files}{A \code{data.frame} produced by \code{find_smap()}
@@ -15,6 +15,9 @@ character string. If left as \code{NULL}, data are stored in a user's cache
 directory.}
 
 \item{overwrite}{TRUE or FALSE: should existing data files be overwritten?}
+
+\item{verbose}{TRUE or FALSE: should messages be printed to indicate that 
+files are being downloaded?}
 }
 \value{
 Returns a \code{data.frame} that appends a column called

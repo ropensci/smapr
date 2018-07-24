@@ -32,7 +32,8 @@
 #'
 #' @param id A character string that refers to a specific SMAP dataset, e.g.,
 #'   \code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
-#'   Moisture Geophysical Data.
+#'   Moisture Geophysical Data. See "Details" for a list of supported data types 
+#'   and their associated id codes.
 #' @param dates An object of class Date or a character string formatted as
 #' %Y-%m-%d (e.g., "2016-04-01") which specifies the date(s) to search.
 #' To search for one specific date, this can be a Date object of length one. To
