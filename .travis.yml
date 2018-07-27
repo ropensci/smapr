@@ -30,7 +30,8 @@ r_github_packages:
   - jimhester/covr
 
 before_install:
-  - echo 'NOT_CRAN="true"' >> ~/.Renviron
+  - echo "ed_un="$ed_un >> ~/.Renviron
+  - echo "ed_pw="$ed_pw >> ~/.Renviron
 
 after_success:
   - R -e 'covr::codecov(quiet = FALSE)'

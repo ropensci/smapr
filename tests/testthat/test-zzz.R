@@ -1,5 +1,12 @@
 context("zzz")
 
+test_that("get_creds() returns a vector with username and passwd", {
+  skip_on_cran()
+  creds <- get_creds(file.path(Sys.getenv("HOME"), ".Renviron"))
+  expect_length(creds, 2)
+  expect_named(creds, c("username", "passwd"))
+})
+
 test_that("Correct credentials do not raise a 401 error", {
   skip_on_cran()
   resp <- httr::GET(https_prefix(), 
