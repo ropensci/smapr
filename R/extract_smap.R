@@ -194,6 +194,7 @@ make_stack <- function(r_list, in_memory) {
 
 write_layer_names <- function(file_names) {
     proportion_L3FT <- mean(is_L3FT(file_names))
+    stopifnot(proportion_L3FT %in% c(0, 1))
     if (proportion_L3FT == 1) {
         time_day <- c("AM", "PM")
         times_vector <- rep(time_day, length(file_names))
@@ -201,19 +202,12 @@ write_layer_names <- function(file_names) {
         layer_names <- paste(filename_vector, times_vector, sep = "_")
     } else if (proportion_L3FT == 0) {
         layer_names <- file_names
-    } else {
-        stop("Joint extraction from L3FT and other products is not supported.")
     }
     layer_names
 }
 
 smap_to_disk <- function(rast) {
-    if (class(rast) == "RasterLayer") {
-        dest <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".tif")
-    } else if (class(rast) == "RasterStack") {
-        dest <- file.path(user_cache_dir("smap"), 'tmp.tif')
-    } else {
-        stop("Input is neither a RasterLayer nor a RasterStack")
-    }
+    stopifnot(class(rast) == "RasterStack")
+    dest <- file.path(user_cache_dir("smap"), 'tmp.tif')
     writeRaster(rast, dest, overwrite = TRUE)
 }
