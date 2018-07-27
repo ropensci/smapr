@@ -1,5 +1,13 @@
 context("zzz")
 
+test_that("Correct credentials do not raise a 401 error", {
+  skip_on_cran()
+  resp <- httr::GET(https_prefix(), 
+                    config = auth())
+  expect_equal(resp$status_code, 200)
+  expect_null(check_for_401(resp))
+})
+
 test_that("Incorrect credentials cause a 401 error", {
   # temporary handle is necessary here, otherwise previous 
   # authentication (with correct credentials) is used
@@ -9,16 +17,6 @@ test_that("Incorrect credentials cause a 401 error", {
                     config = httr::authenticate('fakeuser', 'fakepass'))
   expect_equal(resp$status_code, 401)
   expect_error(check_for_401(resp), "401 unauthorized")
-  rm(tmp_handle)
-})
-
-test_that("Correct credentials do not raise a 401 error", {
-  skip_on_cran()
-  tmp_handle <- httr::handle("https://n5eil01u.ecs.nsidc.org/SMAP/")
-  resp <- httr::GET(handle = tmp_handle, 
-                    config = auth())
-  expect_equal(resp$status_code, 200)
-  expect_null(check_for_401(resp))
   rm(tmp_handle)
 })
 
