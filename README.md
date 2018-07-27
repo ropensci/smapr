@@ -8,10 +8,6 @@ An R package for acquisition and processing of [NASA (Soil Moisture Active-Passi
 Installation
 ------------
 
-### Dependencies
-
-To install smapr, you'll need to install the R package [rhdf5](https://www.bioconductor.org/packages/release/bioc/html/rhdf5.html), a Bioconductor package that will not be installed automatically when installing smapr. For rhdf5 installation instructions see <http://bioconductor.org/packages/release/bioc/html/rhdf5.html>
-
 To install smapr from CRAN:
 
 ``` r
@@ -24,6 +20,14 @@ To install the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("earthlab/smapr")
 ```
+
+#### Docker instructions (alternative to a local installation)
+
+If a local installation is not possible for some reason, we have made a Docker image available with smapr and all its dependencies.
+
+    docker run -d -p 8787:8787 earthlab/smapr
+
+In a web browser, navigate to localhost:8787 and log in with username: rstudio, password: rstudio.
 
 Authentication
 --------------
@@ -128,14 +132,6 @@ The raster stack can be saved as a GeoTIFF using the `writeRaster` function from
 ``` r
 writeRaster(sm_raster, "wgs84_ft.tif")
 ```
-
-### Running smapr in Docker
-
-To avoid dependency heck, we have made a Docker image available with smapr and all its dependencies.
-
-    docker run -d -p 8787:8787 earthlab/smapr
-
-In a web browser, navigate to localhost:8787 and log in with username: rstudio, password: rstudio.
 
 Meta
 ----
