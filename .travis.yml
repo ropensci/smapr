@@ -29,6 +29,9 @@ bioc_packages:
 r_github_packages:
   - jimhester/covr
 
+before_install:
+  - echo 'NOT_CRAN="true"' >> ~/.Renviron
+
 after_success:
   - R -e 'covr::codecov(quiet = FALSE)'
 
