@@ -1,17 +1,7 @@
 context("set_smap_credentials")
 
-setup({
-  # preserve contents of original .Renviron file
-  renvironment_path <- file.path(Sys.getenv("HOME"), ".Renviron")
-  file.copy(renvironment_path, '.Renviron_tmp')
-})
-
-teardown({
-  file.copy('.Renviron_tmp', file.path(Sys.getenv("HOME"), ".Renviron"))
-  unlink('.Renviron_tmp')
-})
-
 test_that(".Renviron file is not modified when save = FALSE", {
+  skip_on_cran()
   renvironment_contents <- readLines(renvironment_path)
   creds <- get_creds(renvironment_path)
   
@@ -28,6 +18,7 @@ test_that(".Renviron file is not modified when save = FALSE", {
 })
 
 test_that("Existing credentials raise an error when overwrite = FALSE", {
+  skip_on_cran()
   expect_error(set_smap_credentials("dummy_user", 
                                     "dummy_password", 
                                     save = TRUE, 
@@ -36,6 +27,7 @@ test_that("Existing credentials raise an error when overwrite = FALSE", {
 })
 
 test_that("Existing credentials are overwritten when overwrite = TRUE", {
+  skip_on_cran()
   original_creds <- get_creds(renvironment_path)
   
   set_smap_credentials("user", 

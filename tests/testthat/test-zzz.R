@@ -13,6 +13,7 @@ test_that("Incorrect credentials cause a 401 error", {
 })
 
 test_that("Correct credentials do not raise a 401 error", {
+  skip_on_cran()
   tmp_handle <- httr::handle("https://n5eil01u.ecs.nsidc.org/SMAP/")
   resp <- httr::GET(handle = tmp_handle, 
                     config = auth())
