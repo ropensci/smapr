@@ -64,6 +64,10 @@ and password (`ed_pw`) as environmental variables that can be read from within
 your R session. 
 There are a couple of ways to do this: 
 
+- (Recommended): Use `set_smap_credentials('yourusername', 'yourpasswd')`. This 
+will save your credentials for later use by default, and optionally overwrite 
+existing credentials if `overwrite = TRUE`. 
+
 - Use `Sys.setenv()` interactively in your R session to set your username and 
 password (not including the `<` and `>`):
 
