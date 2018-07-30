@@ -12,7 +12,9 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>", 
+  fig.width=8, 
+  fig.height=6
 )
 NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 knitr::opts_chunk$set(purl = NOT_CRAN)
@@ -20,6 +22,7 @@ knitr::opts_chunk$set(purl = NOT_CRAN)
 
 ```{r load-smapr}
 library(smapr)
+library(sp)
 library(raster)
 ```
 
@@ -28,15 +31,40 @@ This vignette outlines a basic use scenario for smapr.
 We will acquire and process 
 [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/), 
 and generate some simple visualizations. 
-We'll use the global level 4 [SPL4SMAU](https://nsidc.org/data/SPL4SMAU) 
+
+
+## SMAP data products
+
+Multiple SMAP data products are provided by the NSIDC, and these products vary 
+in the amount of processing. 
+Currently, smapr primarily supports level 3 and level 4 data products, 
+which represent global daily composite and global three hourly modeled data 
+products, respectively. 
+NSIDC provides documentation for all SMAP data products on their 
+[website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary 
+of data products supported by smapr below. 
+
+| Dataset id | Description                                         | Resolution |
+|------------|-----------------------------------------------------|------------|
+| SPL2SMAP_S | SMAP/Sentinel-1 Radiometer/Radar Soil Moisture      | 3 km       |
+| SPL3FTA    | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
+| SPL3SMA    | Radar Global Daily Soil Moisture                    | 3 km       |
+| SPL3SMP    | Radiometer Global Soil Moisture                     | 36 km      |
+| SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
+| SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       | 
+| SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
+| SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
+| SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
+
+
+This vignette uses the level 4 [SPL4SMAU](https://nsidc.org/data/SPL4SMAU) 
 (Surface/Rootzone Soil Moisture Analysis Update) data product. 
 
 ## Finding data
 
 To find out which SMAP data are available, we'll use the `find_smap` function, 
 which takes a data set ID, date(s) to search, and a dataset version. 
-The SPL4SMAU data product is on version 3 (see https://nsidc.org/data/SPL4SMAU), 
-and we'll search for data from June 01, 2018.
+The SPL4SMAU data product is on version 3 (see https://nsidc.org/data/SPL4SMAU).
 
 ```{r find-data, eval = NOT_CRAN}
 available_data <- find_smap(id = 'SPL4SMAU', dates = '2018-06-01', version = 3)
@@ -45,16 +73,24 @@ available_data <- find_smap(id = 'SPL4SMAU', dates = '2018-06-01', version = 3)
 This returns a data frame, where every row is one data file that is available 
 on NASA's servers. 
 
-## Downloading data
-
-To download the data, we can use `download_smap`:
-
-```{r download-data, eval = NOT_CRAN}
-local_files <- download_smap(available_data)
+```{r head-data, eval = NOT_CRAN}
+str(available_data)
 ```
 
-Now we have 8 data files, which correspond to different times of day on our 
-search date, as indicated by the file names: 
+## Downloading data
+
+To download the data, we can use `download_smap`. Note that this may take a 
+while, depending on the number of files being downloaded, and the speed of your
+internet connection. 
+Because we're downloading `r nrow(available_data)` files, we will use the 
+`verbose = FALSE` argument to avoid printing excessive output to the console.
+
+```{r download-data, eval = NOT_CRAN}
+local_files <- download_smap(available_data, overwrite = FALSE, verbose = FALSE)
+```
+
+Now we have `r nrow(local_files)` data files, which correspond to different 
+times as indicated by the file names: 
 
 ```{r print-filenames, eval = NOT_CRAN}
 local_files$name[1:2]
@@ -111,9 +147,90 @@ a RasterBrick with one layer per file:
 sm_raster
 ```
 
-We can visualize root zone soil moisture at different times using the raster 
-package:
+We can visualize each layer in our RasterBrick:
 
-```{r plot-raster, fig.width=12, fig.height=8, eval = NOT_CRAN}
+```{r plot-raster, eval = NOT_CRAN}
 plot(sm_raster)
+```
+
+## Common downstream operations
+
+### Study region cropping and masking
+
+If you want to crop the data to a study region, you can use the `raster::crop` 
+function. 
+Let's illustrate by focusing on the state of Colorado, which is approximately 
+rectangular, so that we can define an `extent` object using latitude and 
+longitude values that roughly correspond to the state boundaries. 
+The `raster::extent()` function can be used with any `Spatial*` or `Raster*` 
+object.
+
+```{r create-extent, eval = NOT_CRAN}
+co_extent <- extent(c(-109, -102, 37, 41))
+co_extent <- as(co_extent, "SpatialPolygons")
+sp::proj4string(co_extent) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+co_extent
+```
+
+Now that we have a SpatialPolygons object, we can use this to crop the 
+soil moisture raster to our study region. 
+First, we need to ensure that the projections are the same:
+
+```{r project-extent, eval = NOT_CRAN}
+proj_co_extent <- spTransform(co_extent, crs(sm_raster))
+```
+
+Then, we could crop the soil moisture data to our polygon, which will make the 
+extents match.
+
+```{r crop-raster, eval = NOT_CRAN}
+co_soil_moisture <- crop(sm_raster, proj_co_extent)
+plot(co_soil_moisture)
+```
+
+We might also have a polygon to use as a mask. 
+For example, to mask out our Colorado polygon, we could do the following 
+(operating on the first layer of the soil moisture raster for simplicity): 
+
+```{r mask-raster, eval = NOT_CRAN}
+plot(mask(sm_raster[[1]], proj_co_extent))
+```
+
+Notice that masking does not crop the raster, it simply sets all values outside
+of the polygon to NA.
+In some cases, an inverse mask is useful, where values inside the polygon are
+set to NA: 
+
+```{r inverse-mask, eval = NOT_CRAN}
+plot(mask(sm_raster[[1]], proj_co_extent, inverse = TRUE))
+```
+
+### Computing summary statistics over layers
+
+We may want to average soil moisture values across layers of a raster brick. 
+This can be done with the `raster::cal()` function:
+
+```{r get-mean, eval = NOT_CRAN}
+mean_sm <- calc(sm_raster, fun = mean)
+plot(mean_sm, main = 'Mean soil moisture')
+```
+
+### Comparing surface and soil moisture
+
+Our SPL4SMAU data have estimated surface and rootzone soil moisture layers. 
+If we want to compare these values, we can load the surface soil moisture data, 
+compute the mean value over layers as we did for the rootzone soil moisture 
+raster, and generate a scatterplot. 
+
+```{r surface-vs-rootzone, eval = NOT_CRAN}
+surface_raster <- extract_smap(local_files, 
+                               name = '/Analysis_Data/sm_surface_analysis')
+
+# compute mean
+mean_surface_sm <- calc(surface_raster, fun = mean)
+
+# compare values
+plot(values(mean_sm), values(mean_surface_sm), col = 'dodgerblue', cex = .1, 
+     xlab = 'Rootzone soil moisture', ylab = 'Surface soil moisture', bty = 'n')
+abline(0, 1, lty = 2)
 ```

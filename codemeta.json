@@ -103,6 +103,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "sp",
+      "name": "sp",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sp"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "testthat",
       "name": "testthat",
       "provider": {
@@ -205,7 +217,7 @@
   ],
   "releaseNotes": "https://github.com/earthlab/smapr/blob/master/NEWS.md",
   "readme": "https://github.com/earthlab/smapr/blob/master/README.md",
-  "fileSize": "78.926KB",
+  "fileSize": "83.105KB",
   "contIntegration": [
     "https://travis-ci.org/earthlab/smapr",
     "https://ci.appveyor.com/project/mbjoseph/smapr",
