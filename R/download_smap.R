@@ -96,7 +96,7 @@ maybe_download <- function(file, local_directory, overwrite, verbose) {
         https_locations <- paste0(https_prefix(), file$dir, target_files)
         for (i in seq_along(full_target_paths)) {
             if (verbose) {
-                message(paste('Downloading', https_locations))
+                message(paste('Downloading', https_locations[i]))
             }
             remote_to_local(full_target_paths, https_locations, i)
         }

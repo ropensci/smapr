@@ -44,4 +44,3 @@ test_that("Existing credentials are overwritten when overwrite = TRUE", {
                        original_creds['passwd'], 
                        overwrite = TRUE)
 })
- 
