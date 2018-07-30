@@ -29,9 +29,8 @@ This function downloads SMAP data in HDF5 format.
 }
 \details{
 This function requires a username and password from NASA's Earthdata portal.
-If you have a username and password, pass them in as environment vars using:
-
-\code{Sys.setenv(ed_un = '<your username>', ed_pw = '<your password>')}
+If you have an Earthdata username and password, pass them in using the
+\code{\link[=set_smap_credentials]{set_smap_credentials()}} function.
 
 If you do not yet have a username and password, register for one here:
 \url{https://urs.earthdata.nasa.gov/}

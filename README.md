@@ -36,6 +36,8 @@ Access to the NASA SMAP data requires authentication through NASA's Earthdata po
 
 Once you have an account, you need to pass your Earthdata username (`ed_un`) and password (`ed_pw`) as environmental variables that can be read from within your R session. There are a couple of ways to do this:
 
+-   (Recommended): Use `set_smap_credentials('yourusername', 'yourpasswd')`. This will save your credentials for later use by default, and optionally overwrite existing credentials if `overwrite = TRUE`.
+
 -   Use `Sys.setenv()` interactively in your R session to set your username and password (not including the `<` and `>`):
 
 ``` r
@@ -92,6 +94,9 @@ Given a data frame produced by `find_smap`, `download_smap` downloads the data o
 
 ``` r
 downloads <- download_smap(available_data)
+#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qaDownloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
+#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qaDownloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
+#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qaDownloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
 str(downloads)
 #> 'data.frame':    1 obs. of  4 variables:
 #>  $ name     : chr "SMAP_L3_SM_AP_20150525_R13080_001"
