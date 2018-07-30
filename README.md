@@ -36,15 +36,17 @@ Access to the NASA SMAP data requires authentication through NASA's Earthdata po
 
 Once you have an account, you need to pass your Earthdata username (`ed_un`) and password (`ed_pw`) as environmental variables that can be read from within your R session. There are a couple of ways to do this:
 
--   (Recommended): Use `set_smap_credentials('yourusername', 'yourpasswd')`. This will save your credentials for later use by default, and optionally overwrite existing credentials if `overwrite = TRUE`.
+### Recommended approach
+
+Use `set_smap_credentials('yourusername', 'yourpasswd')`. This will save your credentials by default, overwriting existing credentials if `overwrite = TRUE`.
+
+#### Alternative approaches
 
 -   Use `Sys.setenv()` interactively in your R session to set your username and password (not including the `<` and `>`):
 
 ``` r
 Sys.setenv(ed_un = "<your username>", ed_pw = "<your password>")
 ```
-
--   Use `Sys.setenv()` in your `.Rprofile` to set those environmental variables every time you load R.
 
 -   Create a text file `.Renviron` in your home directory, which contains your username and password. If you don't know what your home directory is, execute `normalizePath("~/")` in the R console and it will be printed. Be sure to include a new line at the end of the file or R will fail silently when loading it.
 
@@ -53,12 +55,12 @@ Example `.Renviron file` (note the new line at the end!):
     ed_un=slkdjfsldkjfs
     ed_pw=dlfkjDD124^
 
-Once this file is created, restart your R session and you should now be able to access these environment variables (e.g., via `Sys.getenv(ed_un)`).
+Once this file is created, restart your R session and you should now be able to access these environment variables (e.g., via `Sys.getenv("ed_un")`).
 
 SMAP data products
 ==================
 
-Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. Currently, smapr primarily supports level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. NSIDC provides documentation for all SMAP data products on their [website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary of data products supported by smapr below.
+Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. Currently, smapr primarily supports level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. There are a wide variety of data layers available in SMAP products, including surface soil moisture, root zone soil moisture, freeze/thaw status, surface temperature, vegetation water content, vegetation opacity, net ecosystem carbon exchange, soil temperature, and evapotranspiration. NSIDC provides documentation for all SMAP data products on their [website](https://nsidc.org/data/smap/smap-data.html), and we provide a summary of data products supported by smapr below.
 
 | Dataset id  | Description                                         | Resolution |
 |-------------|-----------------------------------------------------|------------|
@@ -72,9 +74,21 @@ Multiple SMAP data products are provided by the NSIDC, and these products vary i
 | SPL4SMLM    | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
 | SPL4CMDL    | Carbon Net Ecosystem Exchange                       | 9 km       |
 
+Typical workflow
+----------------
+
+At a high level, most workflows follow these steps:
+
+1.  Find SMAP data with `find_smap()`
+2.  Download data with `download_smap()`
+3.  List data contents with `list_smap()`
+4.  Extract data with `extract_smap()`
+
+Each of these steps are outlined below:
+
 ### Finding SMAP data
 
-Data are hosted on a server by the National Snow and Ice Data Center. The find\_smap function searches for specific data products and returns a data frame of available data. As data mature and pass checks, versions advance. At any specific time, not all versions of all datasets for all dates may exist. For the most up to date overview of dataset versions, see the NSIDC SMAP data version [webpage](https://nsidc.org/data/smap/smap-data.html).
+Data are hosted on a server by the National Snow and Ice Data Center. The `find_smap()` function searches for specific data products and returns a data frame of available data. As data mature and pass checks, versions advance. At any specific time, not all versions of all datasets for all dates may exist. For the most up to date overview of dataset versions, see the NSIDC SMAP data version [webpage](https://nsidc.org/data/smap/smap-data.html).
 
 ``` r
 library(smapr)
@@ -94,9 +108,9 @@ Given a data frame produced by `find_smap`, `download_smap` downloads the data o
 
 ``` r
 downloads <- download_smap(available_data)
-#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qaDownloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
-#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qaDownloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
-#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qaDownloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
+#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5
+#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qa
+#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
 str(downloads)
 #> 'data.frame':    1 obs. of  4 variables:
 #>  $ name     : chr "SMAP_L3_SM_AP_20150525_R13080_001"
@@ -135,7 +149,7 @@ The path "Soil\_Moisture\_Retrieval\_Data/soil\_moisture" was determined from th
 The raster stack can be saved as a GeoTIFF using the `writeRaster` function from the raster pacakge.
 
 ``` r
-writeRaster(sm_raster, "wgs84_ft.tif")
+writeRaster(sm_raster, "sm_raster.tif")
 ```
 
 Meta

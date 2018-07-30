@@ -208,7 +208,7 @@ plot(mask(sm_raster[[1]], proj_co_extent, inverse = TRUE))
 ### Computing summary statistics over layers
 
 We may want to average soil moisture values across layers of a raster brick. 
-This can be done with the `raster::cal()` function:
+This can be done with the `raster::calc()` function:
 
 ```{r get-mean, eval = NOT_CRAN}
 mean_sm <- calc(sm_raster, fun = mean)
