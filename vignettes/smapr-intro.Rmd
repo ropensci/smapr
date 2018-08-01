@@ -60,6 +60,22 @@ of data products supported by smapr below.
 This vignette uses the level 4 [SPL4SMAU](https://nsidc.org/data/SPL4SMAU) 
 (Surface/Rootzone Soil Moisture Analysis Update) data product. 
 
+## Preparing to access SMAP data
+
+NASA requires a username and password from their Earthdata portal to access
+SMAP data. 
+You can get these credentials here: https://earthdata.nasa.gov/
+
+Once you have your credentials, you can use the `set_smap_credentials` 
+function to set them for use by the smapr package: 
+
+```{r set-creds, eval = FALSE}
+set_smap_credentials("myusername", "mypassword")
+```
+
+This function saves your credentials for later use unless you use the argument
+`save = FALSE`. 
+
 ## Finding data
 
 To find out which SMAP data are available, we'll use the `find_smap` function, 

@@ -108,25 +108,32 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <a href="#authentication" class="anchor"></a>Authentication</h2>
 <p>Access to the NASA SMAP data requires authentication through NASA’s Earthdata portal. If you do not already have a username and password through Earthdata, you can register for an account here: <a href="https://urs.earthdata.nasa.gov/" class="uri">https://urs.earthdata.nasa.gov/</a> You cannot use this package without an Earthdata account.</p>
 <p>Once you have an account, you need to pass your Earthdata username (<code>ed_un</code>) and password (<code>ed_pw</code>) as environmental variables that can be read from within your R session. There are a couple of ways to do this:</p>
+<div id="recommended-approach" class="section level3">
+<h3 class="hasAnchor">
+<a href="#recommended-approach" class="anchor"></a>Recommended approach</h3>
+<p>Use <code><a href="reference/set_smap_credentials.html">set_smap_credentials('yourusername', 'yourpasswd')</a></code>. This will save your credentials by default, overwriting existing credentials if <code>overwrite = TRUE</code>.</p>
+<div id="alternative-approaches" class="section level4">
+<h4 class="hasAnchor">
+<a href="#alternative-approaches" class="anchor"></a>Alternative approaches</h4>
 <ul>
-<li><p>(Recommended): Use <code><a href="reference/set_smap_credentials.html">set_smap_credentials('yourusername', 'yourpasswd')</a></code>. This will save your credentials for later use by default, and optionally overwrite existing credentials if <code>overwrite = TRUE</code>.</p></li>
-<li><p>Use <code>Sys.setenv()</code> interactively in your R session to set your username and password (not including the <code>&lt;</code> and <code>&gt;</code>):</p></li>
+<li>Use <code>Sys.setenv()</code> interactively in your R session to set your username and password (not including the <code>&lt;</code> and <code>&gt;</code>):</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Sys.setenv</span>(<span class="dt">ed_un =</span> <span class="st">"&lt;your username&gt;"</span>, <span class="dt">ed_pw =</span> <span class="st">"&lt;your password&gt;"</span>)</code></pre></div>
 <ul>
-<li><p>Use <code>Sys.setenv()</code> in your <code>.Rprofile</code> to set those environmental variables every time you load R.</p></li>
-<li><p>Create a text file <code>.Renviron</code> in your home directory, which contains your username and password. If you don’t know what your home directory is, execute <code>normalizePath("~/")</code> in the R console and it will be printed. Be sure to include a new line at the end of the file or R will fail silently when loading it.</p></li>
+<li>Create a text file <code>.Renviron</code> in your home directory, which contains your username and password. If you don’t know what your home directory is, execute <code>normalizePath("~/")</code> in the R console and it will be printed. Be sure to include a new line at the end of the file or R will fail silently when loading it.</li>
 </ul>
 <p>Example <code>.Renviron file</code> (note the new line at the end!):</p>
 <pre><code>ed_un=slkdjfsldkjfs
 ed_pw=dlfkjDD124^
 </code></pre>
-<p>Once this file is created, restart your R session and you should now be able to access these environment variables (e.g., via <code>Sys.getenv(ed_un)</code>).</p>
+<p>Once this file is created, restart your R session and you should now be able to access these environment variables (e.g., via <code>Sys.getenv("ed_un")</code>).</p>
+</div>
+</div>
 </div>
 <div id="smap-data-products" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#smap-data-products" class="anchor"></a>SMAP data products</h1></div>
-<p>Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. Currently, smapr primarily supports level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. NSIDC provides documentation for all SMAP data products on their <a href="https://nsidc.org/data/smap/smap-data.html">website</a>, and we provide a summary of data products supported by smapr below.</p>
+<p>Multiple SMAP data products are provided by the NSIDC, and these products vary in the amount of processing. Currently, smapr primarily supports level 3 and level 4 data products, which represent global daily composite and global three hourly modeled data products, respectively. There are a wide variety of data layers available in SMAP products, including surface soil moisture, root zone soil moisture, freeze/thaw status, surface temperature, vegetation water content, vegetation opacity, net ecosystem carbon exchange, soil temperature, and evapotranspiration. NSIDC provides documentation for all SMAP data products on their <a href="https://nsidc.org/data/smap/smap-data.html">website</a>, and we provide a summary of data products supported by smapr below.</p>
 <table class="table">
 <thead><tr class="header">
 <th>Dataset id</th>
@@ -181,10 +188,25 @@ ed_pw=dlfkjDD124^
 </tr>
 </tbody>
 </table>
+<div id="typical-workflow" class="section level2">
+<h2 class="hasAnchor">
+<a href="#typical-workflow" class="anchor"></a>Typical workflow</h2>
+<p>At a high level, most workflows follow these steps:</p>
+<ol style="list-style-type: decimal">
+<li>Find SMAP data with <code><a href="reference/find_smap.html">find_smap()</a></code>
+</li>
+<li>Download data with <code><a href="reference/download_smap.html">download_smap()</a></code>
+</li>
+<li>List data contents with <code><a href="reference/list_smap.html">list_smap()</a></code>
+</li>
+<li>Extract data with <code><a href="reference/extract_smap.html">extract_smap()</a></code>
+</li>
+</ol>
+<p>Each of these steps are outlined below:</p>
 <div id="finding-smap-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#finding-smap-data" class="anchor"></a>Finding SMAP data</h3>
-<p>Data are hosted on a server by the National Snow and Ice Data Center. The find_smap function searches for specific data products and returns a data frame of available data. As data mature and pass checks, versions advance. At any specific time, not all versions of all datasets for all dates may exist. For the most up to date overview of dataset versions, see the NSIDC SMAP data version <a href="https://nsidc.org/data/smap/smap-data.html">webpage</a>.</p>
+<p>Data are hosted on a server by the National Snow and Ice Data Center. The <code><a href="reference/find_smap.html">find_smap()</a></code> function searches for specific data products and returns a data frame of available data. As data mature and pass checks, versions advance. At any specific time, not all versions of all datasets for all dates may exist. For the most up to date overview of dataset versions, see the NSIDC SMAP data version <a href="https://nsidc.org/data/smap/smap-data.html">webpage</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(smapr)
 <span class="kw">library</span>(raster)
 <span class="co">#&gt; Loading required package: sp</span>
@@ -230,7 +252,8 @@ available_data &lt;-<span class="st"> </span><span class="kw"><a href="reference
 <h3 class="hasAnchor">
 <a href="#saving-geotiff-output" class="anchor"></a>Saving GeoTIFF output</h3>
 <p>The raster stack can be saved as a GeoTIFF using the <code>writeRaster</code> function from the raster pacakge.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/writeRaster">writeRaster</a></span>(sm_raster, <span class="st">"wgs84_ft.tif"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/writeRaster">writeRaster</a></span>(sm_raster, <span class="st">"sm_raster.tif"</span>)</code></pre></div>
+</div>
 </div>
 <div id="meta" class="section level2">
 <h2 class="hasAnchor">

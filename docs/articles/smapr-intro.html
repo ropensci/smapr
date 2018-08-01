@@ -155,6 +155,14 @@
 </table>
 <p>This vignette uses the level 4 <a href="https://nsidc.org/data/SPL4SMAU">SPL4SMAU</a> (Surface/Rootzone Soil Moisture Analysis Update) data product.</p>
 </div>
+<div id="preparing-to-access-smap-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#preparing-to-access-smap-data" class="anchor"></a>Preparing to access SMAP data</h2>
+<p>NASA requires a username and password from their Earthdata portal to access SMAP data. You can get these credentials here: <a href="https://earthdata.nasa.gov/" class="uri">https://earthdata.nasa.gov/</a></p>
+<p>Once you have your credentials, you can use the <code>set_smap_credentials</code> function to set them for use by the smapr package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/set_smap_credentials.html">set_smap_credentials</a></span>(<span class="st">"myusername"</span>, <span class="st">"mypassword"</span>)</code></pre></div>
+<p>This function saves your credentials for later use unless you use the argument <code>save = FALSE</code>.</p>
+</div>
 <div id="finding-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#finding-data" class="anchor"></a>Finding data</h2>
@@ -214,7 +222,7 @@ co_extent</code></pre></div>
 <div id="computing-summary-statistics-over-layers" class="section level3">
 <h3 class="hasAnchor">
 <a href="#computing-summary-statistics-over-layers" class="anchor"></a>Computing summary statistics over layers</h3>
-<p>We may want to average soil moisture values across layers of a raster brick. This can be done with the <code>raster::cal()</code> function:</p>
+<p>We may want to average soil moisture values across layers of a raster brick. This can be done with the <code><a href="http://www.rdocumentation.org/packages/raster/topics/calc">raster::calc()</a></code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_sm &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/calc">calc</a></span>(sm_raster, <span class="dt">fun =</span> mean)
 <span class="kw"><a href="http://www.rdocumentation.org/packages/raster/topics/plot">plot</a></span>(mean_sm, <span class="dt">main =</span> <span class="st">'Mean soil moisture'</span>)</code></pre></div>
 </div>
@@ -242,6 +250,7 @@ mean_surface_sm &lt;-<span class="st"> </span><span class="kw"><a href="http://w
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#smap-data-products">SMAP data products</a></li>
+      <li><a href="#preparing-to-access-smap-data">Preparing to access SMAP data</a></li>
       <li><a href="#finding-data">Finding data</a></li>
       <li><a href="#downloading-data">Downloading data</a></li>
       <li><a href="#exploring-data">Exploring data</a></li>
