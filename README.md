@@ -140,7 +140,7 @@ sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture
 plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
 ```
 
-<img src="inst/img/extract-data-1.png" style="display: block; margin: auto;" />
+<img src="man/figures/extract-data-1.png" style="display: block; margin: auto;" />
 
 The path "Soil\_Moisture\_Retrieval\_Data/soil\_moisture" was determined from the output of `list_smap(downloads, all = TRUE)`, which lists all of the data contained in SMAP data files.
 
