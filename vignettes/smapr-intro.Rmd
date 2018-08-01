@@ -82,14 +82,14 @@ str(available_data)
 To download the data, we can use `download_smap`. Note that this may take a 
 while, depending on the number of files being downloaded, and the speed of your
 internet connection. 
-Because we're downloading `r nrow(available_data)` files, we will use the 
+Because we're downloading multiple files, we will use the 
 `verbose = FALSE` argument to avoid printing excessive output to the console.
 
 ```{r download-data, eval = NOT_CRAN}
 local_files <- download_smap(available_data, overwrite = FALSE, verbose = FALSE)
 ```
 
-Now we have `r nrow(local_files)` data files, which correspond to different 
+Each file corresponds to different 
 times as indicated by the file names: 
 
 ```{r print-filenames, eval = NOT_CRAN}
