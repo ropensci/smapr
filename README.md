@@ -158,3 +158,5 @@ Meta
 -   Please [report any issues or bugs](https://github.com/earthlab/smapr/issues), after reading our contribution [guidelines](CONTRIBUTING.md), and the [Contributor Code of Conduct](CONDUCT.md).
 -   License: GPL-3
 -   See `citation("smapr")` in R to cite this package in publications.
+
+[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
