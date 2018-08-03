@@ -1,7 +1,7 @@
 smapr
 ================
 
-[![Build Status](https://travis-ci.org/earthlab/smapr.svg?branch=master)](https://travis-ci.org/earthlab/smapr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/earthlab/smapr?branch=master&svg=true)](https://ci.appveyor.com/project/mbjoseph/smapr) [![codecov](https://codecov.io/gh/earthlab/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/earthlab/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing) [![](http://cranlogs.r-pkg.org/badges/grand-total/smapr)](http://cran.rstudio.com/web/packages/smapr/index.html) [![](https://badges.ropensci.org/231_status.svg)](https://github.com/ropensci/onboarding/issues/231) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![Build Status](https://travis-ci.org/ropensci/smapr.svg?branch=master)](https://travis-ci.org/ropensci/smapr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ropensci/smapr?branch=master&svg=true)](https://ci.appveyor.com/project/mbjoseph/smapr) [![codecov](https://codecov.io/gh/ropensci/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/smapr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr) [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing) [![](http://cranlogs.r-pkg.org/badges/grand-total/smapr)](http://cran.rstudio.com/web/packages/smapr/index.html) [![](https://badges.ropensci.org/231_status.svg)](https://github.com/ropensci/onboarding/issues/231) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
 An R package for acquisition and processing of [NASA (Soil Moisture Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
 
@@ -18,7 +18,7 @@ To install the development version from GitHub:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("earthlab/smapr")
+devtools::install_github("ropensci/smapr")
 ```
 
 #### Docker instructions (alternative to a local installation)
@@ -155,7 +155,7 @@ writeRaster(sm_raster, "sm_raster.tif")
 Meta
 ----
 
--   Please [report any issues or bugs](https://github.com/earthlab/smapr/issues), after reading our contribution [guidelines](CONTRIBUTING.md), and the [Contributor Code of Conduct](CONDUCT.md).
+-   Please [report any issues or bugs](https://github.com/ropensci/smapr/issues), after reading our contribution [guidelines](CONTRIBUTING.md), and the [Contributor Code of Conduct](CONDUCT.md).
 -   License: GPL-3
 -   See `citation("smapr")` in R to cite this package in publications.
 
