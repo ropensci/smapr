@@ -34,7 +34,7 @@ before_install:
   - echo "ed_pw="$ed_pw >> ~/.Renviron
 
 after_success:
-  - travis wait R -e 'covr::codecov(quiet = FALSE)'
+  - travis_wait R -e 'covr::codecov(quiet = FALSE)'
 
 notifications:
   email:
