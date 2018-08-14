@@ -35,7 +35,8 @@ Suggests:
     roxygen2,
     sp,
     testthat,
-    utils
+    utils,
+    covr
 VignetteBuilder: knitr
 URL: https://github.com/earthlab/smapr
 BugReports: https://github.com/earthlab/smapr/issues

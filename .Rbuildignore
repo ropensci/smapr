@@ -10,3 +10,4 @@ CONTRIBUTING.md
 ^codemeta\.json$
 ^\.github$
 ^docs$
+^codecov\.yml$
