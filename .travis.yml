@@ -44,4 +44,4 @@ notifications:
 script:
   - |
     R CMD build .
-    travis_wait 20 R CMD check packageName*tar.gz
+    travis_wait 20 R CMD check smapr*tar.gz

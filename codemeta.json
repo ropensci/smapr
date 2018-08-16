@@ -229,7 +229,7 @@
   ],
   "releaseNotes": "https://github.com/earthlab/smapr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/smapr/blob/master/README.md",
-  "fileSize": "83.856KB",
+  "fileSize": "83.868KB",
   "contIntegration": [
     "https://travis-ci.org/earthlab/smapr",
     "https://ci.appveyor.com/project/mbjoseph/smapr",
