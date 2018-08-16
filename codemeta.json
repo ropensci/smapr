@@ -129,6 +129,18 @@
       "@type": "SoftwareApplication",
       "identifier": "utils",
       "name": "utils"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "covr",
+      "name": "covr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=covr"
     }
   ],
   "softwareRequirements": [
@@ -215,9 +227,9 @@
       "sameAs": "https://CRAN.R-project.org/package=xml2"
     }
   ],
-  "releaseNotes": "https://github.com/ropensci/smapr/blob/master/NEWS.md",
+  "releaseNotes": "https://github.com/earthlab/smapr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/smapr/blob/master/README.md",
-  "fileSize": "83.852KB",
+  "fileSize": "83.868KB",
   "contIntegration": [
     "https://travis-ci.org/earthlab/smapr",
     "https://ci.appveyor.com/project/mbjoseph/smapr",
@@ -234,5 +246,10 @@
     "soil-moisture-sensor",
     "soil-mapping"
   ],
-  "relatedLink": "https://CRAN.R-project.org/package=smapr"
+  "relatedLink": "https://CRAN.R-project.org/package=smapr",
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/onboarding/issues/231",
+    "provider": "http://ropensci.org"
+  }
 }

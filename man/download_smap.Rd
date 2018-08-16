@@ -4,7 +4,8 @@
 \alias{download_smap}
 \title{Download SMAP data}
 \usage{
-download_smap(files, directory = NULL, overwrite = TRUE, verbose = TRUE)
+download_smap(files, directory = NULL, overwrite = TRUE,
+  verbose = TRUE)
 }
 \arguments{
 \item{files}{A \code{data.frame} produced by \code{find_smap()}
