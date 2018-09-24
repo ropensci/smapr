@@ -19,7 +19,7 @@ test_that("searching for future dates causes an error", {
 test_that("searching for missing dates raises a warning", {
     skip_on_cran()
     expect_warning(find_smap(id = "SPL2SMP_E", dates = '2015-05-13', 
-                             version = 1))
+                             version = 2))
 })
 
 test_that("searching for missing dates with extant dates returns both", {
@@ -27,7 +27,7 @@ test_that("searching for missing dates with extant dates returns both", {
     seq_dates <- seq(as.Date("2015-05-12"), as.Date("2015-05-13"), by = 1)
     expect_warning(available_data <- find_smap(id = "SPL2SMP_E",
                                                dates = seq_dates,
-                                               version = 1))
+                                               version = 2))
     num_na_vals_by_column <- apply(available_data, 2, FUN = function(x) {
         sum(is.na(x))
     })
