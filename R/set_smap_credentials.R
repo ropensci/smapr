@@ -33,6 +33,9 @@ set_smap_credentials <- function(username, password,
   
   if (save) {
     renvironment_path <- file.path(Sys.getenv("HOME"), ".Renviron")
+    if (!file.exists(renvironment_path)) {
+      file.create(renvironment_path)
+    }
     renvironment_contents <- readLines(renvironment_path)
     
     username_in_renv <- grepl("^ed_un[[:space:]]*=.*", renvironment_contents)
