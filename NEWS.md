@@ -1,3 +1,10 @@
+# smapr 0.2.0
+
+* added set_smap_credentials() function for NASA EarthData portal
+* expanded vignettes to include cropping, masking, etc.
+* added verbose argument to download_smap
+* performance improvements to extract_smap()
+
 # smapr 0.1.2
 
 * added support for SMAP/sentinel hybrid soil moisture product
