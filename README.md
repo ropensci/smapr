@@ -23,11 +23,7 @@ devtools::install_github("ropensci/smapr")
 
 #### Docker instructions (alternative to a local installation)
 
-If a local installation is not possible for some reason, we have made a Docker image available with smapr and all its dependencies.
-
-    docker run -d -p 8787:8787 earthlab/smapr
-
-In a web browser, navigate to localhost:8787 and log in with username: rstudio, password: rstudio.
+If a local installation is not possible for some reason, we have made a Docker image available with smapr and all its dependencies, with instructions here: https://github.com/earthlab/dockerfiles/tree/master/smapr#how-to-use
 
 Authentication
 --------------
