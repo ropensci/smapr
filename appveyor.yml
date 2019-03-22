@@ -21,6 +21,7 @@ environment:
       GCC_PATH: mingw_64
 
 build_script:
+  - travis-tool.sh install_r rlang
   - travis-tool.sh install_bioc_deps
   - travis-tool.sh install_bioc rhdf5
 
