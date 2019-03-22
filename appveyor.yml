@@ -21,10 +21,8 @@ environment:
       GCC_PATH: mingw_64
 
 build_script:
-  - R -e source('https://install-github.me/r-lib/remotes')
-  - R -e source('https://install-github.me/r-lib/rlang')
   - travis-tool.sh install_bioc_deps
-  - travis-tool.sh install_deps
+  - travis-tool.sh install_bioc rhdf5
 
 test_script:
   - travis-tool.sh run_tests
