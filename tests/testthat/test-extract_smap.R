@@ -2,7 +2,7 @@ context("extract_smap")
 
 test_that("invalid datasets cause errors", {
     skip_on_cran()
-    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 4)
+    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 5)
     downloads <- download_smap(files[1, ], overwrite = FALSE)
     expect_error(
         extract_smap(downloads,
@@ -13,7 +13,7 @@ test_that("invalid datasets cause errors", {
 
 test_that("extract_smap produces a RasterStack of RasterLayers", {
     skip_on_cran()
-    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 4)
+    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 5)
     downloads <- download_smap(files[1, ], overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = 'Soil_Moisture_Retrieval_Data_AM/soil_moisture',
@@ -24,14 +24,14 @@ test_that("extract_smap produces a RasterStack of RasterLayers", {
 
 test_that("-9999 is used fill value when a _FillValue doesn't exist", {
     skip_on_cran()
-    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 4)
+    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 5)
     downloads <- download_smap(files, overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = "Soil_Moisture_Retrieval_Data_PM/latitude_pm")
     # the fill value in the file is -9999, but there is no fill value attribute
     # therefore, if this function works, the minimum should be >= -90
     # (the latitude at the south pole)
-    expect_gte(raster::minValue(r), -90)
+    expect_gte(min(raster::minValue(r)), -90)
 })
 
 test_that("layer names for SPL3FT include file name + am/pm suffix", {
@@ -48,7 +48,7 @@ test_that("layer names for SPL3FT include file name + am/pm suffix", {
 
 test_that("layer names for SPL3SMP include file name", {
     skip_on_cran()
-    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 4)
+    files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 5)
     downloads <- download_smap(files, overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = "Soil_Moisture_Retrieval_Data_AM/latitude")
@@ -60,14 +60,14 @@ test_that("extraction still works with user specified directories", {
     skip_on_cran()
     available_data <- find_smap(id = "SPL3SMP",
                                 date = "2015-10-01",
-                                version = 4)
+                                version = 5)
     user_specified_path <- file.path('data', 'SMAP')
     downloads <- download_smap(available_data,
                                directory = user_specified_path, 
                                overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = "Soil_Moisture_Retrieval_Data_AM/latitude")
-    expect_that(r, is_a("RasterLayer"))
+    expect_that(r, is_a("RasterBrick"))
 
     # clean up
     unlink('data', recursive = TRUE, force = TRUE)
@@ -94,7 +94,7 @@ test_that("Sentinel/SMAP cannot be extracted with other data types", {
     files <- find_smap('SPL2SMAP_S', '2016-06-08', 2)
     other_files <- find_smap(id = "SPL3SMP",
                              date = "2015-10-01",
-                             version = 4)
+                             version = 5)
     mixed_files <- rbind(files[1, ], other_files)
     downloads <- download_smap(mixed_files)
 

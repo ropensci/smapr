@@ -13,7 +13,7 @@ test_that("searching for invalid versions causes an error", {
 
 test_that("searching for future dates causes an error", {
     skip_on_cran()
-    expect_error(find_smap(id = "SPL4SMGP", dates = "3015-03-31", version = 3))
+    expect_error(find_smap(id = "SPL4SMGP", dates = "3015-03-31", version = 4))
 })
 
 test_that("searching for missing dates raises a warning", {
@@ -38,7 +38,7 @@ test_that("searching for missing dates with extant dates returns both", {
 
 test_that("find_smap produces a data frame with the proper dimensions", {
     skip_on_cran()
-    data <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 3)
+    data <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 4)
     expect_match(colnames(data[1]), "name")
     expect_match(colnames(data[2]), "date")
     expect_match(colnames(data[3]), "dir")
@@ -55,7 +55,7 @@ test_that("date sequences retrieve data for each day", {
     date_sequence <- seq(start_date, end_date, by = 1)
     data <- find_smap(id = "SPL4SMGP",
                       dates = date_sequence,
-                      version = 3)
+                      version = 4)
     dates_in_data <- unique(data$date)
     expect_equal(date_sequence, dates_in_data)
 })
