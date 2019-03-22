@@ -21,8 +21,9 @@ environment:
       GCC_PATH: mingw_64
 
 build_script:
-  - R -e install.packages('rlang')
+  - R -e source('https://install-github.me/r-lib/remotes')
   - travis-tool.sh install_bioc_deps
+  - travis-tool.sh install_deps
 
 test_script:
   - travis-tool.sh run_tests
