@@ -21,9 +21,11 @@ environment:
       GCC_PATH: mingw_64
 
 build_script:
-  - travis-tool.sh install_r rlang
+  - travis-tool.sh github_package r-lib/remotes jimhester/covr
+  - travis-tool.sh install_r testthat knitr
+  - travis-tool.sh install_bioc BiocVersion
   - travis-tool.sh install_bioc_deps
-  - travis-tool.sh install_bioc rhdf5
+  - travis-tool.sh install_deps
 
 test_script:
   - travis-tool.sh run_tests
