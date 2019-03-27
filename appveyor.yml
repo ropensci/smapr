@@ -10,21 +10,22 @@ init:
 install:
   ps: Bootstrap
 
-cache:
-  - C:\RLibrary
-
 # Adapt as necessary starting from here
-
 build_script:
+  - Rscript -e "source('https://bioconductor.org/biocLite.R')"
   - travis-tool.sh install_deps
-  - travis-tool.sh install_bioc rhdf5
 
 test_script:
   - travis-tool.sh run_tests
 
 on_failure:
-  - 7z a failure.zip *.Rcheck\*
-  - appveyor PushArtifact failure.zip
+  - travis-tool.sh dump_logs
+
+environment:
+  WARNINGS_ARE_ERRORS: 1
+  _R_CHECK_FORCE_SUGGESTS_: FALSE
+  R_ARCH: x64
+  HDF5_VERSION_USE: 1_8_14
 
 artifacts:
   - path: '*.Rcheck\**\*.log'

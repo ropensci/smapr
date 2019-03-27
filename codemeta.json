@@ -7,17 +7,17 @@
   "identifier": "smapr",
   "description": "\n    Facilitates programmatic access to NASA Soil Moisture Active\n    Passive (SMAP) data with R. It includes functions to search for, acquire,\n    and extract SMAP data.",
   "name": "smapr: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) Data",
-  "codeRepository": "https://github.com/earthlab/smapr",
-  "issueTracker": "https://github.com/earthlab/smapr/issues",
+  "codeRepository": "https://github.com/ropensci/smapr",
+  "issueTracker": "https://github.com/ropensci/smapr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.4.4",
+    "version": "3.5.3",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.4.4 (2018-03-15)",
+  "runtimePlatform": "R version 3.5.3 (2019-03-11)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -227,9 +227,9 @@
       "sameAs": "https://CRAN.R-project.org/package=xml2"
     }
   ],
-  "releaseNotes": "https://github.com/earthlab/smapr/blob/master/NEWS.md",
+  "releaseNotes": "https://github.com/ropensci/smapr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/smapr/blob/master/README.md",
-  "fileSize": "83.868KB",
+  "fileSize": "202.052KB",
   "contIntegration": [
     "https://travis-ci.org/earthlab/smapr",
     "https://ci.appveyor.com/project/mbjoseph/smapr",
@@ -244,12 +244,19 @@
     "acquisition",
     "soil-moisture",
     "soil-moisture-sensor",
-    "soil-mapping"
+    "soil-mapping",
+    "peer-reviewed",
+    "r",
+    "r-package",
+    "rstats"
   ],
   "relatedLink": "https://CRAN.R-project.org/package=smapr",
   "review": {
     "@type": "Review",
     "url": "https://github.com/ropensci/onboarding/issues/231",
     "provider": "http://ropensci.org"
-  }
+  },
+  "contributor": {},
+  "copyrightHolder": {},
+  "funder": {}
 }
