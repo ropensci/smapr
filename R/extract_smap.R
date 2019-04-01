@@ -119,7 +119,8 @@ is_cube <- function(array) {
 find_fill_value <- function(file, name) {
     data_attributes <- h5readAttributes(file, name)
     if ("_FillValue" %in% names(data_attributes)) {
-        fill_value <- data_attributes$`_FillValue`
+        # extract first element to ensure this is not an array
+        fill_value <- data_attributes$`_FillValue`[1]
     } else {
         fill_value <- -9999
     }
