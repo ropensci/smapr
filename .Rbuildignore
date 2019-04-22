@@ -11,3 +11,4 @@ CONTRIBUTING.md
 ^\.github$
 ^docs$
 ^codecov\.yml$
+^revdep$
