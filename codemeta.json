@@ -10,7 +10,7 @@
   "codeRepository": "https://github.com/ropensci/smapr",
   "issueTracker": "https://github.com/ropensci/smapr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -229,7 +229,7 @@
   ],
   "releaseNotes": "https://github.com/ropensci/smapr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/smapr/blob/master/README.md",
-  "fileSize": "202.052KB",
+  "fileSize": "202.105KB",
   "contIntegration": [
     "https://travis-ci.org/earthlab/smapr",
     "https://ci.appveyor.com/project/mbjoseph/smapr",

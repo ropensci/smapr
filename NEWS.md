@@ -1,3 +1,8 @@
+# smapr 0.2.1
+
+* patch to skip test on cran that requires internet
+* updated SMAP data versions
+
 # smapr 0.2.0
 
 * added set_smap_credentials() function for NASA EarthData portal
