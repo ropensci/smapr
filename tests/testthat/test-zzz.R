@@ -16,6 +16,7 @@ test_that("Correct credentials do not raise a 401 error", {
 })
 
 test_that("Incorrect credentials cause a 401 error", {
+  skip_on_cran()
   # temporary handle is necessary here, otherwise previous 
   # authentication (with correct credentials) is used
   # solution from: https://github.com/r-lib/httr/issues/122
