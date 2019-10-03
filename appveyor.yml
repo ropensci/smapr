@@ -12,7 +12,8 @@ install:
 
 # Adapt as necessary starting from here
 build_script:
-  - Rscript -e "source('https://bioconductor.org/biocLite.R')"
+  - Rscript -e "install.packages('BiocManager')"
+  - Rscript -e "BiocManager::install()"
   - travis-tool.sh install_deps
 
 test_script:
