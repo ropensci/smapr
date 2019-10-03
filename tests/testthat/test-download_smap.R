@@ -24,24 +24,9 @@ test_that("valid user-specified directories contain downloads", {
     user_specified_path <- file.path('data', 'SMAP')
     downloads <- download_smap(available_data,
                                directory = user_specified_path)
-    expect_true(
-        file.exists(
-            file.path(user_specified_path,
-                      "SMAP_L3_SM_P_20151001_R16010_001.h5")
-            )
-        )
-    expect_true(
-        file.exists(
-            file.path(user_specified_path,
-                      "SMAP_L3_SM_P_20151001_R16010_001.h5.iso.xml")
-        )
-    )
-    expect_true(
-        file.exists(
-            file.path(user_specified_path,
-                      "SMAP_L3_SM_P_20151001_R16010_001.qa")
-        )
-    )
+    files_in_path <- list.files(user_specified_path)
+    extensions <- sort(tools::file_ext(files_in_path))
+    expect_identical(c("h5", "qa", "xml"), extensions)
 
     # clean up
     unlink('data', recursive = TRUE, force = TRUE)

@@ -67,7 +67,7 @@ test_that("extraction still works with user specified directories", {
                                overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = "Soil_Moisture_Retrieval_Data_AM/latitude")
-    expect_that(r, is_a("RasterBrick"))
+    expect_that(r, is_a("RasterLayer"))
 
     # clean up
     unlink('data', recursive = TRUE, force = TRUE)
