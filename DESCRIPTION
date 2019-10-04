@@ -12,12 +12,11 @@ Authors@R: c(
     )
 Depends:
     R (>= 3.2.5)
-biocViews: 
 Imports:
+    hdf5r,
     httr (>= 1.1.0),
     rappdirs (>= 0.3.1),
     raster (>= 2.5),
-    rhdf5 (>= 2.14),
     rvest,
     xml2
 Maintainer: Maxwell Joseph <maxwell.b.joseph@colorado.edu>

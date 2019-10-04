@@ -4,7 +4,7 @@
 \alias{list_smap}
 \title{Lists the contents of SMAP data files}
 \usage{
-list_smap(files, all = FALSE)
+list_smap(files, all = TRUE)
 }
 \arguments{
 \item{files}{A \code{data.frame} produced by \code{download_smap()} that
