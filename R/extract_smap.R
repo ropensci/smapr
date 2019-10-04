@@ -20,8 +20,6 @@
 #' downloads <- download_smap(files[1, ])
 #' sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 #' }
-#' @importFrom rhdf5 h5read
-#' @importFrom rhdf5 h5readAttributes
 #' @importFrom raster crs
 #' @importFrom raster extent
 #' @importFrom raster merge
@@ -82,7 +80,11 @@ bundle_rasters <- function(rasters, data, in_memory) {
 }
 
 rasterize_smap <- function(file, name) {
-    h5_in <- h5read(file, name)
+    # Load the h5 file
+    f <- hdf5r::H5File$new(file, mode="r")
+
+    h5_in <- hdf5r::readDataSet(f[[name]])
+    
     if (is_cube(h5_in)) {
         r <- rasterize_cube(h5_in, file, name)
     } else {
@@ -117,10 +119,12 @@ is_cube <- function(array) {
 }
 
 find_fill_value <- function(file, name) {
-    data_attributes <- h5readAttributes(file, name)
-    if ("_FillValue" %in% names(data_attributes)) {
-        # extract first element to ensure this is not an array
-        fill_value <- data_attributes$`_FillValue`[1]
+    
+    # Load the h5 file
+    f <- hdf5r::H5File$new(file, mode="r")
+
+    if(f[[name]]$attr_exists("_FillValue")) {
+        fill_value <- hdf5r::h5attr(f[[name]],"_FillValue")
     } else {
         fill_value <- -9999
     }
@@ -157,24 +161,29 @@ compute_latlon_extent <- function(h5_file) {
 }
 
 extent_vector_from_metadata <- function(h5_file) {
-    extent_metadata <- h5readAttributes(h5_file, "Metadata/Extent")
+    f <- hdf5r::H5File$new(h5_file, mode="r")
     if (is_L2SMSP(h5_file)) {
         # extent specification is explained here:
         # https://nsidc.org/data/smap/spl1btb/md-fields
-        vertices <- extent_metadata$polygonPosList
+        vertices <- hdf5r::h5attr(f[["Metadata/Extent"]], "polygonPosList")
         vertex_coords <- matrix(vertices, nrow = 2,
                                 dimnames = list(c('lat', 'lon')))
-        extent_metadata$westBoundLongitude <- min(vertex_coords['lon', ])
-        extent_metadata$eastBoundLongitude <- max(vertex_coords['lon', ])
-        extent_metadata$southBoundLatitude <- min(vertex_coords['lat', ])
-        extent_metadata$northBoundLatitude <- max(vertex_coords['lat', ])
+        extent_vec <- c(min(vertex_coords['lon', ]), 
+                        max(vertex_coords['lon', ]),
+                        min(vertex_coords['lat', ]), 
+                        max(vertex_coords['lat', ]))
+    } else {
+        # if not L2 data, metadata already contains values we need
+        extent_vec <- c(hdf5r::h5attr(f[["Metadata/Extent"]], 
+                                      "westBoundLongitude"),
+                        hdf5r::h5attr(f[["Metadata/Extent"]], 
+                                      "eastBoundLongitude"),
+                        hdf5r::h5attr(f[["Metadata/Extent"]], 
+                                      "southBoundLatitude"),
+                        hdf5r::h5attr(f[["Metadata/Extent"]], 
+                                      "northBoundLatitude"))
     }
-    # if not L2 data, metadata already contains values we need
-    extent_vector <- with(extent_metadata, {
-        c(westBoundLongitude, eastBoundLongitude,
-          southBoundLatitude, northBoundLatitude)
-    })
-    extent_vector
+    extent_vec
 }
 
 is_L3FT <- function(filename) {
