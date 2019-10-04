@@ -5,7 +5,7 @@ r:
   - oldrel
 
 sudo: required
-dist: trusty
+dist: xenial
 cache:
   - packages
   - ccache
@@ -21,9 +21,6 @@ addons:
 
 r_packages:
   - rgdal
-
-bioc_packages:
-  - rhdf5
 
 r_github_packages:
   - jimhester/covr
