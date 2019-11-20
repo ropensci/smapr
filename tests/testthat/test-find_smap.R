@@ -19,7 +19,7 @@ test_that("searching for future dates causes an error", {
 test_that("searching for missing dates raises a warning", {
     skip_on_cran()
     expect_warning(find_smap(id = "SPL2SMP_E", dates = '2015-05-13', 
-                             version = 2))
+                             version = 3))
 })
 
 test_that("searching for missing dates with extant dates returns both", {
