@@ -5,7 +5,7 @@ r:
   - oldrel
 
 sudo: required
-dist: xenial
+
 cache:
   - packages
   - ccache
@@ -22,15 +22,12 @@ addons:
 r_packages:
   - rgdal
 
-r_github_packages:
-  - r-lib/covr
-
 before_install:
   - echo "ed_un="$ed_un >> ~/.Renviron
   - echo "ed_pw="$ed_pw >> ~/.Renviron
 
 after_success:
-- Rscript -e 'library(covr);codecov()'
+- Rscript -e 'covr::codecov()'
 
 notifications:
   email:
