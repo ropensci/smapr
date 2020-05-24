@@ -9,7 +9,7 @@ dist: xenial
 cache:
   - packages
   - ccache
-  
+
 addons:
   apt:
     sources:
@@ -23,7 +23,7 @@ r_packages:
   - rgdal
 
 r_github_packages:
-  - jimhester/covr
+  - r-lib/covr
 
 before_install:
   - echo "ed_un="$ed_un >> ~/.Renviron
