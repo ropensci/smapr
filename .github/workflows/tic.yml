@@ -33,6 +33,9 @@ jobs:
       CRAN: ${{ matrix.config.cran }}
       # make sure to run `tic::use_ghactions_deploy()` to set up deployment
       TIC_DEPLOY_KEY: ${{ secrets.TIC_DEPLOY_KEY }}
+      # earthdata creds
+      ed_un: ${{ secrets.EARTHDATA_USER }}
+      ed_pw: ${{ secrets.EARTHDATA_PW }}
       # prevent rgl issues because no X11 display is available
       RGL_USE_NULL: true
       # if you use bookdown or blogdown, replace "PKGDOWN" by the respective
@@ -84,11 +87,11 @@ jobs:
 
       - name: "[Stage] [Linux] Install curl and libgit2"
         if: runner.os == 'Linux'
-        run: sudo apt install libcurl4-openssl-dev libgit2-dev
+        run: sudo apt install libcurl4-openssl-dev libgit2-dev libhdf5-dev
 
       - name: "[Stage] [macOS] Install libgit2"
         if: runner.os == 'macOS'
-        run: brew install libgit2
+        run: brew install libgit2 hdf5
 
       - name: "[Stage] [macOS] Install system libs for pkgdown"
         if: runner.os == 'macOS' && matrix.config.pkgdown != ''
@@ -96,7 +99,7 @@ jobs:
 
       - name: "[Stage] [Linux] Install system libs for pkgdown"
         if: runner.os == 'Linux' && matrix.config.pkgdown != ''
-        run: sudo apt install libharfbuzz-dev libfribidi-dev
+        run: sudo apt install libharfbuzz-dev libfribidi-dev 
 
       - name: "[Stage] Install"
         if: matrix.config.os != 'macOS-latest' || matrix.config.r != 'devel'
