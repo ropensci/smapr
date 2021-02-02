@@ -13,3 +13,5 @@ CONTRIBUTING.md
 ^codecov\.yml$
 ^revdep$
 ^CRAN-RELEASE$
+^\.ccache$
+^tic\.R$
