@@ -85,9 +85,9 @@ jobs:
           Rscript -e "if (!requireNamespace('remotes')) install.packages('remotes', type = 'source')"
           Rscript -e "if (getRversion() < '3.2' && !requireNamespace('curl')) install.packages('curl', type = 'source')"
 
-      - name: "[Stage] [Linux] Install curl and libgit2"
+      - name: "[Stage] [Linux] Install system deps"
         if: runner.os == 'Linux'
-        run: sudo apt install libcurl4-openssl-dev libgit2-dev libhdf5-dev
+        run: sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update && sudo apt install libcurl4-openssl-dev libgit2-dev libhdf5-dev gdal-bin
 
       - name: "[Stage] [macOS] Install libgit2"
         if: runner.os == 'macOS'
@@ -100,6 +100,24 @@ jobs:
       - name: "[Stage] [Linux] Install system libs for pkgdown"
         if: runner.os == 'Linux' && matrix.config.pkgdown != ''
         run: sudo apt install libharfbuzz-dev libfribidi-dev 
+      
+      - name: Install system dependencies for linux
+        if: runner.os == 'Linux'
+        env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        run: |
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
+
+      - name: Install system dependencies for mac
+        if: runner.os == 'MacOS'
+        run: |
+           curl -sL  https://mac.r-project.org/libs-4/ |
+           sed -n 's/.*href=\([^>]*x86_64.tar.gz\).*/\1/p' |
+           xargs -I % sh -c 'curl https://mac.r-project.org/libs-4/% --output %; sudo tar fvxz % -C /usr/local --strip 2'
+           ls -la /usr/local/lib
+           ls -la /usr/local/include
 
       - name: "[Stage] Install"
         if: matrix.config.os != 'macOS-latest' || matrix.config.r != 'devel'
