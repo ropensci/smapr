@@ -2,13 +2,13 @@ context("download_smap")
 
 test_that("invalid output directories cause errors", {
     skip_on_cran()
-    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 6)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 7)
     expect_error(download_smap(files[1, ], dir = 1234))
 })
 
 test_that("non-existent directories are created", {
     skip_on_cran()
-    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 6)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 7)
     dir_name <- "silly_nonexistent_directory"
     downloads <- download_smap(files, directory = dir_name)
     expect_true(dir.exists(dir_name))
@@ -20,12 +20,12 @@ test_that("valid user-specified directories contain downloads", {
     skip_on_cran()
     available_data <- find_smap(id = "SPL3SMP",
                                 date = "2015-10-01",
-                                version = 6)
+                                version = 7)
     user_specified_path <- file.path('data', 'SMAP')
     downloads <- download_smap(available_data,
                                directory = user_specified_path)
     files_in_path <- list.files(user_specified_path)
-    extensions <- sort(tools::file_ext(files_in_path))
+    extensions <- sort(unique(tools::file_ext(files_in_path)))
     expect_identical(c("h5", "qa", "xml"), extensions)
 
     # clean up
@@ -34,14 +34,14 @@ test_that("valid user-specified directories contain downloads", {
 
 test_that("the downloaded data is of the data frame class", {
     skip_on_cran()
-    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 6)
+    files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 7)
     downloads <- download_smap(files[1, ])
     expect_that(downloads, is_a("data.frame"))
 })
 
 test_that("Two SPL4CMDL data files are downloaded (h5 and xml)", {
     skip_on_cran()
-    files <- find_smap(id = "SPL4CMDL", dates = "2015-05-01", version = 4)
+    files <- find_smap(id = "SPL4CMDL", dates = "2015-05-01", version = 5)
     downloads <- download_smap(files[1, ])
     file_prefix <- downloads$name
     downloaded_files <- list.files(downloads$local_dir)
@@ -63,7 +63,7 @@ test_that("setting overwrite = FALSE prevents data from being overwritten", {
         as.numeric(time)
     }
 
-    files <- find_smap(id = "SPL3SMP", date = "2015-03-31", version = 6)
+    files <- find_smap(id = "SPL3SMP", date = "2015-03-31", version = 7)
 
     downloads <- download_smap(files)
     modified1 <- get_last_modified(downloads)
@@ -85,7 +85,7 @@ test_that("setting overwrite = TRUE ensures data overwrite", {
         as.numeric(time)
     }
 
-    files <- find_smap(id = "SPL3SMP", date = "2015-03-31", version = 6)
+    files <- find_smap(id = "SPL3SMP", date = "2015-03-31", version = 7)
 
     downloads <- download_smap(files, overwrite = TRUE)
     modified1 <- get_last_modified(downloads)
@@ -109,12 +109,12 @@ test_that('input data.frames with NA values raise errors', {
 
 test_that('verbose = TRUE prints output', {
   skip_on_cran()
-  files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 6)
+  files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 7)
   downloads <- expect_message(download_smap(files[1, ], verbose = TRUE))
 })
 
 test_that('verbose = FALSE suppresses output', {
   skip_on_cran()
-  files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 6)
+  files <- find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 7)
   downloads <- expect_silent(download_smap(files[1, ], verbose = FALSE))
 })
