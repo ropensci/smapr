@@ -87,7 +87,18 @@ jobs:
 
       - name: "[Stage] [Linux] Install system deps"
         if: runner.os == 'Linux'
-        run: sudo apt install libcurl4-openssl-dev libgit2-dev libhdf5-dev libgdal-dev
+        run: sudo apt install libcurl4-openssl-dev libgit2-dev libhdf5-dev
+        
+      - name: Install spatial dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo add-apt-repository -y ppa:ubuntugis/ppa
+          sudo apt-get -y update
+          sudo apt-get install -y --no-install-recommends \
+            libudunits2-dev \
+            libproj-dev \
+            libgeos-dev \
+            libgdal-dev
 
       - name: "[Stage] [macOS] Install libgit2"
         if: runner.os == 'macOS'
@@ -109,7 +120,7 @@ jobs:
           Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
-
+      
       - name: Install system dependencies for mac
         if: runner.os == 'MacOS'
         run: |
@@ -129,6 +140,12 @@ jobs:
         run: |
           echo -e 'options(Ncpus = 4, pkgType = "source", repos = structure(c(CRAN = "https://cloud.r-project.org/")))' > $HOME/.Rprofile
           Rscript -e "remotes::install_github('ropensci/tic')" -e "print(tic::dsl_load())" -e "tic::prepare_all_stages()" -e "tic::before_install()" -e "tic::install()"
+
+      - name: Install more dependencies
+        run: |
+          Rscript -e "install.packages('remotes')"
+          Rscript -e "remotes::install_deps(dependencies = TRUE)"
+          Rscript -e "remotes::install_cran(c('rcmdcheck', 'rgdal', 'covr'))"
 
       - name: "[Stage] Script"
         run: Rscript -e 'tic::script()'
