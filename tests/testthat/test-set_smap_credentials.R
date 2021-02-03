@@ -4,6 +4,7 @@ if (!file.exists(renvironment_path)) file.create(renvironment_path)
 
 test_that(".Renviron file is not modified when save = FALSE", {
   skip_on_cran()
+  skip_on_ci()
   renvironment_contents <- readLines(renvironment_path)
   creds <- get_creds(renvironment_path)
   
@@ -21,6 +22,7 @@ test_that(".Renviron file is not modified when save = FALSE", {
 
 test_that("Existing credentials raise an error when overwrite = FALSE", {
   skip_on_cran()
+  skip_on_ci()
   expect_error(set_smap_credentials("dummy_user", 
                                     "dummy_password", 
                                     save = TRUE, 
@@ -30,6 +32,7 @@ test_that("Existing credentials raise an error when overwrite = FALSE", {
 
 test_that("Existing credentials are overwritten when overwrite = TRUE", {
   skip_on_cran()
+  skip_on_ci()
   original_creds <- get_creds(renvironment_path)
   
   set_smap_credentials("user", 
