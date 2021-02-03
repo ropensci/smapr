@@ -1,5 +1,7 @@
 context("set_smap_credentials")
 
+if (!file.exists(renvironment_path)) file.create(renvironment_path)
+
 test_that(".Renviron file is not modified when save = FALSE", {
   skip_on_cran()
   renvironment_contents <- readLines(renvironment_path)
