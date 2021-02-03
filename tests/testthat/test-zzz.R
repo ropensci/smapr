@@ -2,6 +2,7 @@ context("zzz")
 
 test_that("get_creds() returns a vector with username and passwd", {
   skip_on_cran()
+  skip_on_ci()
   creds <- get_creds(file.path(Sys.getenv("HOME"), ".Renviron"))
   expect_length(creds, 2)
   expect_named(creds, c("username", "passwd"))

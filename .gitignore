@@ -16,3 +16,4 @@ vignettes/*.pdf
 .Rproj.user
 revdep
 data
+docs/
