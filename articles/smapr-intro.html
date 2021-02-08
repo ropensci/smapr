@@ -85,7 +85,7 @@
       <h1 data-toc-skip>Introduction to the smapr package</h1>
                         <h4 class="author">Maxwell B. Joseph</h4>
             
-            <h4 class="date">2021-02-07</h4>
+            <h4 class="date">2021-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ropensci/smapr/blob/master/vignettes/smapr-intro.Rmd"><code>vignettes/smapr-intro.Rmd</code></a></small>
       <div class="hidden name"><code>smapr-intro.Rmd</code></div>
@@ -178,7 +178,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">available_data</span><span class="op">)</span>
 <span class="co">#&gt; 'data.frame':    8 obs. of  3 variables:</span>
-<span class="co">#&gt;  $ name: chr  "SMAP_L4_SM_aup_20180601T030000_Vv5012_001" "SMAP_L4_SM_aup_20180601T060000_Vv5012_001" "SMAP_L4_SM_aup_20180601T090000_Vv5012_001" "SMAP_L4_SM_aup_20180601T120000_Vv5012_001" ...</span>
+<span class="co">#&gt;  $ name: chr  "SMAP_L4_SM_aup_20180601T030000_Vv5030_001" "SMAP_L4_SM_aup_20180601T060000_Vv5030_001" "SMAP_L4_SM_aup_20180601T090000_Vv5030_001" "SMAP_L4_SM_aup_20180601T120000_Vv5030_001" ...</span>
 <span class="co">#&gt;  $ date: Date, format: "2018-06-01" "2018-06-01" ...</span>
 <span class="co">#&gt;  $ dir : chr  "SPL4SMAU.005/2018.06.01/" "SPL4SMAU.005/2018.06.01/" "SPL4SMAU.005/2018.06.01/" "SPL4SMAU.005/2018.06.01/" ...</span></code></pre></div>
 </div>
@@ -191,8 +191,8 @@
 <p>Each file corresponds to different times as indicated by the file names:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">local_files</span><span class="op">$</span><span class="va">name</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>
-<span class="co">#&gt; [1] "SMAP_L4_SM_aup_20180601T030000_Vv5012_001"</span>
-<span class="co">#&gt; [2] "SMAP_L4_SM_aup_20180601T060000_Vv5012_001"</span></code></pre></div>
+<span class="co">#&gt; [1] "SMAP_L4_SM_aup_20180601T030000_Vv5030_001"</span>
+<span class="co">#&gt; [2] "SMAP_L4_SM_aup_20180601T060000_Vv5030_001"</span></code></pre></div>
 </div>
 <div id="exploring-data" class="section level2">
 <h2 class="hasAnchor">
@@ -200,7 +200,7 @@
 <p>Each file that we downloaded is an HDF5 file with multiple datasets bundled together. To list all of the data in a file we can use <code>list_smap</code>. By default, if we give <code>list_smap</code> a data frame of local files, it will return a list of data frames. Because all of these data files are of the same data product, using <code>list_smap</code> on one file (e.g., the first) will tell us what’s available in all of the files:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/list_smap.html">list_smap</a></span><span class="op">(</span><span class="va">local_files</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt; $SMAP_L4_SM_aup_20180601T030000_Vv5012_001</span>
+<span class="co">#&gt; $SMAP_L4_SM_aup_20180601T030000_Vv5030_001</span>
 <span class="co">#&gt;                                name                              group</span>
 <span class="co">#&gt; 1                                 y                                  .</span>
 <span class="co">#&gt; 2                     Forecast_Data                                  .</span>
@@ -346,7 +346,7 @@
 <p>To dig deeper, we can use the <code>all</code> argument to <code>list_smap</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/list_smap.html">list_smap</a></span><span class="op">(</span><span class="va">local_files</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; $SMAP_L4_SM_aup_20180601T030000_Vv5012_001</span>
+<span class="co">#&gt; $SMAP_L4_SM_aup_20180601T030000_Vv5030_001</span>
 <span class="co">#&gt;                                name                              group</span>
 <span class="co">#&gt; 1                                 y                                  .</span>
 <span class="co">#&gt; 2                     Forecast_Data                                  .</span>
@@ -506,8 +506,8 @@
 <span class="co">#&gt; extent     : -17367530, 17367530, -7314541, 7314541  (xmin, xmax, ymin, ymax)</span>
 <span class="co">#&gt; crs        : +proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs </span>
 <span class="co">#&gt; source     : /Users/runner/Library/Caches/smap/tmp.tif </span>
-<span class="co">#&gt; names      : SMAP_L4_S//Vv5012_001, SMAP_L4_S//Vv5012_001, SMAP_L4_S//Vv5012_001, SMAP_L4_S//Vv5012_001, SMAP_L4_S//Vv5012_001, SMAP_L4_S//Vv5012_001, SMAP_L4_S//Vv5012_001, SMAP_L4_S//Vv5012_001 </span>
-<span class="co">#&gt; min values :           0.006565271,           0.006585445,           0.006615819,           0.006663644,           0.006725663,           0.006600201,           0.006571246,           0.006491117 </span>
+<span class="co">#&gt; names      : SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001 </span>
+<span class="co">#&gt; min values :           0.006559700,           0.006590730,           0.006612024,           0.006668247,           0.006737789,           0.006590234,           0.006586422,           0.006500987 </span>
 <span class="co">#&gt; max values :                   0.8,                   0.8,                   0.8,                   0.8,                   0.8,                   0.8,                   0.8,                   0.8</span></code></pre></div>
 <p>We can visualize each layer in our RasterBrick:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
