@@ -1,7 +1,7 @@
 ---
 title: "Introduction to the smapr package"
 author: "Maxwell B. Joseph"
-date: "2022-01-26"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to the smapr package}
@@ -9,10 +9,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  fig.width=8, 
+  fig.height=6
+)
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(purl = NOT_CRAN)
+```
 
-
-
-```r
+```{r load-smapr}
 library(smapr)
 library(sp)
 library(raster)
@@ -61,8 +69,7 @@ You can get these credentials here: https://earthdata.nasa.gov/
 Once you have your credentials, you can use the `set_smap_credentials` 
 function to set them for use by the smapr package: 
 
-
-```r
+```{r set-creds, eval = FALSE}
 set_smap_credentials("myusername", "mypassword")
 ```
 
@@ -74,16 +81,14 @@ This function saves your credentials for later use unless you use the argument
 To find out which SMAP data are available, we'll use the `find_smap` function, 
 which takes a data set ID, date(s) to search, and a dataset version. 
 
-
-```r
+```{r find-data, eval = NOT_CRAN}
 available_data <- find_smap(id = 'SPL4SMAU', dates = '2018-06-01', version = 5)
 ```
 
 This returns a data frame, where every row is one data file that is available 
 on NASA's servers. 
 
-
-```r
+```{r head-data, eval = NOT_CRAN}
 str(available_data)
 ```
 
@@ -95,16 +100,14 @@ internet connection.
 Because we're downloading multiple files, we will use the 
 `verbose = FALSE` argument to avoid printing excessive output to the console.
 
-
-```r
+```{r download-data, eval = NOT_CRAN}
 local_files <- download_smap(available_data, overwrite = FALSE, verbose = FALSE)
 ```
 
 Each file corresponds to different 
 times as indicated by the file names: 
 
-
-```r
+```{r print-filenames, eval = NOT_CRAN}
 local_files$name[1:2]
 ```
 
@@ -118,15 +121,13 @@ return a list of data frames.
 Because all of these data files are of the same data product, using `list_smap`
 on one file (e.g., the first) will tell us what's available in all of the files: 
 
-
-```r
+```{r list-smap, eval = NOT_CRAN}
 list_smap(local_files[1, ])
 ```
 
 To dig deeper, we can use the `all` argument to `list_smap`:
 
-
-```r
+```{r list-more-smap, eval = NOT_CRAN}
 list_smap(local_files[1, ], all = TRUE)
 ```
 
@@ -150,23 +151,20 @@ For example, if we want to get rootzone soil moisture, we can see a dataset
 with name `sm_rootzone_analysis` in group `/Analysis_Data`, so that the path 
 to the dataset is `/Analysis_Data/sm_rootzone_analysis`: 
 
-
-```r
+```{r extract-data, eval = NOT_CRAN}
 sm_raster <- extract_smap(local_files, '/Analysis_Data/sm_rootzone_analysis')
 ```
 
 This will extract all of the data in the data frame `local_files`, generating 
 a RasterBrick with one layer per file:
 
-
-```r
+```{r print-raster, eval = NOT_CRAN}
 sm_raster
 ```
 
 We can visualize each layer in our RasterBrick:
 
-
-```r
+```{r plot-raster, eval = NOT_CRAN}
 plot(sm_raster)
 ```
 
@@ -182,8 +180,7 @@ longitude values that roughly correspond to the state boundaries.
 The `raster::extent()` function can be used with any `Spatial*` or `Raster*` 
 object.
 
-
-```r
+```{r create-extent, eval = NOT_CRAN}
 co_extent <- extent(c(-109, -102, 37, 41))
 co_extent <- as(co_extent, "SpatialPolygons")
 sp::proj4string(co_extent) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -194,16 +191,14 @@ Now that we have a SpatialPolygons object, we can use this to crop the
 soil moisture raster to our study region. 
 First, we need to ensure that the projections are the same:
 
-
-```r
+```{r project-extent, eval = NOT_CRAN}
 proj_co_extent <- spTransform(co_extent, crs(sm_raster))
 ```
 
 Then, we could crop the soil moisture data to our polygon, which will make the 
 extents match.
 
-
-```r
+```{r crop-raster, eval = NOT_CRAN}
 co_soil_moisture <- crop(sm_raster, proj_co_extent)
 plot(co_soil_moisture)
 ```
@@ -212,8 +207,7 @@ We might also have a polygon to use as a mask.
 For example, to mask out our Colorado polygon, we could do the following 
 (operating on the first layer of the soil moisture raster for simplicity): 
 
-
-```r
+```{r mask-raster, eval = NOT_CRAN}
 plot(mask(sm_raster[[1]], proj_co_extent))
 ```
 
@@ -222,8 +216,7 @@ of the polygon to NA.
 In some cases, an inverse mask is useful, where values inside the polygon are
 set to NA: 
 
-
-```r
+```{r inverse-mask, eval = NOT_CRAN}
 plot(mask(sm_raster[[1]], proj_co_extent, inverse = TRUE))
 ```
 
@@ -232,8 +225,7 @@ plot(mask(sm_raster[[1]], proj_co_extent, inverse = TRUE))
 We may want to average soil moisture values across layers of a raster brick. 
 This can be done with the `raster::calc()` function:
 
-
-```r
+```{r get-mean, eval = NOT_CRAN}
 mean_sm <- calc(sm_raster, fun = mean)
 plot(mean_sm, main = 'Mean soil moisture')
 ```
@@ -245,8 +237,7 @@ If we want to compare these values, we can load the surface soil moisture data,
 compute the mean value over layers as we did for the rootzone soil moisture 
 raster, and generate a scatterplot. 
 
-
-```r
+```{r surface-vs-rootzone, eval = NOT_CRAN}
 surface_raster <- extract_smap(local_files, 
                                name = '/Analysis_Data/sm_surface_analysis')
 

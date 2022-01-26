@@ -63,11 +63,11 @@ test_that("extraction still works with user specified directories", {
                                 version = 7)
     user_specified_path <- file.path('data', 'SMAP')
     downloads <- download_smap(available_data,
-                               directory = user_specified_path, 
+                               directory = user_specified_path,
                                overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = "Soil_Moisture_Retrieval_Data_AM/latitude")
-    expect_that(r, is_a("RasterBrick"))
+    expect_that(r, is_a("RasterLayer"))
 
     # clean up
     unlink('data', recursive = TRUE, force = TRUE)
@@ -75,9 +75,9 @@ test_that("extraction still works with user specified directories", {
 
 test_that("Sentinel/SMAP integrated products can read properly", {
     skip_on_cran()
-    
+
     files <- find_smap('SPL2SMAP_S', '2016-06-08', 3)
-    
+
     n_to_use <- 2L # don't use all files, use this many instead
     downloads <- download_smap(files[1:n_to_use, ])
     r <- extract_smap(downloads,
