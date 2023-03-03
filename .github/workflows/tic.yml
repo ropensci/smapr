@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
   pull_request:
-  # for now, CRON jobs only run on the default branch of the repo (i.e. usually on master)
+  # for now, CRON jobs only run on the default branch of the repo (i.e. usually on main)
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron: "0 4 * * *"
@@ -47,9 +47,9 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
 
-      - uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           Ncpus: 4
@@ -58,10 +58,10 @@ jobs:
       # Linux: ~ 1 min
       # macOS: ~ 1 min 30s
       # Windows: never finishes
-      - uses: r-lib/actions/setup-tinytex@master
+      - uses: r-lib/actions/setup-tinytex@v2
         if: matrix.config.latex == 'true'
 
-      - uses: r-lib/actions/setup-pandoc@master
+      - uses: r-lib/actions/setup-pandoc@v2
 
       # set date/week for use in cache creation
       # https://github.community/t5/GitHub-Actions/How-to-set-and-access-a-Workflow-variable/m-p/42970
@@ -88,7 +88,7 @@ jobs:
       - name: "[Stage] [Linux] Install system deps"
         if: runner.os == 'Linux'
         run: sudo apt install libcurl4-openssl-dev libgit2-dev libhdf5-dev
-        
+
       - name: Install spatial dependencies
         if: runner.os == 'Linux'
         run: |
@@ -110,8 +110,8 @@ jobs:
 
       - name: "[Stage] [Linux] Install system libs for pkgdown"
         if: runner.os == 'Linux' && matrix.config.pkgdown != ''
-        run: sudo apt install libharfbuzz-dev libfribidi-dev 
-      
+        run: sudo apt install libharfbuzz-dev libfribidi-dev
+
       - name: Install system dependencies for mac
         if: runner.os == 'MacOS'
         run: |
