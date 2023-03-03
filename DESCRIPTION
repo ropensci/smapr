@@ -15,6 +15,7 @@ Depends:
 Imports:
     hdf5r,
     httr (>= 1.1.0),
+    methods,
     rappdirs (>= 0.3.1),
     raster (>= 2.5),
     rvest,
@@ -26,7 +27,7 @@ Description:
     and extract SMAP data.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.3
 Suggests:
     knitr,
     rgdal,
