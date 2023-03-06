@@ -10,9 +10,6 @@
 #' @param data A data frame produced by \code{download_smap()} that specifies
 #' input files from which to extract data.
 #' @param name The path in the HDF5 file pointing to data to extract.
-#' @param in_memory Logical. Should the result be stored in memory? If not, then
-#' raster objects are stored on disk in the cache directory. By default
-#' the result is stored on disk.
 #' @return Returns a SpatRaster object.
 #' @examples
 #' \dontrun{
@@ -29,7 +26,7 @@
 #' @importFrom rappdirs user_cache_dir
 #' @export
 
-extract_smap <- function(data, name, in_memory = FALSE) {
+extract_smap <- function(data, name) {
     validate_data(data)
     h5_files <- local_h5_paths(data)
     n_files <- length(h5_files)
@@ -37,7 +34,7 @@ extract_smap <- function(data, name, in_memory = FALSE) {
     for (i in 1:n_files) {
         rasters[[i]] <- rasterize_smap(h5_files[i], name)
     }
-    output <- bundle_rasters(rasters, data, in_memory)
+    output <- bundle_rasters(rasters, data)
     output
 }
 
@@ -52,7 +49,7 @@ validate_data <- function(data) {
     }
 }
 
-bundle_rasters <- function(rasters, data, in_memory) {
+bundle_rasters <- function(rasters, data) {
     filenames <- data$name
     all_L2SMSP <- mean(is_L2SMSP(filenames))
     if (all_L2SMSP == 1) {
@@ -76,7 +73,7 @@ bundle_rasters <- function(rasters, data, in_memory) {
             rasters <- lapply(rasters, project, y = reference_grid)
         }
     }
-    output <- make_stack(rasters, in_memory)
+    output <- rast(rasters)
     names(output) <- write_layer_names(filenames)
     output
 }
@@ -101,7 +98,7 @@ rasterize_cube <- function(cube, file, name) {
         slice <- cube[, , i]
         layers[[i]] <- rasterize_matrix(slice, file, name)
     }
-    stack <- make_stack(layers, in_memory = FALSE)
+    stack <- rast(layers)
     stack
 }
 
@@ -194,14 +191,6 @@ is_L3FT <- function(filename) {
 
 is_L2SMSP <- function(filename) {
     grepl('L2_SM_SP', filename)
-}
-
-make_stack <- function(r_list, in_memory) {
-    r_stack <- rast(r_list)
-    if (!in_memory) {
-        r_stack <- smap_to_disk(r_stack)
-    }
-    r_stack
 }
 
 write_layer_names <- function(file_names) {
