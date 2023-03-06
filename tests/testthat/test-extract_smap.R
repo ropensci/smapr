@@ -6,8 +6,7 @@ test_that("invalid datasets cause errors", {
     downloads <- download_smap(files[1, ], overwrite = FALSE)
     expect_error(
         extract_smap(downloads,
-                     name = 'Soil_Moisture_Retrieval_Data_AM/soil_flavor',
-                     in_memory = TRUE)
+                     name = 'Soil_Moisture_Retrieval_Data_AM/soil_flavor')
         )
 })
 
@@ -16,8 +15,7 @@ test_that("extract_smap produces a SpatRaster", {
     files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 7)
     downloads <- download_smap(files[1, ], overwrite = FALSE)
     r <- extract_smap(downloads,
-                      name = 'Soil_Moisture_Retrieval_Data_AM/soil_moisture',
-                      in_memory = TRUE)
+                      name = 'Soil_Moisture_Retrieval_Data_AM/soil_moisture')
     expect_that(r, is_a("SpatRaster"))
 })
 
@@ -40,8 +38,7 @@ test_that("layer names for SPL3FT include file name + am/pm suffix", {
     files <- find_smap(id = "SPL3FTA", dates = "2015-04-14", version = 3)
     downloads <- download_smap(files, overwrite = FALSE)
     r <- extract_smap(downloads,
-                      name = "Freeze_Thaw_Retrieval_Data/freeze_thaw",
-                      in_memory = TRUE)
+                      name = "Freeze_Thaw_Retrieval_Data/freeze_thaw")
     expect_that(r, is_a("SpatRaster"))
     expected_names <- paste(downloads$name, c("AM", "PM"), sep = "_")
     expect_equal(names(r), expected_names)

@@ -4,17 +4,13 @@
 \alias{extract_smap}
 \title{Extracts contents of SMAP data}
 \usage{
-extract_smap(data, name, in_memory = FALSE)
+extract_smap(data, name)
 }
 \arguments{
 \item{data}{A data frame produced by \code{download_smap()} that specifies
 input files from which to extract data.}
 
 \item{name}{The path in the HDF5 file pointing to data to extract.}
-
-\item{in_memory}{Logical. Should the result be stored in memory? If not, then
-raster objects are stored on disk in the cache directory. By default
-the result is stored on disk.}
 }
 \value{
 Returns a SpatRaster object.
