@@ -2,7 +2,7 @@ smapr
 ================
 
 [![codecov](https://codecov.io/gh/ropensci/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/smapr)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/smapr)](http://cran.rstudio.com/web/packages/smapr/index.html)
 [![](https://badges.ropensci.org/231_status.svg)](https://github.com/ropensci/onboarding/issues/231)
@@ -58,22 +58,20 @@ your credentials by default, overwriting existing credentials if
 
 #### Alternative approaches
 
-  - Use `Sys.setenv()` interactively in your R session to set your
-    username and password (not including the `<` and `>`):
-
-<!-- end list -->
+- Use `Sys.setenv()` interactively in your R session to set your
+  username and password (not including the `<` and `>`):
 
 ``` r
 Sys.setenv(ed_un = "<your username>", ed_pw = "<your password>")
 ```
 
-  - Create a text file `.Renviron` in your home directory, which
-    contains your username and password. If you don’t know what your
-    home directory is, execute `normalizePath("~/")` in the R console
-    and it will be printed. Be sure to include a new line at the end of
-    the file or R will fail silently when loading it.
+- Create a text file `.Renviron` in your home directory, which contains
+  your username and password. If you don’t know what your home directory
+  is, execute `normalizePath("~/")` in the R console and it will be
+  printed. Be sure to include a new line at the end of the file or R
+  will fail silently when loading it.
 
-Example `.Renviron file` (note the new line at the end\!):
+Example `.Renviron file` (note the new line at the end!):
 
     ed_un=slkdjfsldkjfs
     ed_pw=dlfkjDD124^
@@ -94,20 +92,19 @@ status, surface temperature, vegetation water content, vegetation
 opacity, net ecosystem carbon exchange, soil temperature, and
 evapotranspiration. NSIDC provides documentation for all SMAP data
 products on their [website](https://nsidc.org/data/smap/smap-data.html),
-and we provide a summary of data products supported by smapr
-below.
+and we provide a summary of data products supported by smapr below.
 
-| Dataset id  | Description                                         | Resolution |
-| ----------- | --------------------------------------------------- | ---------- |
-| SPL2SMAP\_S | SMAP/Sentinel-1 Radiometer/Radar Soil Moisture      | 3 km       |
-| SPL3FTA     | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
-| SPL3SMA     | Radar Global Daily Soil Moisture                    | 3 km       |
-| SPL3SMP     | Radiometer Global Soil Moisture                     | 36 km      |
-| SPL3SMAP    | Radar/Radiometer Global Soil Moisture               | 9 km       |
-| SPL4SMAU    | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       |
-| SPL4SMGP    | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
-| SPL4SMLM    | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
-| SPL4CMDL    | Carbon Net Ecosystem Exchange                       | 9 km       |
+| Dataset id | Description                                         | Resolution |
+|------------|-----------------------------------------------------|------------|
+| SPL2SMAP_S | SMAP/Sentinel-1 Radiometer/Radar Soil Moisture      | 3 km       |
+| SPL3FTA    | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
+| SPL3SMA    | Radar Global Daily Soil Moisture                    | 3 km       |
+| SPL3SMP    | Radiometer Global Soil Moisture                     | 36 km      |
+| SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
+| SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       |
+| SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
+| SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
+| SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
 
 ## Typical workflow
 
@@ -132,8 +129,8 @@ versions, see the NSIDC SMAP data version
 
 ``` r
 library(smapr)
-library(raster)
-#> Loading required package: sp
+library(terra)
+#> terra 1.7.18
 available_data <- find_smap(id = "SPL3SMAP", date = "2015-05-25", version = 3)
 str(available_data)
 #> 'data.frame':    1 obs. of  3 variables:
@@ -179,10 +176,8 @@ To see all of the data fields, set `all = TRUE`.
 ### Extracting gridded data products
 
 The `extract_smap` function extracts gridded data products (e.g., global
-soil moisture) and returns Raster\* objects. If more than one file has
-been downloaded and passed into the first argument, `extract_smap`
-extracts all of the rasters and returns a
-RasterStack.
+soil moisture). If more than one file has been downloaded and passed
+into the first argument, `extract_smap` extracts data for each file
 
 ``` r
 sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
@@ -191,14 +186,14 @@ plot(sm_raster, main = "Level 3 soil moisture: May 25, 2015")
 
 <img src="man/figures/extract-data-1.png" style="display: block; margin: auto;" />
 
-The path “Soil\_Moisture\_Retrieval\_Data/soil\_moisture” was determined
+The path “Soil_Moisture_Retrieval_Data/soil_moisture” was determined
 from the output of `list_smap(downloads, all = TRUE)`, which lists all
 of the data contained in SMAP data files.
 
 ### Saving GeoTIFF output
 
-The raster stack can be saved as a GeoTIFF using the `writeRaster`
-function from the raster pacakge.
+The data can be saved as a GeoTIFF using the `writeRaster` function from
+the terra pacakge.
 
 ``` r
 writeRaster(sm_raster, "sm_raster.tif")
@@ -206,12 +201,11 @@ writeRaster(sm_raster, "sm_raster.tif")
 
 ## Meta
 
-  - Please [report any issues or
-    bugs](https://github.com/ropensci/smapr/issues), after reading our
-    contribution [guidelines](CONTRIBUTING.md), and the [Contributor
-    Code of Conduct](CONDUCT.md).
-  - License: GPL-3
-  - See `citation("smapr")` in R to cite this package in
-publications.
+- Please [report any issues or
+  bugs](https://github.com/ropensci/smapr/issues), after reading our
+  contribution [guidelines](CONTRIBUTING.md), and the [Contributor Code
+  of Conduct](CONDUCT.md).
+- License: GPL-3
+- See `citation("smapr")` in R to cite this package in publications.
 
-[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
+[![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)

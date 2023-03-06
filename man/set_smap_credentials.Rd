@@ -4,8 +4,7 @@
 \alias{set_smap_credentials}
 \title{Set credentials for NASA's Earthdata portal}
 \usage{
-set_smap_credentials(username, password, save = TRUE,
-  overwrite = FALSE)
+set_smap_credentials(username, password, save = TRUE, overwrite = FALSE)
 }
 \arguments{
 \item{username}{A character string of your Earthdata portal username}

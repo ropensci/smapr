@@ -11,15 +11,14 @@ test_that("invalid datasets cause errors", {
         )
 })
 
-test_that("extract_smap produces a RasterStack of RasterLayers", {
+test_that("extract_smap produces a SpatRaster", {
     skip_on_cran()
     files <-  find_smap(id = "SPL3SMP", dates = "2015-03-31", version = 7)
     downloads <- download_smap(files[1, ], overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = 'Soil_Moisture_Retrieval_Data_AM/soil_moisture',
                       in_memory = TRUE)
-    expect_that(r[[1]], is_a("RasterLayer"))
-    expect_that(r, is_a("RasterStack"))
+    expect_that(r, is_a("SpatRaster"))
 })
 
 test_that("-9999 is used fill value when a _FillValue doesn't exist", {
@@ -31,7 +30,9 @@ test_that("-9999 is used fill value when a _FillValue doesn't exist", {
     # the fill value in the file is -9999, but there is no fill value attribute
     # therefore, if this function works, the minimum should be >= -90
     # (the latitude at the south pole)
-    expect_gte(min(raster::minValue(r)), -90)
+    min_max <- terra::minmax(r)
+    min_value <- min_max["min", 1]
+    expect_gte(min_value, -90)
 })
 
 test_that("layer names for SPL3FT include file name + am/pm suffix", {
@@ -41,7 +42,7 @@ test_that("layer names for SPL3FT include file name + am/pm suffix", {
     r <- extract_smap(downloads,
                       name = "Freeze_Thaw_Retrieval_Data/freeze_thaw",
                       in_memory = TRUE)
-    expect_that(r, is_a("RasterStack"))
+    expect_that(r, is_a("SpatRaster"))
     expected_names <- paste(downloads$name, c("AM", "PM"), sep = "_")
     expect_equal(names(r), expected_names)
 })
@@ -67,7 +68,7 @@ test_that("extraction still works with user specified directories", {
                                overwrite = FALSE)
     r <- extract_smap(downloads,
                       name = "Soil_Moisture_Retrieval_Data_AM/latitude")
-    expect_that(r, is_a("RasterLayer"))
+    expect_that(r, is_a("SpatRaster"))
 
     # clean up
     unlink('data', recursive = TRUE, force = TRUE)
@@ -83,8 +84,9 @@ test_that("Sentinel/SMAP integrated products can read properly", {
     r <- extract_smap(downloads,
                        '/Soil_Moisture_Retrieval_Data_3km/soil_moisture_3km')
 
-    expect_that(r, is_a('RasterBrick'))
-    expect_identical(raster::nlayers(r), n_to_use)
+    expect_that(r, is_a('SpatRaster'))
+    n_layers <- dim(r)[3]
+    expect_equal(n_layers, n_to_use)
 })
 
 
@@ -98,7 +100,7 @@ test_that("Sentinel/SMAP cannot be extracted with other data types", {
     mixed_files <- rbind(files[1, ], other_files)
     downloads <- download_smap(mixed_files)
 
-    # extracting two files should give a raster stack with two layers
+    # extracting two different kinds of files should raise error
     to_extract <- '/Soil_Moisture_Retrieval_Data_3km/soil_moisture_3km'
     expect_error(extract_smap(downloads, to_extract))
 })

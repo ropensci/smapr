@@ -16,8 +16,8 @@ Imports:
     hdf5r,
     httr (>= 1.1.0),
     rappdirs (>= 0.3.1),
-    raster (>= 2.5),
     rvest,
+    terra,
     xml2
 Maintainer: Maxwell Joseph <maxwell.b.joseph@colorado.edu>
 Description:
@@ -26,13 +26,11 @@ Description:
     and extract SMAP data.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.3
 Suggests:
     knitr,
-    rgdal,
     rmarkdown,
     roxygen2,
-    sp,
     testthat,
     utils,
     covr

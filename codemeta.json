@@ -1,12 +1,10 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "smapr",
-  "description": "\n    Facilitates programmatic access to NASA Soil Moisture Active\n    Passive (SMAP) data with R. It includes functions to search for, acquire,\n    and extract SMAP data.",
+  "description": " Facilitates programmatic access to NASA Soil Moisture Active Passive (SMAP) data with R. It includes functions to search for, acquire, and extract SMAP data.",
   "name": "smapr: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) Data",
+  "relatedLink": ["https://docs.ropensci.org/smapr", "https://CRAN.R-project.org/package=smapr"],
   "codeRepository": "https://github.com/ropensci/smapr",
   "issueTracker": "https://github.com/ropensci/smapr/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
@@ -14,10 +12,9 @@
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.3",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.3 (2019-03-11)",
+  "runtimePlatform": "R version 4.2.2 Patched (2022-11-10 r83330)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -67,18 +64,6 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "rgdal",
-      "name": "rgdal",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=rgdal"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "rmarkdown",
       "name": "rmarkdown",
       "provider": {
@@ -100,18 +85,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=roxygen2"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "sp",
-      "name": "sp",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=sp"
     },
     {
       "@type": "SoftwareApplication",
@@ -143,14 +116,26 @@
       "sameAs": "https://CRAN.R-project.org/package=covr"
     }
   ],
-  "softwareRequirements": [
-    {
+  "softwareRequirements": {
+    "1": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
       "version": ">= 3.2.5"
     },
-    {
+    "2": {
+      "@type": "SoftwareApplication",
+      "identifier": "hdf5r",
+      "name": "hdf5r",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=hdf5r"
+    },
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "httr",
       "name": "httr",
@@ -163,7 +148,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=httr"
     },
-    {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "rappdirs",
       "name": "rappdirs",
@@ -176,33 +161,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rappdirs"
     },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "raster",
-      "name": "raster",
-      "version": ">= 2.5",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=raster"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "rhdf5",
-      "name": "rhdf5",
-      "version": ">= 2.14",
-      "provider": {
-        "@id": "https://www.bioconductor.org",
-        "@type": "Organization",
-        "name": "BioConductor",
-        "url": "https://www.bioconductor.org"
-      },
-      "sameAs": "https://bioconductor.org/packages/release/bioc/html/rhdf5.html"
-    },
-    {
+    "5": {
       "@type": "SoftwareApplication",
       "identifier": "rvest",
       "name": "rvest",
@@ -214,7 +173,19 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rvest"
     },
-    {
+    "6": {
+      "@type": "SoftwareApplication",
+      "identifier": "terra",
+      "name": "terra",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=terra"
+    },
+    "7": {
       "@type": "SoftwareApplication",
       "identifier": "xml2",
       "name": "xml2",
@@ -225,38 +196,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=xml2"
-    }
-  ],
+    },
+    "SystemRequirements": null
+  },
+  "fileSize": "473.659KB",
   "releaseNotes": "https://github.com/ropensci/smapr/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/smapr/blob/master/README.md",
-  "fileSize": "202.105KB",
-  "contIntegration": [
-    "https://travis-ci.org/earthlab/smapr",
-    "https://ci.appveyor.com/project/mbjoseph/smapr",
-    "https://codecov.io/gh/earthlab/smapr"
-  ],
-  "developmentStatus": "https://www.tidyverse.org/lifecycle/#maturing",
-  "keywords": [
-    "nasa",
-    "smap-data",
-    "raster",
-    "extract-data",
-    "acquisition",
-    "soil-moisture",
-    "soil-moisture-sensor",
-    "soil-mapping",
-    "peer-reviewed",
-    "r",
-    "r-package",
-    "rstats"
-  ],
-  "relatedLink": "https://CRAN.R-project.org/package=smapr",
+  "contIntegration": "https://codecov.io/gh/ropensci/smapr",
+  "developmentStatus": ["https://www.tidyverse.org/lifecycle/#maturing", "http://www.repostatus.org/#active"],
   "review": {
     "@type": "Review",
-    "url": "https://github.com/ropensci/onboarding/issues/231",
-    "provider": "http://ropensci.org"
+    "url": "https://github.com/ropensci/software-review/issues/231",
+    "provider": "https://ropensci.org"
   },
-  "contributor": {},
-  "copyrightHolder": {},
-  "funder": {}
+  "keywords": ["nasa", "smap-data", "raster", "extract-data", "acquisition", "soil-moisture", "soil-moisture-sensor", "soil-mapping", "peer-reviewed", "r", "r-package", "rstats"]
 }
