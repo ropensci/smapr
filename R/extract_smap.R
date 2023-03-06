@@ -206,8 +206,3 @@ write_layer_names <- function(file_names) {
     }
     layer_names
 }
-
-smap_to_disk <- function(rast) {
-    dest <- file.path(user_cache_dir("smap"), 'tmp.tif')
-    writeRaster(rast, dest, overwrite = TRUE)
-}
