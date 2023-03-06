@@ -145,7 +145,7 @@ version [webpage](https://nsidc.org/data/smap/smap-data.html).
 
 ```{r find-data}
 library(smapr)
-library(raster)
+library(terra)
 available_data <- find_smap(id = "SPL3SMAP", date = "2015-05-25", version = 3)
 str(available_data)
 ```
@@ -176,8 +176,8 @@ To see all of the data fields, set `all = TRUE`.
 ### Extracting gridded data products
 
 The `extract_smap` function extracts gridded data products 
-(e.g., global soil moisture) and returns Raster* objects. 
-If more than one file has been downloaded and passed into the first argument, `extract_smap` extracts all of the rasters and returns a RasterStack.
+(e.g., global soil moisture). 
+If more than one file has been downloaded and passed into the first argument, `extract_smap` extracts data for each file
 
 ```{r extract-data, fig.align='center', fig.width=8, fig.height=7}
 sm_raster <- extract_smap(downloads, "Soil_Moisture_Retrieval_Data/soil_moisture")
@@ -190,8 +190,8 @@ contained in SMAP data files.
 
 ### Saving GeoTIFF output
 
-The raster stack can be saved as a GeoTIFF using the `writeRaster` function 
-from the raster pacakge. 
+The data can be saved as a GeoTIFF using the `writeRaster` function 
+from the terra pacakge. 
 
 ```{r}
 writeRaster(sm_raster, "sm_raster.tif")

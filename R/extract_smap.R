@@ -10,29 +10,23 @@
 #' @param data A data frame produced by \code{download_smap()} that specifies
 #' input files from which to extract data.
 #' @param name The path in the HDF5 file pointing to data to extract.
-#' @param in_memory Logical. Should the result be stored in memory? If not, then
-#' raster objects are stored on disk in the cache directory. By default
-#' the result is stored on disk.
-#' @return Returns a RasterStack object.
+#' @return Returns a SpatRaster object.
 #' @examples
 #' \dontrun{
 #' files <- find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 4)
 #' downloads <- download_smap(files[1, ])
 #' sm_raster <- extract_smap(downloads, name = '/Geophysical_Data/sm_surface')
 #' }
-#' @importFrom raster crs
-#' @importFrom raster extent
-#' @importFrom raster merge
-#' @importFrom raster projection
-#' @importFrom raster projectExtent
-#' @importFrom raster projectRaster
-#' @importFrom raster raster
-#' @importFrom raster stack
-#' @importFrom raster writeRaster
+#' @importFrom terra crs
+#' @importFrom terra ext
+#' @importFrom terra merge
+#' @importFrom terra project
+#' @importFrom terra rast
+#' @importFrom terra writeRaster
 #' @importFrom rappdirs user_cache_dir
 #' @export
 
-extract_smap <- function(data, name, in_memory = FALSE) {
+extract_smap <- function(data, name) {
     validate_data(data)
     h5_files <- local_h5_paths(data)
     n_files <- length(h5_files)
@@ -40,7 +34,7 @@ extract_smap <- function(data, name, in_memory = FALSE) {
     for (i in 1:n_files) {
         rasters[[i]] <- rasterize_smap(h5_files[i], name)
     }
-    output <- bundle_rasters(rasters, data, in_memory)
+    output <- bundle_rasters(rasters, data)
     output
 }
 
@@ -55,26 +49,31 @@ validate_data <- function(data) {
     }
 }
 
-bundle_rasters <- function(rasters, data, in_memory) {
+bundle_rasters <- function(rasters, data) {
     filenames <- data$name
     all_L2SMSP <- mean(is_L2SMSP(filenames))
     if (all_L2SMSP == 1) {
         if (length(rasters) > 1) {
-            # place data on common grid to enable stacking
-            extents <- lapply(rasters, raster::extent)
-            total_extent <- do.call(raster::merge, extents)
-            reference_grid <- raster::raster(ext = total_extent,
-                                             crs = raster::crs(
-                                                raster::projection(
-                                                    rasters[[1]])),
-                                             resolution = 3000)
-            to_grid <- function(r, grid) {
-                raster::projectRaster(r, grid)
-            }
-            rasters <- lapply(rasters, to_grid, grid = reference_grid)
+            # place data on common reference grid to enable stacking
+            proj_rasters <- lapply(
+              rasters,
+              project,
+              y = terra::crs(rasters[[1]]),
+              res = 3000
+            )
+            raster_collection <- terra::sprc(proj_rasters)
+            total_extent <- terra::ext(raster_collection)
+
+            reference_grid <- rast(
+              extent = total_extent,
+              crs = terra::crs(rasters[[1]]),
+              resolution = 3000
+            )
+
+            rasters <- lapply(rasters, project, y = reference_grid)
         }
     }
-    output <- make_stack(rasters, in_memory)
+    output <- rast(rasters)
     names(output) <- write_layer_names(filenames)
     output
 }
@@ -84,7 +83,7 @@ rasterize_smap <- function(file, name) {
     f <- hdf5r::H5File$new(file, mode="r")
 
     h5_in <- hdf5r::readDataSet(f[[name]])
-    
+
     if (is_cube(h5_in)) {
         r <- rasterize_cube(h5_in, file, name)
     } else {
@@ -99,14 +98,14 @@ rasterize_cube <- function(cube, file, name) {
         slice <- cube[, , i]
         layers[[i]] <- rasterize_matrix(slice, file, name)
     }
-    stack <- make_stack(layers, in_memory = FALSE)
+    stack <- rast(layers)
     stack
 }
 
 rasterize_matrix <- function(matrix, file, name) {
     fill_value <- find_fill_value(file, name)
     matrix[matrix == fill_value] <- NA
-    raster_layer <- raster(t(matrix))
+    raster_layer <- rast(t(matrix))
     raster_layer <- project_smap(file, raster_layer)
     raster_layer
 }
@@ -119,7 +118,7 @@ is_cube <- function(array) {
 }
 
 find_fill_value <- function(file, name) {
-    
+
     # Load the h5 file
     f <- hdf5r::H5File$new(file, mode="r")
 
@@ -132,20 +131,20 @@ find_fill_value <- function(file, name) {
 }
 
 project_smap <- function(file, smap_raster) {
-    raster::extent(smap_raster) <- compute_extent(file)
-    raster::projection(smap_raster) <- smap_crs(file)
+    terra::ext(smap_raster) <- compute_extent(file)
+    terra::crs(smap_raster) <- smap_crs(file)
     smap_raster
 }
 
 compute_extent <- function(h5_file) {
     latlon_extent <- compute_latlon_extent(h5_file)
-    latlon_raster <- raster(latlon_extent, crs = latlon_crs())
-    pr_extent <- projectExtent(latlon_raster, smap_crs(h5_file))
+    latlon_raster <- rast(latlon_extent, crs = latlon_crs())
+    pr_extent <- project(latlon_raster, smap_crs(h5_file))
     if (is_L3FT(h5_file)) {
         # extent must be corrected for EASE-grid 2.0 North
-        raster::extent(pr_extent)[3] <- -raster::extent(pr_extent)[4]
+        terra::ext(pr_extent)[3] <- -terra::ext(pr_extent)[4]
     }
-    smap_extent <- raster::extent(pr_extent)
+    smap_extent <- terra::ext(pr_extent)
     smap_extent
 }
 
@@ -156,7 +155,7 @@ compute_latlon_extent <- function(h5_file) {
     } else {
         extent_vector <- extent_vector_from_metadata(h5_file)
     }
-    latlon_extent <- raster::extent(extent_vector)
+    latlon_extent <- terra::ext(extent_vector)
     latlon_extent
 }
 
@@ -168,19 +167,19 @@ extent_vector_from_metadata <- function(h5_file) {
         vertices <- hdf5r::h5attr(f[["Metadata/Extent"]], "polygonPosList")
         vertex_coords <- matrix(vertices, nrow = 2,
                                 dimnames = list(c('lat', 'lon')))
-        extent_vec <- c(min(vertex_coords['lon', ]), 
+        extent_vec <- c(min(vertex_coords['lon', ]),
                         max(vertex_coords['lon', ]),
-                        min(vertex_coords['lat', ]), 
+                        min(vertex_coords['lat', ]),
                         max(vertex_coords['lat', ]))
     } else {
         # if not L2 data, metadata already contains values we need
-        extent_vec <- c(hdf5r::h5attr(f[["Metadata/Extent"]], 
+        extent_vec <- c(hdf5r::h5attr(f[["Metadata/Extent"]],
                                       "westBoundLongitude"),
-                        hdf5r::h5attr(f[["Metadata/Extent"]], 
+                        hdf5r::h5attr(f[["Metadata/Extent"]],
                                       "eastBoundLongitude"),
-                        hdf5r::h5attr(f[["Metadata/Extent"]], 
+                        hdf5r::h5attr(f[["Metadata/Extent"]],
                                       "southBoundLatitude"),
-                        hdf5r::h5attr(f[["Metadata/Extent"]], 
+                        hdf5r::h5attr(f[["Metadata/Extent"]],
                                       "northBoundLatitude"))
     }
     extent_vec
@@ -192,14 +191,6 @@ is_L3FT <- function(filename) {
 
 is_L2SMSP <- function(filename) {
     grepl('L2_SM_SP', filename)
-}
-
-make_stack <- function(r_list, in_memory) {
-    r_stack <- raster::stack(r_list)
-    if (!in_memory) {
-        r_stack <- smap_to_disk(r_stack)
-    }
-    r_stack
 }
 
 write_layer_names <- function(file_names) {
@@ -214,10 +205,4 @@ write_layer_names <- function(file_names) {
         layer_names <- file_names
     }
     layer_names
-}
-
-smap_to_disk <- function(rast) {
-    stopifnot(class(rast) == "RasterStack")
-    dest <- file.path(user_cache_dir("smap"), 'tmp.tif')
-    writeRaster(rast, dest, overwrite = TRUE)
 }

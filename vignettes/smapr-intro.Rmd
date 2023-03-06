@@ -1,7 +1,7 @@
 ---
 title: "Introduction to the smapr package"
 author: "Maxwell B. Joseph"
-date: "2022-01-26"
+date: "2023-03-06"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to the smapr package}
@@ -14,8 +14,7 @@ vignette: >
 
 ```r
 library(smapr)
-library(sp)
-library(raster)
+library(terra)
 ```
 
 
@@ -305,23 +304,23 @@ sm_raster <- extract_smap(local_files, '/Analysis_Data/sm_rootzone_analysis')
 ```
 
 This will extract all of the data in the data frame `local_files`, generating
-a RasterBrick with one layer per file:
+a terra SpatRaster object with one layer per file:
 
 
 ```r
 sm_raster
-#> class      : RasterBrick 
-#> dimensions : 1624, 3856, 6262144, 8  (nrow, ncol, ncell, nlayers)
-#> resolution : 9008.055, 9008.055  (x, y)
-#> extent     : -17367530, 17367530, -7314541, 7314541  (xmin, xmax, ymin, ymax)
-#> crs        : +proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
-#> source     : tmp.tif 
-#> names      : SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001, SMAP_L4_S//Vv5030_001 
-#> min values :           0.006559700,           0.006590730,           0.006612024,           0.006668247,           0.006737789,           0.006590234,           0.006586422,           0.006500987 
-#> max values :                   0.8,                   0.8,                   0.8,                   0.8,                   0.8,                   0.8,                   0.8,                   0.8
+#> class       : SpatRaster 
+#> dimensions  : 1624, 3856, 8  (nrow, ncol, nlyr)
+#> resolution  : 8984.982, 8205.308  (x, y)
+#> extent      : -17367530, 17278561, -6010879, 7314541  (xmin, xmax, ymin, ymax)
+#> coord. ref. : +proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+#> source      : tmp.tif 
+#> names       : SMAP_~0_001, SMAP_~0_001, SMAP_~0_001, SMAP_~0_001, SMAP_~0_001, SMAP_~0_001, ... 
+#> min values  :   0.0065597,  0.00659073, 0.006612024, 0.006668247, 0.006737789, 0.006590234, ... 
+#> max values  :   0.8000000,  0.80000001, 0.800000012, 0.800000012, 0.800000012, 0.800000012, ...
 ```
 
-We can visualize each layer in our RasterBrick:
+We can visualize each layer:
 
 
 ```r
@@ -330,81 +329,13 @@ plot(sm_raster)
 
 ![plot of chunk plot-raster](vignettes/smapr-intro-plot-raster-1.png)
 
-## Common downstream operations
+Cropping, masking, and summarization can then proceed using the terra R package.
 
-### Study region cropping and masking
-
-If you want to crop the data to a study region, you can use the `raster::crop`
-function.
-Let's illustrate by focusing on the state of Colorado, which is approximately
-rectangular, so that we can define an `extent` object using latitude and
-longitude values that roughly correspond to the state boundaries.
-The `raster::extent()` function can be used with any `Spatial*` or `Raster*`
-object.
+For example, to get mean soil moisture values across layers, use`terra::app()`:
 
 
 ```r
-co_extent <- extent(c(-109, -102, 37, 41))
-co_extent <- as(co_extent, "SpatialPolygons")
-sp::proj4string(co_extent) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-co_extent
-#> class       : SpatialPolygons 
-#> features    : 1 
-#> extent      : -109, -102, 37, 41  (xmin, xmax, ymin, ymax)
-#> crs         : +proj=longlat +datum=WGS84 +no_defs
-```
-
-Now that we have a SpatialPolygons object, we can use this to crop the
-soil moisture raster to our study region.
-First, we need to ensure that the projections are the same:
-
-
-```r
-proj_co_extent <- spTransform(co_extent, crs(sm_raster))
-```
-
-Then, we could crop the soil moisture data to our polygon, which will make the
-extents match.
-
-
-```r
-co_soil_moisture <- crop(sm_raster, proj_co_extent)
-plot(co_soil_moisture)
-```
-
-![plot of chunk crop-raster](vignettes/smapr-intro-crop-raster-1.png)
-
-We might also have a polygon to use as a mask.
-For example, to mask out our Colorado polygon, we could do the following
-(operating on the first layer of the soil moisture raster for simplicity):
-
-
-```r
-plot(mask(sm_raster[[1]], proj_co_extent))
-```
-
-![plot of chunk mask-raster](vignettes/smapr-intro-mask-raster-1.png)
-
-Notice that masking does not crop the raster, it simply sets all values outside
-of the polygon to NA.
-In some cases, an inverse mask is useful, where values inside the polygon are
-set to NA:
-
-
-```r
-plot(mask(sm_raster[[1]], proj_co_extent, inverse = TRUE))
-```
-
-![plot of chunk inverse-mask](vignettes/smapr-intro-inverse-mask-1.png)
-
-### Computing summary statistics over layers
-
-We may want to average soil moisture values across layers of a raster brick.
-This can be done with the `raster::calc()` function:
-
-
-```r
-mean_sm <- calc(sm_raster, fun = mean)
+mean_sm <- app(sm_raster, fun = mean)
 plot(mean_sm, main = 'Mean soil moisture')
 ```
 
@@ -422,8 +353,7 @@ raster, and generate a scatterplot.
 surface_raster <- extract_smap(local_files,
                                name = '/Analysis_Data/sm_surface_analysis')
 
-# compute mean
-mean_surface_sm <- calc(surface_raster, fun = mean)
+mean_surface_sm <- app(surface_raster, fun = mean)
 
 # compare values
 plot(values(mean_sm), values(mean_surface_sm), col = 'dodgerblue', cex = .1,
