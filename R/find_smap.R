@@ -31,7 +31,7 @@
 #'
 #' @param id A character string that refers to a specific SMAP dataset, e.g.,
 #'   \code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
-#'   Moisture Geophysical Data. See "Details" for a list of supported data types 
+#'   Moisture Geophysical Data. See "Details" for a list of supported data types
 #'   and their associated id codes.
 #' @param dates An object of class Date or a character string formatted as
 #' %Y-%m-%d (e.g., "2016-04-01") which specifies the date(s) to search.
@@ -57,11 +57,12 @@
 #' }
 #'
 #' @importFrom httr GET
+#' @importFrom methods is
 #' @export
 
 find_smap <- function(id, dates, version) {
     check_creds()
-    if (class(dates) != "Date") {
+    if (!is(dates, "Date")) {
         dates <- try_make_date(dates)
     }
     ensure_dates_in_past(dates)
