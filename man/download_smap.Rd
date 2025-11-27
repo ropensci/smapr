@@ -16,7 +16,7 @@ directory.}
 
 \item{overwrite}{TRUE or FALSE: should existing data files be overwritten?}
 
-\item{verbose}{TRUE or FALSE: should messages be printed to indicate that 
+\item{verbose}{TRUE or FALSE: should messages be printed to indicate that
 files are being downloaded?}
 }
 \value{

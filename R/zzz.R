@@ -1,32 +1,63 @@
 https_prefix <- function() {
-    "https://n5eil01u.ecs.nsidc.org/SMAP/"
+  "https://cmr.earthdata.nasa.gov/virtual-directory/collections/"
+}
+
+data_download_prefix <- function() {
+  paste0("https://data.nsidc.earthdatacloud.nasa.gov/",
+         "nsidc-cumulus-prod-protected/SMAP/")
+}
+
+cmr_api_url <- function() {
+  "https://cmr.earthdata.nasa.gov/search/collections.json"
+}
+
+#' Get the CMR collection ID for a SMAP product
+#' @param id The SMAP product short name (e.g., "SPL3SMP")
+#' @param version The data version number
+#' @return The CMR collection concept ID
+#' @noRd
+get_collection_id <- function(id, version) {
+  version_str <- sprintf("%03d", as.integer(version))
+  url <- paste0(cmr_api_url(),
+                "?short_name=", id,
+                "&version=", version_str,
+                "&provider=NSIDC_CPRD")
+  response <- httr::GET(url)
+  content <- httr::content(response, as = "parsed")
+  entries <- content$feed$entry
+  if (length(entries) == 0) {
+    stop(paste0("No collection found for ", id, " version ", version,
+                ". The data may have been migrated to a newer version. ",
+                "Check https://nsidc.org/data/smap for current versions."))
+  }
+  entries[[1]]$id
 }
 
 extensions <- function() {
-    c('.h5', '.qa', '.h5.iso.xml')
+  c(".h5", ".qa", ".h5.iso.xml")
 }
 
-min_extensions <- function(){
-    c('.h5', '.h5.iso.xml')
+min_extensions <- function() {
+  c(".h5", ".h5.iso.xml")
 }
 
 smap_crs <- function(file) {
-    if (is_L3FT(file)) {
-        crs <- "+proj=laea +lon_0=0 +lat_0=90 +datum=WGS84 +units=m"
-    } else {
-        crs <- "+proj=cea +lat_ts=30 +datum=WGS84 +units=m"
-    }
-    crs
+  if (is_l3ft(file)) {
+    crs <- "+proj=laea +lon_0=0 +lat_0=90 +datum=WGS84 +units=m"
+  } else {
+    crs <- "+proj=cea +lat_ts=30 +datum=WGS84 +units=m"
+  }
+  crs
 }
 
 latlon_crs <- function() {
-    "+proj=longlat +lat_ts=30 +datum=WGS84 +units=m"
+  "+proj=longlat +lat_ts=30 +datum=WGS84 +units=m"
 }
 
 local_h5_paths <- function(files) {
-    stopifnot(is.data.frame(files))
-    filenames <- paste0(files$name, '.h5')
-    paths_with_filenames <- file.path(files$local_dir, filenames)
+  stopifnot(is.data.frame(files))
+  filenames <- paste0(files$name, ".h5")
+  file.path(files$local_dir, filenames)
 }
 
 auth <- function() {
@@ -38,26 +69,26 @@ auth <- function() {
 check_creds <- function() {
   username_missing <- "" == Sys.getenv("ed_un")
   password_missing <- "" == Sys.getenv("ed_pw")
-  if (username_missing | password_missing) {
+  if (username_missing || password_missing) {
     stop(
       paste0(
         strwrap(
-          c("smapr expected ed_un and ed_pw to be environment variables!", 
-            "The smapr package requires a username and password from", 
+          c("smapr expected ed_un and ed_pw to be environment variables!",
+            "The smapr package requires a username and password from",
             "NASA's Earthdata portal.", "",
-            "If you have a username and password please provide them with", 
-            "the set_smap_credentials() function, e.g.,", 
+            "If you have a username and password please provide them with",
+            "the set_smap_credentials() function, e.g.,",
             "set_smap_credentials('username', 'passwd')", "",
             "If you do not have a username and password, get one here:",
             "https://urs.earthdata.nasa.gov/")
-          ),
-        collapse = '\n'
+        ),
+        collapse = "\n"
       )
     )
   }
-  
+
   # if the username and password exist, check to see whether they are correct
-  response <- GET(https_prefix(), auth())
+  response <- httr::GET(https_prefix(), auth())
   check_for_401(response)
 }
 
@@ -68,11 +99,11 @@ get_creds <- function(renvironment_path) {
   password_in_renv <- grepl("^ed_pw[[:space:]]*=.*", renvironment_contents)
   stopifnot(any(username_in_renv))
   stopifnot(any(password_in_renv))
-  username <- trimws(gsub("^ed_un[[:space:]]*=", replacement = "", 
+  username <- trimws(gsub("^ed_un[[:space:]]*=", replacement = "",
                           renvironment_contents[username_in_renv]))
-  passwd <- trimws(gsub("^ed_pw[[:space:]]*=", replacement = "", 
+  passwd <- trimws(gsub("^ed_pw[[:space:]]*=", replacement = "",
                         renvironment_contents[password_in_renv]))
-  c('username' = username, 'passwd' = passwd)
+  c("username" = username, "passwd" = passwd)
 }
 
 renvironment_path <- file.path(Sys.getenv("HOME"), ".Renviron")
@@ -82,16 +113,16 @@ check_for_401 <- function(response) {
     stop(
       paste0(
         strwrap(
-          c("401 unauthorized response from server.", 
+          c("401 unauthorized response from server.",
             "Are your NASA Earthdata username and password correct?",
-            "Check with: Sys.getenv(c('ed_un', 'ed_pw'))", 
+            "Check with: Sys.getenv(c('ed_un', 'ed_pw'))",
             "",
             "To modify your credentials, you can use set_smap_credentials()",
-            "e.g., set_smap_credentials('user', 'passwd', overwrite = TRUE)", 
-            "", 
-            "If you've forgotten your username or password, go to:", 
+            "e.g., set_smap_credentials('user', 'passwd', overwrite = TRUE)",
+            "",
+            "If you've forgotten your username or password, go to:",
             "https://urs.earthdata.nasa.gov/")
-        ), 
+        ),
         collapse = "\n"
       )
     )

@@ -17,9 +17,7 @@ Imports:
     httr (>= 1.1.0),
     methods,
     rappdirs (>= 0.3.1),
-    rvest,
-    terra,
-    xml2
+    terra
 Maintainer: Maxwell Joseph <maxwell.b.joseph@colorado.edu>
 Description:
     Facilitates programmatic access to NASA Soil Moisture Active
@@ -27,7 +25,7 @@ Description:
     and extract SMAP data.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Suggests:
     knitr,
     rmarkdown,
