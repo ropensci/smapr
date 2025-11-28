@@ -16,7 +16,7 @@
 #' character string. If left as \code{NULL}, data are stored in a user's cache
 #' directory.
 #' @param overwrite TRUE or FALSE: should existing data files be overwritten?
-#' @param verbose TRUE or FALSE: should messages be printed to indicate that 
+#' @param verbose TRUE or FALSE: should messages be printed to indicate that
 #' files are being downloaded?
 #' @return Returns a \code{data.frame} that appends a column called
 #' \code{local_dir} to the input data frame, which consists of a character
@@ -29,101 +29,167 @@
 #' }
 #' @export
 
-download_smap <- function(files, directory = NULL, 
+download_smap <- function(files, directory = NULL,
                           overwrite = TRUE, verbose = TRUE) {
-    check_creds()
-    directory <- validate_directory(directory)
-    validate_input_df(files)
-    local_files <- fetch_all(files, directory, overwrite, verbose)
-    verify_download_success(files, local_files)
-    downloads_df <- bundle_to_df(files, local_files, directory)
-    downloads_df
+  check_creds()
+  directory <- validate_directory(directory)
+  validate_input_df(files)
+  local_files <- fetch_all(files, directory, overwrite, verbose)
+  verify_download_success(files, local_files)
+  downloads_df <- bundle_to_df(files, local_files, directory)
+  downloads_df
 }
 
 validate_input_df <- function(df) {
-    if (any(is.na(df))) {
-        stop(
-            paste(
-               "Argument 'files' must be a data frame with no NA values.",
-               "First, be sure that the input data frame was produced by",
-               "the find_smap() function. NA values will result when data",
-               "are missing (e.g., if there was no data collection",
-               "on a particular day. You must omit all NA values from the",
-               "input data.frame 'files' to use download_smap(), e.g.,",
-               "with the na.omit() function."
-               )
-             )
-    }
+  if (any(is.na(df))) {
+    stop(
+      paste(
+        "Argument 'files' must be a data frame with no NA values.",
+        "First, be sure that the input data frame was produced by",
+        "the find_smap() function. NA values will result when data",
+        "are missing (e.g., if there was no data collection",
+        "on a particular day. You must omit all NA values from the",
+        "input data.frame 'files' to use download_smap(), e.g.,",
+        "with the na.omit() function."
+      )
+    )
+  }
 }
 
 bundle_to_df <- function(desired_files, downloaded_files, local_dir) {
-    names_without_paths <- gsub(".*/", "", downloaded_files)
-    names_without_extensions <- gsub("\\..*", "", names_without_paths)
-    name <- unique(names_without_extensions)
-    downloads <- data.frame(name, local_dir, stringsAsFactors = FALSE)
-    merged_df <- merge(desired_files, downloads, by = 'name')
-    merged_df
+  names_without_paths <- gsub(".*/", "", downloaded_files)
+  names_without_extensions <- gsub("\\..*", "", names_without_paths)
+  name <- unique(names_without_extensions)
+  downloads <- data.frame(name, local_dir, stringsAsFactors = FALSE)
+  merged_df <- merge(desired_files, downloads, by = "name")
+  merged_df
 }
 
 fetch_all <- function(files, directory, overwrite, verbose) {
-    n_downloads <- nrow(files)
-    local_files <- vector(mode = 'list', length = n_downloads)
-    for (i in 1:n_downloads) {
-        local_files[[i]] <- maybe_download(files[i, ], directory, 
-                                           overwrite, verbose)
-    }
-    downloaded_files <- unlist(local_files)
-    downloaded_files
+  n_downloads <- nrow(files)
+  local_files <- vector(mode = "list", length = n_downloads)
+  for (i in 1:n_downloads) {
+    local_files[[i]] <- maybe_download(files[i, ], directory,
+                                       overwrite, verbose)
+  }
+  downloaded_files <- unlist(local_files)
+  downloaded_files
 }
 
 #' @importFrom rappdirs user_cache_dir
 validate_directory <- function(destination_directory) {
-    if (is.null(destination_directory)) {
-        destination_directory <- user_cache_dir("smap")
-    }
-    if (!dir.exists(destination_directory)) {
-        dir.create(destination_directory, recursive = TRUE)
-    }
-    destination_directory
+  if (is.null(destination_directory)) {
+    destination_directory <- user_cache_dir("smap")
+  }
+  if (!dir.exists(destination_directory)) {
+    dir.create(destination_directory, recursive = TRUE)
+  }
+  destination_directory
 }
 
 maybe_download <- function(file, local_directory, overwrite, verbose) {
-    target_files <- get_rel_paths(file)
-    full_target_paths <- file.path(local_directory, target_files)
-    all_files_exist <- all(file.exists(full_target_paths))
-    if (!all_files_exist | overwrite) {
-        https_locations <- paste0(https_prefix(), file$dir, target_files)
-        for (i in seq_along(full_target_paths)) {
-            if (verbose) {
-                message(paste('Downloading', https_locations[i]))
-            }
-            remote_to_local(full_target_paths, https_locations, i)
-        }
+  target_files <- get_rel_paths(file)
+  full_target_paths <- file.path(local_directory, target_files)
+  all_files_exist <- all(file.exists(full_target_paths))
+  if (!all_files_exist || overwrite) {
+    https_locations <- paste0(
+      data_download_prefix(), file$dir, target_files
+    )
+    for (i in seq_along(full_target_paths)) {
+      if (verbose) {
+        message(paste("Downloading", https_locations[i]))
+      }
+      remote_to_local(full_target_paths, https_locations, i)
     }
-    full_target_paths
+  }
+  full_target_paths
 }
 
 get_rel_paths <- function(file) {
-    id <- toString(file[3])
-    if (grepl("SPL4CMDL", id) == TRUE) {
-        target_files <- paste0(file$name, min_extensions())
-    }
-    else {
-        target_files <- paste0(file$name, extensions())
-    }
-    target_files
+  id <- toString(file[3])
+  if (grepl("SPL4CMDL", id) == TRUE) {
+    target_files <- paste0(file$name, min_extensions())
+  } else {
+    target_files <- paste0(file$name, extensions())
+  }
+  target_files
 }
 
 #' @importFrom httr authenticate
 #' @importFrom httr write_disk
 #' @importFrom httr GET
+#' @importFrom httr headers
+#' @importFrom httr config
 remote_to_local <- function(local_paths, https_locations, i) {
-    write_loc <- write_disk(local_paths[i], overwrite = TRUE)
-    GET(https_locations[i], write_loc, auth())
+  write_loc <- httr::write_disk(local_paths[i], overwrite = TRUE)
+
+  # The Earthdata Cloud uses OAuth2 authentication with multiple redirects:
+  # 1. Data URL -> OAuth authorize
+  # 2. OAuth authorize (with creds) -> callback with code
+  # 3. Callback -> data URL (with session)
+  # 4. Data URL -> signed CloudFront URL
+  # 5. CloudFront -> actual data
+
+  cookie_file <- tempfile()
+  no_follow <- httr::config(followlocation = FALSE,
+                            cookiefile = cookie_file,
+                            cookiejar = cookie_file)
+
+  # Step 1: Initial request
+  resp <- httr::GET(https_locations[i], no_follow)
+  redirect_url <- get_redirect(resp)
+
+  if (is.null(redirect_url)) {
+    return(httr::GET(https_locations[i], write_loc, auth()))
+  }
+
+  # Direct CloudFront redirect (cached session)
+  if (!grepl("oauth/authorize", redirect_url)) {
+    return(httr::GET(redirect_url, write_loc))
+  }
+
+  # Step 2: OAuth authorize with credentials
+  resp <- httr::GET(redirect_url, auth(), no_follow)
+  callback_url <- get_redirect(resp)
+
+  if (is.null(callback_url)) {
+    return(httr::GET(https_locations[i], write_loc, auth()))
+  }
+
+  # Step 3: Follow callback
+  resp <- httr::GET(callback_url, no_follow)
+  data_url <- make_absolute(get_redirect(resp))
+
+  if (is.null(data_url)) {
+    return(httr::GET(https_locations[i], write_loc, auth()))
+  }
+
+  # Step 4: Request data URL with session cookies
+  resp <- httr::GET(data_url, no_follow)
+  cloudfront_url <- get_redirect(resp)
+
+  if (is.null(cloudfront_url)) {
+    return(httr::GET(https_locations[i], write_loc, auth()))
+  }
+
+  # Step 5: Download from CloudFront (signed URL, no auth needed)
+  httr::GET(cloudfront_url, write_loc)
 }
 
+get_redirect <- function(resp) {
+  if (!resp$status_code %in% c(301, 302, 303, 307, 308)) return(NULL)
+  httr::headers(resp)$location
+}
+
+make_absolute <- function(url) {
+  if (is.null(url)) return(NULL)
+  if (grepl("^http", url)) return(url)
+  paste0("https://data.nsidc.earthdatacloud.nasa.gov", url)
+}
+
+
 verify_download_success <- function(files, downloaded_files) {
-    expected_downloads <- get_rel_paths(files)
-    actual_downloads <- gsub(".*/", "", downloaded_files)
-    stopifnot(all(expected_downloads %in% actual_downloads))
+  expected_downloads <- get_rel_paths(files)
+  actual_downloads <- gsub(".*/", "", downloaded_files)
+  stopifnot(all(expected_downloads %in% actual_downloads))
 }

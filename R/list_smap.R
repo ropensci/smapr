@@ -26,15 +26,15 @@ list_smap <- function(files, all = TRUE) {
 # This function emulates rhdf5::h5ls using the functions in h5
 h5ls <- function(file, all) {
   # Load the h5 file
-  f <- hdf5r::H5File$new(file, mode="r")
+  f <- hdf5r::H5File$new(file, mode = "r")
   # Remind the function to close it on exit
 
-  datasets <- f$ls(recursive = all) 
+  datasets <- f$ls(recursive = all)
   datasets$path <- datasets$name
   datasets$group <- dirname(datasets$path)
   datasets$name <- basename(datasets$path)
   datasets$otype <- as.character(datasets$obj_type)
   datasets$dclass <- as.character(datasets$dataset.type_class)
   datasets$dim <- datasets$dataset.dims
-  datasets[, names(datasets) %in% c('group', 'name', 'otype', 'dclass', 'dim')]
+  datasets[, names(datasets) %in% c("group", "name", "otype", "dclass", "dim")]
 }

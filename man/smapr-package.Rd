@@ -2,13 +2,30 @@
 % Please edit documentation in R/smapr-package.R
 \docType{package}
 \name{smapr-package}
+\alias{smapr}
 \alias{smapr-package}
 \title{smapr: A package for acquisition and processing of NASA SMAP data.}
 \description{
 The smapr package provides a means to discover, acquire, and process
 NASA Soil Moisture Active Passive (SMAP) data.
 }
-\author{
-Max Joseph \email{maxwell.b.joseph@colorado.edu}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://docs.ropensci.org/smapr}
+  \item \url{https://github.com/ropensci/smapr}
+  \item Report bugs at \url{https://github.com/ropensci/smapr/issues}
 }
-\keyword{package}
+
+}
+\author{
+\strong{Maintainer}: Maxwell Joseph \email{maxwell.b.joseph@colorado.edu}
+
+Authors:
+\itemize{
+  \item Matthew Oakley \email{matthew.oakley@colorado.edu}
+  \item Zachary Schira \email{zasc3143@colorado.edu}
+}
+
+}
+\keyword{internal}

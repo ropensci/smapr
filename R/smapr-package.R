@@ -2,9 +2,10 @@
 #'
 #' The smapr package provides a means to discover, acquire, and process
 #' NASA Soil Moisture Active Passive (SMAP) data.
-#'
-#' @docType package
-#' @name smapr-package
-#' @author Max Joseph \email{maxwell.b.joseph@colorado.edu}
-#' @keywords package
+
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
 NULL

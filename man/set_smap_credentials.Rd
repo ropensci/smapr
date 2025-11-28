@@ -11,20 +11,20 @@ set_smap_credentials(username, password, save = TRUE, overwrite = FALSE)
 
 \item{password}{A character string of your Earthdata portal password}
 
-\item{save}{Logical: whether to save your credentials to your 
-.Renviron file (e.g., ~/.Renviron). Previous Earthdata credentials will not 
+\item{save}{Logical: whether to save your credentials to your
+.Renviron file (e.g., ~/.Renviron). Previous Earthdata credentials will not
 be overwritten unless \code{overwrite = TRUE}.}
 
 \item{overwrite}{Logical: whether to overwrite previous Earthdata credentials
 in your .Renviron file (only applies when \code{save = TRUE})}
 }
 \value{
-A data.frame with the names of the data files, the remote directory, and
-  the date.
+A data.frame with the names of the data files, the remote directory,
+  and the date.
 }
 \description{
-To use smapr, users need to provide NASA Earthdata portal credentials. 
-This function allows users to interactively set these credentials via the 
+To use smapr, users need to provide NASA Earthdata portal credentials.
+This function allows users to interactively set these credentials via the
 user's Earthdata username and password.
 }
 \details{
@@ -32,7 +32,7 @@ If you do not yet have a username and password, register for one here:
 https://urs.earthdata.nasa.gov/
 
 A warning: do not commit your username and password to a public repository!
-This function is meant to be used interactively, and not embedded within a 
+This function is meant to be used interactively, and not embedded within a
 script that you would share.
 }
 \examples{

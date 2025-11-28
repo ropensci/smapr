@@ -8,9 +8,9 @@ find_smap(id, dates, version)
 }
 \arguments{
 \item{id}{A character string that refers to a specific SMAP dataset, e.g.,
-\code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone Soil
-Moisture Geophysical Data. See "Details" for a list of supported data types
-and their associated id codes.}
+\code{"SPL4SMGP"} for SMAP L4 Global 3-hourly 9 km Surface and Rootzone
+Soil Moisture Geophysical Data. See "Details" for a list of supported data
+types and their associated id codes.}
 
 \item{dates}{An object of class Date or a character string formatted as
 %Y-%m-%d (e.g., "2016-04-01") which specifies the date(s) to search.
@@ -23,8 +23,8 @@ information for each data product can be found at
 \url{https://nsidc.org/data/smap/data_versions}}
 }
 \value{
-A data.frame with the names of the data files, the remote directory, and
-  the date.
+A data.frame with the names of the data files, the remote directory,
+  and the date.
 }
 \description{
 This function searches for SMAP data on a specific date, returning a
