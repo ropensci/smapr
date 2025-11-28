@@ -119,7 +119,6 @@ of data products supported by smapr below.
 | SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
 | SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       | 
 | SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
-| SPL4SMLM   | Surface/Rootzone Soil Moisture Land Model Constants | 9 km       |
 | SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
 
 ## Typical workflow

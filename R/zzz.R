@@ -41,17 +41,30 @@ min_extensions <- function() {
   c(".h5", ".h5.iso.xml")
 }
 
+#' Get SMAP CRS using EPSG codes
+#'
+#' Returns the appropriate EPSG code for EASE-Grid 2.0 projections.
+#' See: https://nsidc.org/data/user-resources/help-center/guide-ease-grids
+#'
+#' @param file Path to SMAP file (used to determine projection type)
+#' @return EPSG code string
+#' @noRd
 smap_crs <- function(file) {
-  if (is_l3ft(file)) {
-    crs <- "+proj=laea +lon_0=0 +lat_0=90 +datum=WGS84 +units=m"
+ if (is_l3ft(file)) {
+    # EASE-Grid 2.0 Northern Hemisphere (Lambert Azimuthal Equal-Area)
+    crs <- "EPSG:6931"
   } else {
-    crs <- "+proj=cea +lat_ts=30 +datum=WGS84 +units=m"
+    # EASE-Grid 2.0 Global (Cylindrical Equal-Area)
+    crs <- "EPSG:6933"
   }
   crs
 }
 
+#' Get WGS84 geographic CRS
+#' @return EPSG code for WGS84
+#' @noRd
 latlon_crs <- function() {
-  "+proj=longlat +lat_ts=30 +datum=WGS84 +units=m"
+  "EPSG:4326"
 }
 
 local_h5_paths <- function(files) {
