@@ -73,11 +73,11 @@ jobs:
 
       - name: "[Cache] Cache R packages"
         if: runner.os != 'Windows'
-        uses: pat-s/always-upload-cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{steps.date.outputs.date}}
-          restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-${{steps.date.outputs.date}}
+          key: ${{ runner.os }}-r-${{ matrix.config.r }}-v2-${{steps.date.outputs.date}}
+          restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-v2-
 
       - name: "[Stage] Install pak"
         run: Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable')"
