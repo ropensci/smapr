@@ -19,8 +19,8 @@ be overwritten unless \code{overwrite = TRUE}.}
 in your .Renviron file (only applies when \code{save = TRUE})}
 }
 \value{
-A data.frame with the names of the data files, the remote directory,
-  and the date.
+No return value, called for side effects (sets environment variables
+  and optionally saves credentials to .Renviron).
 }
 \description{
 To use smapr, users need to provide NASA Earthdata portal credentials.

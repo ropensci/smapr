@@ -80,7 +80,7 @@ To find out which SMAP data are available, we'll use the `find_smap` function,
 which takes a data set ID, date(s) to search, and a dataset version.
 
 ```{r find-data}
-available_data <- find_smap(id = 'SPL4SMAU', dates = '2018-06-01', version = 5)
+available_data <- find_smap(id = 'SPL4SMAU', dates = '2018-06-01', version = 8)
 ```
 
 This returns a data frame, where every row is one data file that is available

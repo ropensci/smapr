@@ -1,10 +1,10 @@
 Package: smapr
 Type: Package
 Title: Acquisition and Processing of NASA Soil Moisture Active-Passive (SMAP) Data
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: c(
-    person("Maxwell", "Joseph", email = "maxwell.b.joseph@colorado.edu",
-            role = c("aut", "cre")),
+    person("Maxwell", "Joseph", email = "maxwellbjoseph@gmail.com",
+            role = c("aut", "cre", "cph")),
     person("Matthew", "Oakley", email = "matthew.oakley@colorado.edu",
             role = "aut"),
     person("Zachary", "Schira", email = "zasc3143@colorado.edu",
@@ -18,13 +18,12 @@ Imports:
     methods,
     rappdirs (>= 0.3.1),
     terra
-Maintainer: Maxwell Joseph <maxwell.b.joseph@colorado.edu>
+Maintainer: Maxwell Joseph <maxwellbjoseph@gmail.com>
 Description:
     Facilitates programmatic access to NASA Soil Moisture Active
     Passive (SMAP) data with R. It includes functions to search for, acquire,
     and extract SMAP data.
 License: GPL-3
-LazyData: TRUE
 RoxygenNote: 7.3.3
 Suggests:
     knitr,
@@ -34,6 +33,6 @@ Suggests:
     utils,
     covr
 VignetteBuilder: knitr
-URL: https://docs.ropensci.org/smapr, https://github.com/ropensci/smapr
+URL: https://docs.ropensci.org/smapr/, https://github.com/ropensci/smapr
 BugReports: https://github.com/ropensci/smapr/issues
 Encoding: UTF-8

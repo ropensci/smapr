@@ -1,17 +1,17 @@
 smapr
 ================
 
-[![codecov](https://codecov.io/gh/ropensci/smapr/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/smapr)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/smapr)](http://cran.rstudio.com/web/packages/smapr/index.html)
-[![](https://badges.ropensci.org/231_status.svg)](https://github.com/ropensci/onboarding/issues/231)
+[![codecov](https://app.codecov.io/gh/ropensci/smapr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ropensci/smapr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/smapr)](https://cran.r-project.org/package=smapr)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/smapr)](https://cran.r-project.org/package=smapr)
+[![](https://badges.ropensci.org/231_status.svg)](https://github.com/ropensci/software-review/issues/231)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 An R package for acquisition and processing of [NASA (Soil Moisture
-Active-Passive) SMAP data](http://smap.jpl.nasa.gov/)
+Active-Passive) SMAP data](https://smap.jpl.nasa.gov/)
 
 ## Installation
 
@@ -91,19 +91,19 @@ including surface soil moisture, root zone soil moisture, freeze/thaw
 status, surface temperature, vegetation water content, vegetation
 opacity, net ecosystem carbon exchange, soil temperature, and
 evapotranspiration. NSIDC provides documentation for all SMAP data
-products on their [website](https://nsidc.org/data/smap/smap-data.html),
+products on their [website](https://nsidc.org/data/smap/data),
 and we provide a summary of data products supported by smapr below.
 
-| Dataset id | Description                                         | Resolution |
-|------------|-----------------------------------------------------|------------|
-| SPL2SMAP_S | SMAP/Sentinel-1 Radiometer/Radar Soil Moisture      | 3 km       |
-| SPL3FTA    | Radar Northern Hemisphere Daily Freeze/Thaw State   | 3 km       |
-| SPL3SMA    | Radar Global Daily Soil Moisture                    | 3 km       |
-| SPL3SMP    | Radiometer Global Soil Moisture                     | 36 km      |
-| SPL3SMAP   | Radar/Radiometer Global Soil Moisture               | 9 km       |
-| SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update      | 9 km       |
-| SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data     | 9 km       |
-| SPL4CMDL   | Carbon Net Ecosystem Exchange                       | 9 km       |
+| Dataset id | Description                                       | Resolution |
+|------------|---------------------------------------------------|------------|
+| SPL2SMAP_S | SMAP/Sentinel-1 Radiometer/Radar Soil Moisture    | 3 km       |
+| SPL3FTA    | Radar Northern Hemisphere Daily Freeze/Thaw State | 3 km       |
+| SPL3SMA    | Radar Global Daily Soil Moisture                  | 3 km       |
+| SPL3SMP    | Radiometer Global Soil Moisture                   | 36 km      |
+| SPL3SMAP   | Radar/Radiometer Global Soil Moisture             | 9 km       |
+| SPL4SMAU   | Surface/Rootzone Soil Moisture Analysis Update    | 9 km       |
+| SPL4SMGP   | Surface/Rootzone Soil Moisture Geophysical Data   | 9 km       |
+| SPL4CMDL   | Carbon Net Ecosystem Exchange                     | 9 km       |
 
 ## Typical workflow
 
@@ -124,18 +124,18 @@ returns a data frame of available data. As data mature and pass checks,
 versions advance. At any specific time, not all versions of all datasets
 for all dates may exist. For the most up to date overview of dataset
 versions, see the NSIDC SMAP data version
-[webpage](https://nsidc.org/data/smap/smap-data.html).
+[webpage](https://nsidc.org/data/smap/version-history).
 
 ``` r
 library(smapr)
 library(terra)
-#> terra 1.7.18
+#> terra 1.8.86
 available_data <- find_smap(id = "SPL3SMAP", date = "2015-05-25", version = 3)
 str(available_data)
 #> 'data.frame':    1 obs. of  3 variables:
 #>  $ name: chr "SMAP_L3_SM_AP_20150525_R13080_001"
 #>  $ date: Date, format: "2015-05-25"
-#>  $ dir : chr "SPL3SMAP.003/2015.05.25/"
+#>  $ dir : chr "SPL3SMAP/003/2015/05/25/"
 ```
 
 ### Downloading and inspecting SMAP data
@@ -146,14 +146,14 @@ an argument, the data are stored in the user’s cache.
 
 ``` r
 downloads <- download_smap(available_data)
-#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5
-#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.qa
-#> Downloading https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMAP.003/2015.05.25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
+#> Downloading https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMAP/003/2015/05/25/SMAP_L3_SM_AP_20150525_R13080_001.h5
+#> Downloading https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMAP/003/2015/05/25/SMAP_L3_SM_AP_20150525_R13080_001.qa
+#> Downloading https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMAP/003/2015/05/25/SMAP_L3_SM_AP_20150525_R13080_001.h5.iso.xml
 str(downloads)
 #> 'data.frame':    1 obs. of  4 variables:
 #>  $ name     : chr "SMAP_L3_SM_AP_20150525_R13080_001"
 #>  $ date     : Date, format: "2015-05-25"
-#>  $ dir      : chr "SPL3SMAP.003/2015.05.25/"
+#>  $ dir      : chr "SPL3SMAP/003/2015/05/25/"
 #>  $ local_dir: chr "~/.cache/smap"
 ```
 

@@ -20,7 +20,7 @@ such as produced by \code{seq.Date}.}
 
 \item{version}{Which data version would you like to search for? Version
 information for each data product can be found at
-\url{https://nsidc.org/data/smap/data_versions}}
+\url{https://nsidc.org/data/smap/version-history}}
 }
 \value{
 A data.frame with the names of the data files, the remote directory,
@@ -34,7 +34,7 @@ This function searches for SMAP data on a specific date, returning a
 There are many SMAP data products that can be accessed with this function.
 Currently, smapr supports level 3 and level 4 data products, each of which
 has an associated Data Set ID which is specified by the \code{id} argument,
-described at \url{https://nsidc.org/data/smap/smap-data.html} and summarized
+described at \url{https://nsidc.org/data/smap/data} and summarized
 below:
 
 \describe{
@@ -59,13 +59,13 @@ If you do not yet have a username and password, register for one here:
 \examples{
 \dontrun{
 # looking for data on one day:
-find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 4)
+find_smap(id = "SPL4SMGP", dates = "2015-03-31", version = 8)
 
 # searching across a date range
 start_date <- as.Date("2015-03-31")
 end_date <- as.Date("2015-04-02")
 date_sequence <- seq(start_date, end_date, by = 1)
-find_smap(id = "SPL4SMGP", dates = date_sequence, version = 4)
+find_smap(id = "SPL4SMGP", dates = date_sequence, version = 8)
 }
 
 }
