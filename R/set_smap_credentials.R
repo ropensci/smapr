@@ -18,8 +18,8 @@
 #' be overwritten unless \code{overwrite = TRUE}.
 #' @param overwrite Logical: whether to overwrite previous Earthdata credentials
 #' in your .Renviron file (only applies when \code{save = TRUE})
-#' @return A data.frame with the names of the data files, the remote directory,
-#'   and the date.
+#' @return No return value, called for side effects (sets environment variables
+#'   and optionally saves credentials to .Renviron).
 #'
 #' @examples
 #' \dontrun{

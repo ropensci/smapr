@@ -12,14 +12,14 @@ NASA Soil Moisture Active Passive (SMAP) data.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://docs.ropensci.org/smapr}
+  \item \url{https://docs.ropensci.org/smapr/}
   \item \url{https://github.com/ropensci/smapr}
   \item Report bugs at \url{https://github.com/ropensci/smapr/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Maxwell Joseph \email{maxwell.b.joseph@colorado.edu}
+\strong{Maintainer}: Maxwell Joseph \email{maxwellbjoseph@gmail.com} [copyright holder]
 
 Authors:
 \itemize{
